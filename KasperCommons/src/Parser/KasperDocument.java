@@ -36,6 +36,10 @@ public class KasperDocument {
         root.appendChild(args);
     }
 
+    /*
+    Generates a custom tag.
+     */
+
     private Node getTag (String tagName){
         return document.createElement(tagName);
     }
@@ -43,12 +47,18 @@ public class KasperDocument {
 
     // main interactions
 
+    /*
+    This method is for sending auth requests.
+     */
     public void authRequest(String username, String password){
         addValue(purpose, "auth");
         args.appendChild(createNode("user", username));
         args.appendChild(createNode("password", password));
     }
 
+    /*
+    This method is for set requests.
+     */
     public void setRequest (String key, KasperObject value) {
         addValue(purpose, "set");
         args.appendChild(createNode("key", key));
@@ -58,31 +68,35 @@ public class KasperDocument {
     }
 
 
-    public void appendToTree(Node n) {
+    /*
+    Appends a node to the root.
+     */
+    protected void appendToTree(Node n) {
         root.appendChild(n);
     }
 
-    public void addValue (Node n, String s){
+    /*
+    Adds a string value to an existing node.
+     */
+    protected void addValue (Node n, String s){
         n.appendChild(document.createTextNode(s));
     }
+
 
     /*
     Creates a tag with a specified text value
      */
-    public Node createNode(String tagName, String content){
+    protected Node createNode(String tagName, String content){
         var element = getTag(tagName);
         element.appendChild(document.createTextNode(content));
         return element;
     }
 
-    protected void addChild(String tagName, String content){
-        appendToTree(createNode(tagName, content));
-    }
 
-
-
-
-
+    /*
+    Creates an XML node that extracts the data
+    out of a KasperObject instance.
+     */
     private Node extract (KasperObject o){
         return recursive_extraction(o);
     }
@@ -109,6 +123,9 @@ public class KasperDocument {
         } return holder;
     }
 
+    /*
+    Stringifies a given node.
+     */
     public String nodeToString(Node node) {
         try {
             // Create a new document for serialization
@@ -138,6 +155,9 @@ public class KasperDocument {
         return null;
     }
 
+    /*
+    Stringifies this document.
+     */
     @Override
     public String toString() {
         return nodeToString(root);

@@ -6,11 +6,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ The Manifest class contains and reads data from the manifest file.
+ This contains metadata about the driver and the server.
+ */
 public class Manifest {
-    /*
-    The Manifest class contains and reads data from the manifest file.
-    This contains metadata about the driver and the server.
-     */
+
     private static BufferedReader reader = null;
     private static String serial = null;
 
