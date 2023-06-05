@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Drivers:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Drivers_jar</output-path>
+    <root id="archive" name="Drivers.jar">
+      <element id="module-output" name="Drivers" />
+      <element id="module-output" name="KasperCommons" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

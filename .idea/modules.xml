@@ -3,9 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Debuggers/Debuggers.iml" filepath="$PROJECT_DIR$/Debuggers/Debuggers.iml" />
-      <module fileurl="file://$PROJECT_DIR$/KasperAPIs/KasperAPIs.iml" filepath="$PROJECT_DIR$/KasperAPIs/KasperAPIs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/KasperAPIs/KasperBeans/KasperBeans.iml" filepath="$PROJECT_DIR$/KasperAPIs/KasperBeans/KasperBeans.iml" />
-      <module fileurl="file://$PROJECT_DIR$/KasperCommons/KasperCommon.iml" filepath="$PROJECT_DIR$/KasperCommons/KasperCommon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Drivers/Drivers.iml" filepath="$PROJECT_DIR$/Drivers/Drivers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KasperCommons/KasperCommons.iml" filepath="$PROJECT_DIR$/KasperCommons/KasperCommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/KasperMono.iml" filepath="$PROJECT_DIR$/KasperMono.iml" />
     </modules>
   </component>
