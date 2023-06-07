@@ -1,5 +1,10 @@
 package KasperCommons.DataStructures;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -8,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * holds internal data for a list-type KasperObject.
  * Internally, it uses a LinkedList for its implementation.
  */
-public class KasperList extends KasperObject{
+public class KasperList extends KasperObject implements Iterable{
 
 
     public KasperList() {
@@ -54,9 +59,25 @@ public class KasperList extends KasperObject{
         } return this;
     }
 
+    /**
+     *
+     * @return an ArrayList containing all the data in the list.
+     */
+    public ArrayList<KasperObject> toArray (){
+        var x = toList();
+        ArrayList<KasperObject> list = new ArrayList<>(x.size());
+        list.addAll(x);
+        return list;
+    }
 
+    @Override
+    public ArrayList automaticallyCast() {
+        return toArray();
+    }
 
-
-
-
+    @NotNull
+    @Override
+    public Iterator<KasperObject> iterator() {
+        return toList().iterator();
+    }
 }

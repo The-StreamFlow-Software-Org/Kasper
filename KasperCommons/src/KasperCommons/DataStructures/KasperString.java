@@ -10,4 +10,9 @@ public class KasperString extends KasperObject{
         super("string");
         this.data = data;
     }
+
+    @Override
+    public String automaticallyCast() {
+        return toString();
+    }
 }

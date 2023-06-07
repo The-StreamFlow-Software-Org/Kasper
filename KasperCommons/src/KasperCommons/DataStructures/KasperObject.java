@@ -8,7 +8,7 @@ import java.util.Map;
  * complex KasperObject data structures, using polymorphic
  * design structures.
  */
-public class KasperObject {
+public abstract class KasperObject {
 
     /**
      Type is used to store and introspect the type
@@ -65,6 +65,8 @@ public class KasperObject {
     public Map toMap (){
         return (Map) data;
     }
+
+    public abstract Object automaticallyCast();
 
 
 

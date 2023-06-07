@@ -4,6 +4,7 @@ import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperString;
+import KasperCommons.Exceptions.KasperException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,6 +14,7 @@ import org.w3c.dom.ls.LSSerializer;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.io.StringWriter;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class KasperDocument {
@@ -25,25 +27,43 @@ public class KasperDocument {
     private Node purpose;
     private Node database;
     private Node args;
+    private Node query;
+
 
     KasperDocument (DocumentBuilder builder){
         this.builder = builder;
         document = builder.newDocument();
         this.root = document.createElement("kasper");
         root.appendChild(createNode("serial", Manifest.getSerial(new KasperAccessAuthenticator("kasper.util.key"))));
+        query = getTag("query");
         document.appendChild(root);
+        root.appendChild(query);
         purpose = getTag("for");
-        root.appendChild(purpose);
+        query.appendChild(purpose);
         args = getTag("args");
-        root.appendChild(args);
+        query.appendChild(args);
     }
 
     /*
     Generates a custom tag.
      */
-
     private Node getTag (String tagName){
         return document.createElement(tagName);
+    }
+
+
+    /**
+     *
+     * @return returns the query node for nesting queries in one statement
+     */
+    public Node getQuery() {
+        return query;
+    }
+
+    public void addQuery (Node query){
+        var clone = query.cloneNode(true);
+        document.adoptNode(clone);
+        root.appendChild(clone);
     }
 
 
@@ -52,7 +72,7 @@ public class KasperDocument {
     /*
     This method is for sending auth requests.
      */
-    public void authRequest(KasperAccessAuthenticator auth, String username, String password){
+    public void authRequest(String username, String password){
         addValue(purpose, "auth");
         args.appendChild(createNode("user", username));
         args.appendChild(createNode("password", password));
@@ -61,12 +81,20 @@ public class KasperDocument {
     /*
     This method is for set requests.
      */
-    public void setRequest (KasperAccessAuthenticator auth, String key, KasperObject value) {
+    public void setRequest (String key, KasperObject value) {
         addValue(purpose, "set");
-        args.appendChild(createNode("key", key));
-        var valueTag = getTag("value");
+        args.appendChild(createNode("collection_key", key));
+        var valueTag = getTag("collection_value");
         valueTag.appendChild(extract(value));
         args.appendChild(valueTag);
+    }
+
+    /*
+    This method declares that an exception has been thrown.
+     */
+    public void raiseException(KasperException e){
+        var except = getTag("exception");
+        addValue(except, e.getClass().getSimpleName());
     }
 
 
@@ -155,6 +183,13 @@ public class KasperDocument {
         }
 
         return null;
+    }
+
+    /*
+    Sets context
+     */
+    protected void setContext(){
+
     }
 
     /*

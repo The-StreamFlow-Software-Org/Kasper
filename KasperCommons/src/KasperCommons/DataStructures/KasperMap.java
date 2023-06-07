@@ -1,13 +1,17 @@
 package KasperCommons.DataStructures;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The KasperMap is a class representing the map data structure.
  * It can represent objects.
  */
-public class KasperMap extends KasperObject{
+public class KasperMap extends KasperObject implements Iterable<KasperObject>{
 
     public KasperMap() {
         super("map");
@@ -37,6 +41,14 @@ public class KasperMap extends KasperObject{
         return this;
     }
 
+    @Override
+    public Map automaticallyCast() {
+        return toMap();
+    }
 
-
+    @NotNull
+    @Override
+    public Iterator<KasperObject> iterator() {
+        return toMap().values().iterator();
+    }
 }
