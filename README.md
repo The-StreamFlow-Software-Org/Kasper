@@ -15,3 +15,15 @@ Kasper is a scalable, persistent, in-memory nested key-value database designed f
 - Kasper has limited caching support as of the moment.
 - Databases such as Redis may be faster for simpler data models.
 
+## The Kasper Implementation Roadmap:
+
+## For KasperBeans (Kasper Java Driver / API):
+- Build client-side logic for retrieving nested date.
+- BUild client-side logic for filter operations for server-side computing.
+
+## For the Kasper Server
+- Build authentication features
+- Build the Kasper Toolkit with Swing
+- Create a diagram for handling server operations
+- Implement a ROM storage system for persistence.
+- Implement multiple queries feature.
