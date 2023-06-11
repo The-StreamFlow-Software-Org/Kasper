@@ -21,7 +21,7 @@ public class KasperDocument {
     /*
     The Kasper Document class helps generate a DOM that defines the query.
      */
-    private Document document;
+    Document document;
     private DocumentBuilder builder;
     private Element root;
     private Node purpose;
@@ -133,7 +133,7 @@ public class KasperDocument {
 
     private Node recursive_extraction (KasperObject o){
         if (o instanceof KasperString) {
-            return createNode(o.getType(), o.toString());
+            return createNode(o.getType(), o.toStr());
         }
         if (o instanceof KasperList) {
             var holder = getTag(o.getType());
@@ -145,7 +145,7 @@ public class KasperDocument {
         for (Object elem : o.toMap().entrySet()) {
             var kvp = (Map.Entry)elem;
             var key = getTag("key");
-            key.appendChild(recursive_extraction((KasperObject) kvp.getKey()));
+            key.appendChild(document.createTextNode(((Map.Entry<String, KasperObject>) elem).getKey()));
             var value = getTag("value");
             value.appendChild(recursive_extraction((KasperObject) kvp.getValue()));
             holder.appendChild(key);

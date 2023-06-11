@@ -12,7 +12,7 @@ public class KasperString extends KasperObject{
     }
 
     @Override
-    public String automaticallyCast() {
-        return toString();
+    public String toString() {
+        return toStr();
     }
 }

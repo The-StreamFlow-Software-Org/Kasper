@@ -70,10 +70,6 @@ public class KasperList extends KasperObject implements Iterable{
         return list;
     }
 
-    @Override
-    public ArrayList automaticallyCast() {
-        return toArray();
-    }
 
     @NotNull
     @Override

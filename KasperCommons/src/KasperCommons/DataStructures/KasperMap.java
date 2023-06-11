@@ -15,23 +15,19 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
 
     public KasperMap() {
         super("map");
-        data = new HashMap<KasperString, KasperObject>();
+        data = new HashMap<String, KasperObject>();
     }
 
     public KasperMap put (String key, KasperObject value){
-        toMap().put(new KasperString(key), value);
+        toMap().put(key, value);
         return this;
     }
 
     public KasperMap put (String key, String value){
-        toMap().put(new KasperString(key), new KasperString(value));
+        toMap().put(key, new KasperString(value));
         return this;
     }
 
-    public KasperMap put (KasperString key, KasperObject value){
-        toMap().put(key, value);
-        return this;
-    }
 
     /**
      * Sets the internal data structure to be thread safe.
@@ -41,14 +37,15 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
         return this;
     }
 
-    @Override
-    public Map automaticallyCast() {
-        return toMap();
-    }
+
+
 
     @NotNull
     @Override
     public Iterator<KasperObject> iterator() {
         return toMap().values().iterator();
     }
+
+
 }
+

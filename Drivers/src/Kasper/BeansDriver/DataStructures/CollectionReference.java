@@ -1,4 +1,6 @@
-package Kasper.BeansDriver;
+package Kasper.BeansDriver.DataStructures;
+
+import Kasper.BeansDriver.Listeners.QueryListener;
 
 public class CollectionReference extends AbstractReference{
     protected NodeReference parent;
@@ -13,4 +15,10 @@ public class CollectionReference extends AbstractReference{
         nodeName = parent.name;
         this.name = name;
     }
+
+    public QueryListener getKey(String keyName){
+        return new QueryListener(null);
+    }
+
+
 }

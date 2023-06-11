@@ -1,6 +1,7 @@
 package KasperCommons.DataStructures;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,6 +40,7 @@ public abstract class KasperObject {
     }
 
 
+    @SuppressWarnings("unchecked")
     /**
      *
      * @return the data of this object as a list.
@@ -53,20 +55,42 @@ public abstract class KasperObject {
      * @return the data of this object as a string.
      * @throws ClassCastException if the original type of this object is not a string.
      */
-    public String toString (){
+    public String toStr (){
         return (String) data;
     }
 
+    @SuppressWarnings("unchecked")
     /**
      *
      * @return the data of this object as a map.
      * @throws ClassCastException if the original type of this object is not a map.
      */
-    public Map toMap (){
+    public Map<String, KasperObject> toMap (){
         return (Map) data;
     }
 
-    public abstract Object automaticallyCast();
+    public static KasperString str (String str) {
+        return new KasperString(str);
+    }
+
+    public KasperList castToList(){
+        return (KasperList) this;
+    }
+
+    public KasperString castToString(){
+        return (KasperString) this;
+    }
+
+    public KasperMap castToMap(){
+        return (KasperMap) this;
+    }
+
+
+
+
+
+
+
 
 
 

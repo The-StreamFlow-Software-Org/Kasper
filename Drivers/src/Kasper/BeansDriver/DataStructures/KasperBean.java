@@ -1,7 +1,6 @@
-package Kasper.BeansDriver;
+package Kasper.BeansDriver.DataStructures;
 
 import KasperCommons.Exceptions.KasperException;
-import org.w3c.dom.Node;
 
 public class KasperBean extends AbstractReference{
 

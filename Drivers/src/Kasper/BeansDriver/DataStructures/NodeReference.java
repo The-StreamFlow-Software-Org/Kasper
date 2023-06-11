@@ -1,4 +1,4 @@
-package Kasper.BeansDriver;
+package Kasper.BeansDriver.DataStructures;
 
 public class NodeReference extends AbstractReference{
 
