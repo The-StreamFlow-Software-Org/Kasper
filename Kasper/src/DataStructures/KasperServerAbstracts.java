@@ -13,6 +13,7 @@ public abstract class KasperServerAbstracts extends KasperObject {
 
     protected KasperServerAbstracts(String type) {
         super(type);
+        data = new HashMap<>();
     }
 
     protected String name;

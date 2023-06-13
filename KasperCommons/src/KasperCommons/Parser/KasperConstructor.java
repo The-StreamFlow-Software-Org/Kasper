@@ -18,6 +18,10 @@ public class KasperConstructor {
         args = document.getElementsByTagName("args").item(0);
     }
 
+    public KasperObject constructNode (Node n) {
+        return recursivelyConstruct(n);
+    }
+
 
     public KasperObject constructObject (){
         var nodes = args.getChildNodes();
@@ -25,6 +29,8 @@ public class KasperConstructor {
         base_value = values.getChildNodes().item(0);
         return recursivelyConstruct(base_value);
     }
+
+
 
 
     private KasperObject recursivelyConstruct (Node currNode){

@@ -51,7 +51,7 @@ public class KasperDocument {
     /*
     Generates a custom tag.
      */
-    private Node getTag (String tagName){
+    public Node getTag (String tagName){
         return document.createElement(tagName);
     }
 
@@ -143,7 +143,7 @@ public class KasperDocument {
     Creates an XML node that extracts the data
     out of a KasperObject instance.
      */
-    private Node extract (KasperObject o){
+    public Node extract (KasperObject o){
         return recursive_extraction(o);
     }
 

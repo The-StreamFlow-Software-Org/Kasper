@@ -6,6 +6,8 @@ import KasperCommons.Exceptions.KasperNodeNotFound;
 import KasperCommons.Parser.KasperDocument;
 import org.w3c.dom.Node;
 
+import java.util.HashMap;
+
 public class KasperNode extends KasperServerAbstracts {
 
     public KasperNode(String name) {
@@ -13,16 +15,9 @@ public class KasperNode extends KasperServerAbstracts {
         this.name = name;
     }
 
-    public KasperNode (KasperDocument construct, String name) throws KasperNodeNotFound {
+    public KasperNode (Node nodeConstructor) throws KasperNodeNotFound {
         super("node");
-        this.name = name;
-        var nodes = construct.getDocument(KasperAccessAuthenticator.getKey()).getElementsByTagName("args").item(0).getChildNodes();
-        thisNode = null;
 
-        // finds the node from the node collection
-        for (int i=0; i<nodes.getLength(); i++){
-            if (nodes.item(i).getTextContent().equals(name)) thisNode = nodes.item(i);
-        }
 
 
         if (thisNode == null) {
@@ -31,6 +26,13 @@ public class KasperNode extends KasperServerAbstracts {
 
         // construct from here
     }
+
+    public KasperNode addCollection (String key, KasperCollection value){
+        data.put(key, value);
+        return this;
+    }
+
+
 
 
 

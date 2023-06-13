@@ -21,4 +21,9 @@ public class KasperCollection extends KasperServerAbstracts {
         this.parent = parent;
     }
 
+    public KasperCollection addData (String key, KasperObject value) {
+        data.put(key, value);
+        return this;
+    }
+
 }
