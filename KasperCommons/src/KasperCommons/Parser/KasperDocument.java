@@ -44,6 +44,10 @@ public class KasperDocument {
         query.appendChild(args);
     }
 
+    public Document getDocument (KasperAccessAuthenticator auth) {
+        return document;
+    }
+
     /*
     Generates a custom tag.
      */
@@ -76,6 +80,18 @@ public class KasperDocument {
         addValue(purpose, "auth");
         args.appendChild(createNode("user", username));
         args.appendChild(createNode("password", password));
+    }
+
+
+    /*
+    Used in server components.
+     */
+    public void addFor (String type){
+        addValue(purpose, type);
+    }
+
+    public void addArgs (Node n){
+        args.appendChild(n);
     }
 
     /*
@@ -116,7 +132,7 @@ public class KasperDocument {
     /*
     Creates a tag with a specified text value
      */
-    protected Node createNode(String tagName, String content){
+    public Node createNode(String tagName, String content){
         var element = getTag(tagName);
         element.appendChild(document.createTextNode(content));
         return element;

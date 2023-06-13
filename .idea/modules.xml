@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Debuggers/Debuggers.iml" filepath="$PROJECT_DIR$/Debuggers/Debuggers.iml" />
       <module fileurl="file://$PROJECT_DIR$/Drivers/Drivers.iml" filepath="$PROJECT_DIR$/Drivers/Drivers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Kasper/Kasper.iml" filepath="$PROJECT_DIR$/Kasper/Kasper.iml" />
       <module fileurl="file://$PROJECT_DIR$/KasperCommons/KasperCommons.iml" filepath="$PROJECT_DIR$/KasperCommons/KasperCommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/KasperMono.iml" filepath="$PROJECT_DIR$/KasperMono.iml" />
     </modules>

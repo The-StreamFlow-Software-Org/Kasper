@@ -1,3 +1,4 @@
+import Kasper.BeansDriver.DataStructures.CollectionReference;
 import Kasper.BeansDriver.DataStructures.KasperBean;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
@@ -17,16 +18,12 @@ public class Main {
     public static void main(String[] args) throws KasperException {
         startTime();
         KasperBean bean = new KasperBean("localhost", "root", "");
-        KasperDocument document = KasperWriter.newDocument(new KasperAccessAuthenticator("kasper.util.key"));
-        KasperList list = new KasperList().addToList("Sample", "args", "list");
-        KasperObject obj = new KasperList().addToList("Hello", "this", "is", "a", "strin").addToList(new KasperMap().put("Make", "me").put("impressed", "mate"));
-        list.addToList(obj, obj, obj, obj, obj, obj);
-        document.setRequest("sample_key", list);
-        KasperConstructor newObj = new KasperConstructor(document);
-        KasperObject object = newObj.constructObject();
-        System.out.println(object.castToList().toArray().get(4).toList());
-        endTime();
-        //System.out.println(object.toLi);
+        CollectionReference users = bean.useNode("dbNize").useCollection("users");
+        users.getKey("nize@gmail.com").addOnFailureListener( (x)-> {
+            System.out.println("An excpetion occured with name " + x.toString());
+        }).addOnSuccessListener(x -> {
+            System.out.println("Got users!" + x.toMap().get("username").toStr());
+        });
     }
 
     public static void startTime(){
