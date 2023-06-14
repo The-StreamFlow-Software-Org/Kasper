@@ -1,4 +1,4 @@
-package Server.Concurrent;
+package KasperCommons.Concurrent;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
@@ -31,4 +31,20 @@ public class Pool {
         getInstance().executorService.shutdown();
     }
 
+    public static ExecutorService get () {return getInstance().executorService;}
+    public static void reset () {
+        shutdown();
+        Thread thread = new Thread(()-> {
+            while (!instance.executorService.isShutdown()){
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } getInstance().executorService = null;
+            instance = new Pool();
+        });
+        thread.start();
+
+    }
 }

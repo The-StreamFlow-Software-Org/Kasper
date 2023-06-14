@@ -9,13 +9,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class KasperServerAbstracts extends KasperObject {
 
+
+
     protected ConcurrentHashMap<String, KasperObject> data;
     protected KasperObject parent = null;
     protected Node thisNode;
 
     protected KasperServerAbstracts(String type) {
         super(type);
-        data = new ConcurrentHashMap<>();
+        data = new ConcurrentHashMap<>(100);
     }
 
     protected String name;

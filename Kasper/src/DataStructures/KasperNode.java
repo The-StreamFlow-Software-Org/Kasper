@@ -1,6 +1,8 @@
 package DataStructures;
 
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.Parser.PathParser;
+import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Node;
 
 import java.util.Map;
@@ -34,7 +36,7 @@ public class KasperNode extends KasperServerAbstracts {
         return this;
     }
 
-    public KasperCollection addCollection (String name){
+    public KasperCollection newCollection (String name){
         var collect = new KasperCollection(this, name);
         addCollection(collect);
         return collect;
@@ -48,6 +50,13 @@ public class KasperNode extends KasperServerAbstracts {
     public KasperNode addCollection (String key, KasperCollection value){
         data.put(key, value);
         return this;
+    }
+
+    public KasperObject find (String ... args) {
+        for (int x = args.length-1; x >= 0 ; x--) {
+            PathParser.addPath(args[x]);
+        } PathParser.addPath(name);
+        return KasperGlobalMap.findWithPath(PathParser.parsePath());
     }
 
 

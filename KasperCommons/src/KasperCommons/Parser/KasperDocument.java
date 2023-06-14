@@ -5,6 +5,7 @@ import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperString;
 import KasperCommons.Exceptions.KasperException;
+import KasperCommons.Network.Operations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,7 +20,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class KasperDocument {
@@ -233,7 +236,9 @@ public class KasperDocument {
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             InputSource inputSource = new InputSource(new StringReader(xmlString));
+            xmlString = null;
             Document document = builder.parse(inputSource);
+            inputSource = null;
 
             // Remove #text nodes from the document
             removeTextNodes(document);
@@ -246,19 +251,28 @@ public class KasperDocument {
     }
 
     private static void removeTextNodes(Node node) {
+        Operations.incrementOperation();
+        Operations.incrementOperation();
         NodeList childNodes = node.getChildNodes();
-        for (int i = childNodes.getLength() - 1; i >= 0; i--) {
+        List<Node> nodesToRemove = new ArrayList<>();
+
+        for (int i = 0; i < childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.TEXT_NODE) {
                 String textContent = childNode.getTextContent().trim();
                 if (textContent.isEmpty()) {
-                    node.removeChild(childNode);
+                    nodesToRemove.add(childNode);
                 }
             } else if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                 removeTextNodes(childNode);
             }
         }
+
+        for (Node nodeToRemove : nodesToRemove) {
+            node.removeChild(nodeToRemove);
+        }
     }
+
 
     public void clear() {
         Element root = document.getDocumentElement();
@@ -274,6 +288,20 @@ public class KasperDocument {
             element.removeChild(child);
         }
     }
+
+    public static void clearDocument(Document document) {
+        Element rootElement = document.getDocumentElement();
+        removeChildNodes(rootElement);
+        document.removeChild(rootElement);
+    }
+
+    private static void removeChildNodes(Node node) {
+        while (node.hasChildNodes()) {
+            Node child = node.getFirstChild();
+            node.removeChild(child);
+        }
+    }
+
 
 
 

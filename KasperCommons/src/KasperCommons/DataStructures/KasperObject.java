@@ -1,5 +1,6 @@
 package KasperCommons.DataStructures;
 
+import java.io.Serializable;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
  * complex KasperObject data structures, using polymorphic
  * design structures.
  */
-public abstract class KasperObject {
+public abstract class KasperObject implements Serializable {
 
     /**
      Type is used to store and introspect the type

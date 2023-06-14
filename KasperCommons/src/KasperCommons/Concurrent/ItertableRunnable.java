@@ -1,4 +1,4 @@
-package Server.Concurrent;
+package KasperCommons.Concurrent;
 
 public abstract class ItertableRunnable implements Runnable{
     public int index;

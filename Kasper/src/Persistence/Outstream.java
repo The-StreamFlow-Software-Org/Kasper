@@ -5,6 +5,7 @@ import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperObject;
 
+import KasperCommons.Network.Operations;
 import KasperCommons.Parser.DiskIO;
 import KasperCommons.Parser.KasperConstructor;
 import KasperCommons.Parser.KasperDocument;
@@ -47,6 +48,7 @@ public class Outstream {
         var key = document.createNode("collection_key", collection.getName());
         var value = document.getTag("collection_data");
         for (var x : collection.getData().entrySet()){
+            Operations.incrementOperation();
             var entry_key = document.createNode("entry_key", x.getKey());
             value.appendChild(entry_key);
             value.appendChild(document.extract(x.getValue()));

@@ -1,9 +1,13 @@
 package DataStructures;
 
+import KasperCommons.Concurrent.Pool;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.Parser.KasperConstructor;
+import KasperCommons.Parser.PathParser;
+import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,23 +29,16 @@ public class KasperCollection extends KasperServerAbstracts {
         this.name = meta.item(0).getTextContent();
         var data = thisNode.getChildNodes().item(1);
         var entries = data.getChildNodes();
+        var x = this;
         for (int i=0; i<entries.getLength(); i+=2){
             var key = entries.item(i).getTextContent();
             var constructor = KasperConstructor.constructNode(entries.item(i+1));
-            getData().put(key, constructor);
+            x.put(key, constructor);
         }
 
 
     }
 
-    private static abstract class ItertatableRunnable extends Thread {
-        int currentIter = 0;
-
-        public ItertatableRunnable (int n){
-            currentIter = n;
-        }
-
-    }
 
     public KasperCollection put(String key, KasperObject value) {
         data.put(key, value);
@@ -58,6 +55,16 @@ public class KasperCollection extends KasperServerAbstracts {
 
     public KasperObject getValue (String key) {
         return get(key);
+    }
+
+
+    public KasperObject find (String ... args){
+        for (int x = args.length-1; x >= 0 ; x--) {
+            PathParser.addPath(args[x]);
+        } PathParser.addPath(name);
+        PathParser.addPath(((KasperNode)parent).getName());
+        return KasperGlobalMap.findWithPath(PathParser.parsePath());
+
     }
 
 

@@ -2,35 +2,123 @@ package Persistence;
 
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Concurrent.Pool;
 import KasperCommons.Exceptions.InvalidPersistenceData;
+import KasperCommons.Network.Operations;
+import KasperCommons.Parser.AESUtils;
 import KasperCommons.Parser.DiskIO;
 import KasperCommons.Parser.KasperDocument;
 import Server.SuperClass.KasperGlobalMap;
 
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class InstantiatorService {
 
     public static void start() throws Exception {
-        var data = KasperDocument.constructor(DiskIO.documentStringRetrieval());
-        var document = data.getDocument(KasperAccessAuthenticator.getKey());
-        var query  = document.getElementsByTagName("query").item(0);
-        var queryChild = query.getChildNodes();
-        var purpose = queryChild.item(0);
-        if (!purpose.getTextContent().equals("reconstruction")) throw new InvalidPersistenceData("The persistence data has an invalid header for args, provided: '" + purpose.getTextContent() + "' instead of 'reconstruction'");
-
-        var args = queryChild.item(1);
-        var nodes = args.getChildNodes();
-        for (int i = 0; i<nodes.getLength(); i++){
-            var node = nodes.item(i);
-            var attrib = node.getChildNodes();
-            KasperGlobalMap.getNodes().put(attrib.item(0).getTextContent(), new KasperNode(node));
+        try {
+            var s = DiskIO.getSerialized();
+            KasperGlobalMap.getNodes();
+            KasperGlobalMap.globalmap =  Serialize.constructFromBlob(AESUtils.decrypt(s));
+            s = null;
         }
-        data.clear();
+        catch (IOException e){}
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.gc();
+
     }
 
-    public static void close () throws Exception {
+    public static void  close() throws Exception {
+        DiskIO.writeDocument(AESUtils.encrypt(Serialize.writeToBytes(KasperGlobalMap.globalmap)));
+    }
+
+
+    private static InstantiatorService instance = null;
+
+    public static boolean finish = false;
+
+    public static void consumeMigration() {
+        if (instance == null) instance = new InstantiatorService();
+        instance.startNonStatic();
+        instance = null;
+    }
+
+    private void startNonStatic () {
+        Pool.newThread(()->{});
+        try {
+            System.out.println("Kasper:> Constructor service has started. Unzipping and decrypting binaries.");
+            Operations.reset();
+            Scanner scan = new Scanner(System.in);
+            //scan.nextLine();
+            var construct = DiskIO.documentStringRetrieval();
+            Pool.newThread(()->{
+                while (!finish) {
+                    System.out.println("Kasper:> This may take a while. We are parsing binaries, parsed " + Operations.getOperations() + " items so far.");
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            //scan.nextLine();
+            var data = KasperDocument.constructor(construct);
+            finish = true;
+            var document = data.getDocument(KasperAccessAuthenticator.getKey());
+            var query = document.getElementsByTagName("query").item(0);
+            var queryChild = query.getChildNodes();
+            var purpose = queryChild.item(0);
+            if (!purpose.getTextContent().equals("reconstruction"))
+                throw new InvalidPersistenceData("The persistence data has an invalid header for args, provided: '" + purpose.getTextContent() + "' instead of 'reconstruction'");
+            finish = false;
+            Pool.newThread(()->{
+                while (!finish) {
+                    System.out.println("Kasper:> Please wait, this may take a while. We are constructing your snapshots, loaded " + Operations.getOperations() + " objects so far.");
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            var args = queryChild.item(1);
+            var nodes = args.getChildNodes();
+            for (int i = 0; i < nodes.getLength(); i++) {
+                var node = nodes.item(i);
+                var attrib = node.getChildNodes();
+                KasperGlobalMap.getNodes().put(attrib.item(0).getTextContent(), new KasperNode(node));
+            }
+            document = null;
+            data = null;
+            System.gc();
+            //System.out.println(document);
+
+        } catch (IOException e){
+            KasperGlobalMap.getNodes();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void writeMigration() throws Exception {
         var x = KasperGlobalMap.getNodes();
         var iteratorset = x.entrySet();
         Outstream root = null;
+        Operations.reset();
+        finish = false;
+        Pool.newThread(()->{
+            while (!finish) {
+                System.out.println("Kasper:> Please wait, this may take a while. We are bucketizing your nodes, " + Operations.getOperations() + " objects are ready for dispatch.");
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         for (var i : iteratorset){
             if (root == null) {
                 root = new Outstream(i.getValue());
@@ -38,6 +126,8 @@ public class InstantiatorService {
                 root.chain(new Outstream(i.getValue()));
             }
         }
+        finish = true;
         root.bucketize();
+        Pool.shutdown();
     }
 }

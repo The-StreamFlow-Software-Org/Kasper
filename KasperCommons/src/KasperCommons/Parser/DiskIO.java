@@ -1,6 +1,7 @@
 package KasperCommons.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Network.Operations;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -28,11 +29,23 @@ public class DiskIO {
 
     public static void writeDocument(KasperDocument document) throws Exception {
         Files.createDirectories(Path.of("persistence"));
+
         byte[] resolvedBytes = EncryptionModule.encrypt(document.toString(), secretKey);
         byte[] compressedBytes = ByteCompression.compress(resolvedBytes);
-        try (DataOutputStream writer = new DataOutputStream(new FileOutputStream(datapath))) {
+
+        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(datapath)))) {
             writer.writeInt(compressedBytes.length);
             writer.write(compressedBytes);
+        }
+    }
+
+    public static void writeDocument(byte[] document) throws Exception {
+        Files.createDirectories(Path.of("persistence"));
+
+
+        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(datapath)))) {
+           writer.write(document);
+           writer.flush();
         }
     }
 
@@ -49,6 +62,12 @@ public class DiskIO {
         byte[] compressedBytes = encryptedBuffer();
         byte[] resolvedBytes = ByteCompression.decompress(compressedBytes);
         return EncryptionModule.decrypt(resolvedBytes, secretKey);
+    }
+
+    public static byte[] getSerialized () throws IOException {
+        try (var reader = new BufferedInputStream(new DataInputStream(new FileInputStream("persistence/data.kasper")))){
+            return reader.readAllBytes();
+        }
     }
 
     public static class EncryptionModule {
@@ -99,7 +118,7 @@ public class DiskIO {
             return secretKeySpec;
         }
 
-        private static SecretKeySpec hkdfExtractAndExpand(byte[] inputKeyMaterial, byte[] salt, int keyLength) throws Exception {
+        static SecretKeySpec hkdfExtractAndExpand(byte[] inputKeyMaterial, byte[] salt, int keyLength) throws Exception {
             SecretKey secretKey = new SecretKeySpec(inputKeyMaterial, "HKDF");
             MessageDigest hashFunction = MessageDigest.getInstance(HASH_ALGORITHM);
 
