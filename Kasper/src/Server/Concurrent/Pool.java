@@ -1,9 +1,7 @@
 package Server.Concurrent;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.concurrent.*;
 
 public class Pool {
     ThreadPoolExecutor executorService;
@@ -24,6 +22,13 @@ public class Pool {
 
     public static void newThread (Runnable run) {
         getInstance().executorService.execute(run);
+    }
+    public static void invokeAll(ArrayList<Callable<Void>> runnables) throws InterruptedException {
+        getInstance().executorService.invokeAll(runnables);
+    }
+
+    public static void shutdown () {
+        getInstance().executorService.shutdown();
     }
 
 }

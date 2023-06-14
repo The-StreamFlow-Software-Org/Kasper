@@ -1,9 +1,12 @@
 package DataStructures;
 
 import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Parser.KasperConstructor;
+import Server.Concurrent.Pool;
 import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 public class KasperCollection extends KasperServerAbstracts {
 
@@ -15,7 +18,7 @@ public class KasperCollection extends KasperServerAbstracts {
         this.parent = parent;
     }
 
-    public KasperCollection (Node thisNode, KasperNode parent){
+    public KasperCollection (Node thisNode, KasperNode parent) throws InterruptedException {
         super("collection");
         this.thisNode = thisNode;
         this.parent = parent;
@@ -28,6 +31,17 @@ public class KasperCollection extends KasperServerAbstracts {
             var constructor = KasperConstructor.constructNode(entries.item(i+1));
             getData().put(key, constructor);
         }
+
+
+    }
+
+    private static abstract class ItertatableRunnable extends Thread {
+        int currentIter = 0;
+
+        public ItertatableRunnable (int n){
+            currentIter = n;
+        }
+
     }
 
     public KasperCollection addData (String key, KasperObject value) {

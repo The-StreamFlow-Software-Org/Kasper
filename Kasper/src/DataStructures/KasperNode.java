@@ -15,7 +15,7 @@ public class KasperNode extends KasperServerAbstracts {
         this.name = name;
     }
 
-    public KasperNode (Node nodeConstructor) {
+    public KasperNode (Node nodeConstructor) throws InterruptedException {
         super("node");
         var constChild = nodeConstructor.getChildNodes();
         var collections = constChild.item(1).getChildNodes();
