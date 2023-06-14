@@ -12,7 +12,11 @@ public class KasperAccessAuthenticator {
     }
 
     public KasperAccessAuthenticator (Object keycode) {
-        if (keycode.hashCode() != -50359679) throw new InvalidAccessKey(msg);
+        if (keycode.hashCode() != getHashedKey()) throw new InvalidAccessKey(msg);
         key = this;
+    }
+
+    public static int getHashedKey () {
+        return -50359679;
     }
 }

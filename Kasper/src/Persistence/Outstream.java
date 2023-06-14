@@ -4,12 +4,16 @@ import DataStructures.KasperCollection;
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.Parser.DiskIO;
 import KasperCommons.Parser.KasperConstructor;
 import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -18,14 +22,15 @@ public class Outstream {
     private KasperDocument document;
     ArrayList<Node> nodeList = null;
 
-    public Outstream () {
+    public Outstream (KasperNode n) {
         this.document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
         document.addFor("reconstruction");
         nodeList = new ArrayList<>();
+        serializeNode(n);
 
     }
 
-    public void serializeNode (KasperNode node){
+    private void serializeNode (KasperNode node){
         var currNode = document.getTag("node");
         var key = document.createNode("node_key", node.getName());
         currNode.appendChild(key);
@@ -58,6 +63,10 @@ public class Outstream {
     public Outstream chain (Outstream out){
         this.document.addQuery(out.construct().getQuery());
         return this;
+    }
+
+    public void bucketize () throws Exception {
+        DiskIO.writeDocument(document);
     }
 
 

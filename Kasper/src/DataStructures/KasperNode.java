@@ -15,21 +15,23 @@ public class KasperNode extends KasperServerAbstracts {
         this.name = name;
     }
 
-    public KasperNode (Node nodeConstructor) throws KasperNodeNotFound {
+    public KasperNode (Node nodeConstructor) {
         super("node");
-
-
-
-        if (thisNode == null) {
-            throw new KasperNodeNotFound("clientExcept: Node of name " + name + " not found in the database.");
+        var constChild = nodeConstructor.getChildNodes();
+        var collections = constChild.item(1).getChildNodes();
+        this.name = constChild.item(0).getTextContent();
+        for (int i=0; i<collections.getLength(); i++){
+            addCollection(new KasperCollection(collections.item(i), this));
         }
-
-        // construct from here
     }
 
-    public KasperNode addCollection (String key, KasperCollection value){
-        data.put(key, value);
+    public KasperNode addCollection (KasperCollection value){
+        data.put(value.getName(), value);
         return this;
+    }
+
+    public KasperCollection getCollection (String name){
+        return (KasperCollection) data.get(name);
     }
 
 

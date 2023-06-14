@@ -18,7 +18,7 @@ public class KasperConstructor {
         args = document.getElementsByTagName("args").item(0);
     }
 
-    public KasperObject constructNode (Node n) {
+    public static KasperObject constructNode (Node n) {
         return recursivelyConstruct(n);
     }
 
@@ -33,7 +33,8 @@ public class KasperConstructor {
 
 
 
-    private KasperObject recursivelyConstruct (Node currNode){
+
+    private static KasperObject recursivelyConstruct (Node currNode){
         var type = currNode.getNodeName();
         if (type.equals("string")) {
             return new KasperString(currNode.getTextContent());

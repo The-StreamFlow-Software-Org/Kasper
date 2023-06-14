@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="KasperCommons" />
+    <orderEntry type="library" name="openjdk.jol.core" level="project" />
+    <orderEntry type="library" name="lz4.java" level="project" />
   </component>
 </module>

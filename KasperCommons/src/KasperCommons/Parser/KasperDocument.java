@@ -8,11 +8,16 @@ import KasperCommons.Exceptions.KasperException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.Map;
@@ -42,6 +47,12 @@ public class KasperDocument {
         query.appendChild(purpose);
         args = getTag("args");
         query.appendChild(args);
+    }
+
+    public KasperDocument (Document document) throws ParserConfigurationException {
+        builder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
+        root = (Element)document.getChildNodes().item(0);
+        this.document = document;
     }
 
     public Document getDocument (KasperAccessAuthenticator auth) {
@@ -215,4 +226,40 @@ public class KasperDocument {
     public String toString() {
         return nodeToString(root);
     }
+
+    public static KasperDocument constructor(String xmlString) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputSource inputSource = new InputSource(new StringReader(xmlString));
+            Document document = builder.parse(inputSource);
+
+            // Remove #text nodes from the document
+            removeTextNodes(document);
+
+            return new KasperDocument(document);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static void removeTextNodes(Node node) {
+        NodeList childNodes = node.getChildNodes();
+        for (int i = childNodes.getLength() - 1; i >= 0; i--) {
+            Node childNode = childNodes.item(i);
+            if (childNode.getNodeType() == Node.TEXT_NODE) {
+                String textContent = childNode.getTextContent().trim();
+                if (textContent.isEmpty()) {
+                    node.removeChild(childNode);
+                }
+            } else if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                removeTextNodes(childNode);
+            }
+        }
+    }
+
+
+
 }
