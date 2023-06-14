@@ -37,6 +37,10 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
         return this;
     }
 
+    public KasperObject get (String key){
+        return (KasperObject) ((Map)data).get(key);
+    }
+
 
 
 

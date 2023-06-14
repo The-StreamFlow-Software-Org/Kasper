@@ -4,6 +4,7 @@ import DataStructures.KasperCollection;
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperObject;
+
 import KasperCommons.Parser.DiskIO;
 import KasperCommons.Parser.KasperConstructor;
 import KasperCommons.Parser.KasperDocument;
@@ -11,9 +12,7 @@ import KasperCommons.Parser.KasperWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ public class Outstream {
 
     private KasperDocument document;
     ArrayList<Node> nodeList = null;
+
 
     public Outstream (KasperNode n) {
         this.document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());

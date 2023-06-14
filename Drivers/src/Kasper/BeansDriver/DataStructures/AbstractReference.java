@@ -17,4 +17,5 @@ public abstract class AbstractReference {
     public String getName() {
         return name;
     }
+
 }

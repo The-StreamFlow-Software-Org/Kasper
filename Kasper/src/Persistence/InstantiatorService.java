@@ -24,5 +24,20 @@ public class InstantiatorService {
             var attrib = node.getChildNodes();
             KasperGlobalMap.getNodes().put(attrib.item(0).getTextContent(), new KasperNode(node));
         }
+        data.clear();
+    }
+
+    public static void close () throws Exception {
+        var x = KasperGlobalMap.getNodes();
+        var iteratorset = x.entrySet();
+        Outstream root = null;
+        for (var i : iteratorset){
+            if (root == null) {
+                root = new Outstream(i.getValue());
+            } else {
+                root.chain(new Outstream(i.getValue()));
+            }
+        }
+        root.bucketize();
     }
 }

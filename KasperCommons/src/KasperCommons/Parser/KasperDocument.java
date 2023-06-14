@@ -260,6 +260,21 @@ public class KasperDocument {
         }
     }
 
+    public void clear() {
+        Element root = document.getDocumentElement();
+        clearElement(root);
+    }
+
+    private void clearElement(Element element) {
+        NodeList childNodes = element.getChildNodes();
+        int length = childNodes.getLength();
+
+        for (int i = length - 1; i >= 0; i--) {
+            Node child = childNodes.item(i);
+            element.removeChild(child);
+        }
+    }
+
 
 
 }

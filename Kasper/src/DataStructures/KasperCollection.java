@@ -2,11 +2,10 @@ package DataStructures;
 
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.Parser.KasperConstructor;
-import Server.Concurrent.Pool;
 import org.w3c.dom.Node;
 
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
+import java.util.Map;
+import java.util.Set;
 
 public class KasperCollection extends KasperServerAbstracts {
 
@@ -44,13 +43,23 @@ public class KasperCollection extends KasperServerAbstracts {
 
     }
 
-    public KasperCollection addData (String key, KasperObject value) {
+    public KasperCollection put(String key, KasperObject value) {
         data.put(key, value);
         return this;
     }
 
-    public KasperObject getValue (String key) {
-        return data.get(key);
+    public KasperCollection put (String key, String value){
+        return put(key, KasperObject.str(value));
     }
+
+    public Set<Map.Entry<String, KasperObject>> iterate () {
+        return data.entrySet();
+    }
+
+    public KasperObject getValue (String key) {
+        return get(key);
+    }
+
+
 
 }

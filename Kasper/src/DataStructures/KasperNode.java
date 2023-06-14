@@ -1,12 +1,10 @@
 package DataStructures;
 
-import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.Exceptions.KasperNodeNotFound;
-import KasperCommons.Parser.KasperDocument;
 import org.w3c.dom.Node;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class KasperNode extends KasperServerAbstracts {
 
@@ -14,6 +12,11 @@ public class KasperNode extends KasperServerAbstracts {
         super("node");
         this.name = name;
     }
+
+    public Set<Map.Entry<String, KasperObject>> iterate (){
+        return data.entrySet();
+    }
+
 
     public KasperNode (Node nodeConstructor) throws InterruptedException {
         super("node");
@@ -25,19 +28,27 @@ public class KasperNode extends KasperServerAbstracts {
         }
     }
 
-    public KasperNode addCollection (KasperCollection value){
+
+    private KasperNode addCollection (KasperCollection value){
         data.put(value.getName(), value);
         return this;
     }
 
-    public KasperCollection getCollection (String name){
-        return (KasperCollection) data.get(name);
+    public KasperCollection addCollection (String name){
+        var collect = new KasperCollection(this, name);
+        addCollection(collect);
+        return collect;
+    }
+
+    public KasperCollection useCollection(String name){
+        return (KasperCollection) get(name);
     }
 
 
-
-
-
+    public KasperNode addCollection (String key, KasperCollection value){
+        data.put(key, value);
+        return this;
+    }
 
 
 }
