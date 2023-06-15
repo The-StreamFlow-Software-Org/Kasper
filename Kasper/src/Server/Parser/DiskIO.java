@@ -1,4 +1,4 @@
-package KasperCommons.Parser;
+package Server.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Network.Operations;
@@ -14,9 +14,12 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.zip.DataFormatException;
 
+import KasperCommons.Parser.ByteCompression;
+import KasperCommons.Parser.KasperDocument;
+import Server.SuperClass.Meta;
+
 public class DiskIO {
-    private static String folder = "persistence/";
-    private static String datapath = folder + "data.kasper";
+
     private static SecretKey secretKey;
 
     static {
@@ -28,29 +31,29 @@ public class DiskIO {
     }
 
     public static void writeDocument(KasperDocument document) throws Exception {
-        Files.createDirectories(Path.of("persistence"));
+        Files.createDirectories(Path.of(Meta.folder));
 
         byte[] resolvedBytes = EncryptionModule.encrypt(document.toString(), secretKey);
         byte[] compressedBytes = ByteCompression.compress(resolvedBytes);
 
-        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(datapath)))) {
+        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(Meta.getPath())))) {
             writer.writeInt(compressedBytes.length);
             writer.write(compressedBytes);
         }
     }
 
     public static void writeDocument(byte[] document) throws Exception {
-        Files.createDirectories(Path.of("persistence"));
+        Files.createDirectories(Path.of(Meta.folder));
 
 
-        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(datapath)))) {
+        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(Meta.getPath())))) {
            writer.write(document);
            writer.flush();
         }
     }
 
     private static byte[] encryptedBuffer() throws IOException, DataFormatException {
-        try (DataInputStream read = new DataInputStream(new FileInputStream(datapath))) {
+        try (DataInputStream read = new DataInputStream(new FileInputStream( Meta.getPath()))) {
             int size = read.readInt();
             byte[] buffer = new byte[size];
             read.readFully(buffer);
@@ -65,7 +68,7 @@ public class DiskIO {
     }
 
     public static byte[] getSerialized () throws IOException {
-        try (var reader = new BufferedInputStream(new DataInputStream(new FileInputStream("persistence/data.kasper")))){
+        try (var reader = new BufferedInputStream(new DataInputStream(new FileInputStream(Meta.getPath())))){
             return reader.readAllBytes();
         }
     }

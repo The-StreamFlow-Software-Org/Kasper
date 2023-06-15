@@ -5,6 +5,7 @@ import DataStructures.KasperNode;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.DataStructures.KasperString;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Parser.PathParser;
 import Persistence.Serialize;
@@ -60,7 +61,6 @@ public class KasperGlobalMap implements Serializable {
             return currnode.useCollection(list.get(1)).getValue(list.get(2));
         }
         else {
-            KasperMap collections = new KasperMap();
             var currnode = getNode(list.get(0));
             var object =  currnode.useCollection(list.get(1)).getValue(list.get(2));
             var currobject= object;
@@ -68,7 +68,15 @@ public class KasperGlobalMap implements Serializable {
                 if (currobject instanceof KasperMap m) {
                     currobject = m.get(list.get(i));
                     if (currobject == null) throw new NoSuchKasperObject("Specified object with path: '" + path + "' does not exist.");
-                } else {
+                } else if (currobject instanceof KasperList l) {
+                    try {
+                        int index = Integer.parseInt(list.get(i));
+                        currobject = l.toArray().get(index);
+                    } catch (Exception e){
+                        throw new NoSuchKasperObject("Specified object with path: '" + path + "' does not exist.");
+                    }
+                }
+                else {
                     throw new NoSuchKasperObject("Specified object with path: '" + path + "' does not exist.");
                 }
             } return currobject;

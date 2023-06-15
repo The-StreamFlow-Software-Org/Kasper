@@ -1,17 +1,13 @@
-package KasperCommons.Parser;
+package Server.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.Arrays;
-
-import static KasperCommons.Parser.DiskIO.EncryptionModule.hkdfExtractAndExpand;
 
 public class AESUtils {
     private static final String ALGORITHM = "AES";
