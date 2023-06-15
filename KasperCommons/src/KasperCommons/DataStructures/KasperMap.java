@@ -2,6 +2,7 @@ package KasperCommons.DataStructures;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -12,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * It can represent objects.
  */
 public class KasperMap extends KasperObject implements Iterable<KasperObject>{
+
+    @Serial
+    private static final long serialVersionUID = 3102519298991888705L;
 
     public KasperMap() {
         super("map");

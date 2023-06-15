@@ -1,16 +1,19 @@
 package DataStructures;
 
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import org.w3c.dom.Node;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class KasperServerAbstracts extends KasperObject {
 
 
-
+    @Serial
+    private static final long serialVersionUID = 2405370640391496865L;
     protected ConcurrentHashMap<String, KasperObject> data;
     protected KasperObject parent = null;
     protected Node thisNode;
@@ -35,5 +38,9 @@ public abstract class KasperServerAbstracts extends KasperObject {
         if (data == null) {
             throw new NoSuchKasperObject(key + " does not exist in " + this.getType() + " " + getName());
         } return data;
+    }
+
+    public KasperReference generateRawReference(String path) {
+        return new KasperReference(path);
     }
 }

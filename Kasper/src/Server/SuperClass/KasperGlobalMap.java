@@ -5,16 +5,16 @@ import DataStructures.KasperNode;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.KasperString;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Parser.PathParser;
-import Persistence.Serialize;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class KasperGlobalMap implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2804015076581134962L;
     public static ConcurrentHashMap<String, KasperNode> globalmap;
 
 
@@ -45,17 +45,15 @@ public class KasperGlobalMap implements Serializable {
     }
 
     public static KasperObject findWithPath(String path) {
-        var list = PathParser.unparsePath(path);
+        PathParser parser = new PathParser();
+        var list = parser.unparsePath(path);
         if (list.size() == 1) {
             KasperMap collections = new KasperMap();
-            var currnode = getNode(list.get(0));
-            for (var x : currnode.iterate()) {
-                collections.put(x.getKey(),getAllFromCollection((KasperCollection) x.getValue()));
-            } return collections;
+            return getNode(list.get(0));
         } else if (list.size() == 2) {
             var currnode = getNode(list.get(0));
             var thisCollection = currnode.useCollection(list.get(1));
-            return getAllFromCollection(thisCollection);
+            return thisCollection;
         } else if (list.size() == 3) {
             var currnode = getNode(list.get(0));
             return currnode.useCollection(list.get(1)).getValue(list.get(2));

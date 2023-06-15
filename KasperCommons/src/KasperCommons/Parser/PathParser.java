@@ -1,17 +1,29 @@
 package KasperCommons.Parser;
 
+import KasperCommons.DataStructures.KasperList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PathParser {
 
-    private static ArrayList<String> list;
-    public static void addPath (String string) {
-        if (list == null) list = new ArrayList<>();
+    private ArrayList<String> list;
+    public void addPath (String string) {
+        list = new ArrayList<>();
         list.add(0, string);
     }
-    private static String parseString(String input) {
+
+    public PathParser (){
+        list = new ArrayList<>();
+    }
+
+    public void addPathConventionally (String string) {
+        list.add(string);
+    }
+
+
+    private  String parseString(String input) {
         // Replace all $ with $$
         String parsedString = input.replaceAll("\\$", "\\$\\$");
 
@@ -22,7 +34,7 @@ public class PathParser {
         return parsedString;
     }
 
-    public static String parsePath() {
+    public  String parsePath() {
         StringBuilder build = new StringBuilder();
         for (int i=0; i<list.size(); i++){
             var x = list.get(i);
@@ -33,7 +45,7 @@ public class PathParser {
         return build.toString();
     }
 
-    public static List<String> unparsePath(String input) {
+    public  List<String> unparsePath(String input) {
         String[] parts = input.split("(?<!\\$)\\.(?!\\$)");
 
         List<String> unparsedList = new ArrayList<>();

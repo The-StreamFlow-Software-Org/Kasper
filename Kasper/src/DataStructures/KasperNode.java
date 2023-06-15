@@ -5,15 +5,22 @@ import KasperCommons.Parser.PathParser;
 import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Node;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.Set;
 
 public class KasperNode extends KasperServerAbstracts {
 
+    @Serial
+    private static final long serialVersionUID = 3405473397893997156L;
+
     public KasperNode(String name) {
         super("node");
         this.name = name;
     }
+
+
+
 
     public Set<Map.Entry<String, KasperObject>> iterate (){
         return data.entrySet();
@@ -53,10 +60,11 @@ public class KasperNode extends KasperServerAbstracts {
     }
 
     public KasperObject find (String ... args) {
+        PathParser pathParser = new PathParser();
         for (int x = args.length-1; x >= 0 ; x--) {
-            PathParser.addPath(args[x]);
-        } PathParser.addPath(name);
-        return KasperGlobalMap.findWithPath(PathParser.parsePath());
+            pathParser.addPath(args[x]);
+        } pathParser.addPath(name);
+        return KasperGlobalMap.findWithPath(pathParser.parsePath());
     }
 
 

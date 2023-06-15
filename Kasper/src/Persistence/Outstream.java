@@ -15,8 +15,8 @@ import org.w3c.dom.Node;
 import java.util.ArrayList;
 import java.util.Map;
 
+@Deprecated
 public class Outstream {
-
     private KasperDocument document;
     ArrayList<Node> nodeList = null;
 

@@ -7,6 +7,7 @@ import KasperCommons.Parser.PathParser;
 import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Node;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,8 @@ import java.util.Set;
 public class KasperCollection extends KasperServerAbstracts {
 
 
+    @Serial
+    private static final long serialVersionUID = 1216153714206946182L;
 
     public KasperCollection(KasperNode parent, String name) {
         super("collection");
@@ -59,11 +62,12 @@ public class KasperCollection extends KasperServerAbstracts {
 
 
     public KasperObject find (String ... args){
+        PathParser parse = new PathParser();
         for (int x = args.length-1; x >= 0 ; x--) {
-            PathParser.addPath(args[x]);
-        } PathParser.addPath(name);
-        PathParser.addPath(((KasperNode)parent).getName());
-        return KasperGlobalMap.findWithPath(PathParser.parsePath());
+            parse.addPath(args[x]);
+        } parse.addPath(name);
+        parse.addPath(((KasperNode)parent).getName());
+        return KasperGlobalMap.findWithPath(parse.parsePath());
 
     }
 

@@ -1,6 +1,7 @@
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
+import KasperCommons.Parser.KasperDocument;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
 import Server.SuperClass.Meta;
@@ -9,10 +10,18 @@ import Server.SuperClass.Timer;
 import java.util.Scanner;
 
 public class Main {
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
         new KasperAccessAuthenticator("kasper.util.key");
-        Scanner scanner = new Scanner(System.in);
+        init(args);
+
+
+
+
+    }
+
+    public static void init(String[] args) throws Exception {
         favicon();
         Timer.getTimer().start();
         handleargs(args);
@@ -29,8 +38,6 @@ public class Main {
         System.out.println("Press any key to finish...");
         //scanner.nextLine();
         System.out.println("Kasper says bye!");
-
-
     }
 
 

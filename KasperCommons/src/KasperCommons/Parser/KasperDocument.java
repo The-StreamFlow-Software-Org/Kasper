@@ -3,6 +3,7 @@ package KasperCommons.Parser;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.DataStructures.KasperString;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Network.Operations;
@@ -29,7 +30,7 @@ public class KasperDocument {
     /*
     The Kasper Document class helps generate a DOM that defines the query.
      */
-    Document document;
+    public Document document;
     private DocumentBuilder builder;
     private Element root;
     private Node purpose;
@@ -111,10 +112,11 @@ public class KasperDocument {
     /*
     This method is for set requests.
      */
-    public void setRequest (String key, KasperObject value) {
+    public void setRequest (String path, String key, KasperObject value) {
         addValue(purpose, "set");
-        args.appendChild(createNode("collection_key", key));
-        var valueTag = getTag("collection_value");
+        query.appendChild(createNode("path", path));
+        args.appendChild(createNode("data_key", key));
+        var valueTag = getTag("data");
         valueTag.appendChild(extract(value));
         args.appendChild(valueTag);
     }
@@ -170,6 +172,9 @@ public class KasperDocument {
             for (var elem : o.toList()) {
                 holder.appendChild(recursive_extraction(elem));
             } return holder;
+        }
+        if (o instanceof KasperReference) {
+            return createNode(o.getType(), o.toStr());
         }
         var holder = getTag(o.getType());
         for (Object elem : o.toMap().entrySet()) {

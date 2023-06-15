@@ -2,6 +2,7 @@ package KasperCommons.DataStructures;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -15,6 +16,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class KasperList extends KasperObject implements Iterable{
 
+
+    @Serial
+    private static final long serialVersionUID = 3831607456994963123L;
 
     public KasperList() {
         super("list");

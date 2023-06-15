@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="KasperCommons" />
     <orderEntry type="module" module-name="Drivers" />
+    <orderEntry type="module" module-name="Kasper" />
   </component>
 </module>

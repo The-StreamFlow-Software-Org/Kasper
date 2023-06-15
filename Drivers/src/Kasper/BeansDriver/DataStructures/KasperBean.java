@@ -4,7 +4,7 @@ import KasperCommons.Exceptions.KasperException;
 
 public class KasperBean extends AbstractReference{
 
-    public KasperBean(String serverLocation, String user, String password) throws KasperException {
+    public KasperBean(String host, String user, String password) throws KasperException {
         super("server");
         this.serverLocation = serverLocation;
         this.user = user;

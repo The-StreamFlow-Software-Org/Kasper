@@ -1,5 +1,6 @@
 package KasperCommons.DataStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Deque;
 import java.util.HashMap;
@@ -12,10 +13,13 @@ import java.util.Map;
  */
 public abstract class KasperObject implements Serializable {
 
+
+    @Serial
+    private static final long serialVersionUID = -7689140920033408553L;
     /**
-     Type is used to store and introspect the type
-     of this data structure. This can be of type
-     'string', 'list', or 'map'.
+     * Type is used to store and introspect the type
+     * of this data structure. This can be of type
+     * 'string', 'list', or 'map'.
      */
     private String type;
 

@@ -1,5 +1,8 @@
 package Kasper.BeansDriver.DataStructures;
 
+import KasperCommons.DataStructures.KasperReference;
+import KasperCommons.Parser.PathParser;
+
 public class NodeReference extends AbstractReference{
 
     protected NodeReference(String nodeName, KasperBean serverInstance) {
@@ -12,5 +15,14 @@ public class NodeReference extends AbstractReference{
 
     public CollectionReference useCollection (String referenceName) {
         return new CollectionReference(referenceName, this);
+    }
+
+    public KasperReference generateReference (String ... args) {
+        PathParser parser = new PathParser();
+        for (var x : args) {
+            parser.addPathConventionally(x);
+        }
+        parser.addPath(name);
+        return new KasperReference(parser.parsePath());
     }
 }
