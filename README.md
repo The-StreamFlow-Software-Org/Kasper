@@ -1,6 +1,11 @@
 # Kasper
 Kasper is a scalable, persistent, in-memory nested key-value database designed for asynchronous operations and blazingly fast access. Built with Java.
 
+## Kasper References: Absolute References
+I'm so excited to bring to you my most ambitious feature yet: **Absolute References!**
+
+Absolute collections allow you to save on space and make sure that your data stays consistent! No primary-foreign keys needed, no duplicate data is required, and no cascading algorithms are used. 
+
 ## Why Kasper?
 
 - Kasper stays in the memory, making it faster than traditional databases.
