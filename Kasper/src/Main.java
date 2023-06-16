@@ -1,11 +1,12 @@
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.Parser.KasperDocument;
+import KasperCommons.DataStructures.KasperReference;
+import Network.Lobby;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
 import Server.SuperClass.Meta;
-import Server.SuperClass.Timer;
+import KasperCommons.Network.Timer;
 
 import java.util.Scanner;
 
@@ -30,6 +31,7 @@ public class Main {
         System.out.println("Kasper:> Load from disk successful after " + Timer.getTimer().stop() + "s.");
         System.out.println("Kasper:> All objects loaded. All nodes are now ready for querying.");
         Timer.getTimer().reset();
+        Lobby.acceptConnections();
         Timer.getTimer().start();
         //scanner.nextLine();
         System.out.println("Kasper:> Terminating Kasper. Please wait while we 'bucketize' your data into snapshots.");
@@ -116,12 +118,16 @@ public class Main {
     }
 
     public static void puts(){
-        KasperGlobalMap.newNode("f3").newCollection("prof");
-        KasperGlobalMap.newNode("f9");
-        var prof = KasperGlobalMap.getNode("f3").useCollection("prof");
-        for (int i=0; i<Meta.sample; i++){
-          //  var putting = new KasperList().addToList("Algorithms", "Data Structures", "Operating Systems", "Database Management Systems", "Computer Networks", "Software Engineering", "Artificial Intelligence", "Computer Graphics", "Computer Security", "Web Development", "Mobile App Development", "Machine Learning", "Natural Language Processing", "Computer Vision", "Distributed Systems", "Computer Architecture", "Human-Computer Interaction", "Cryptography", "Computer Ethics", "Computer Organization");
-            prof.put("prof" +i, new KasperList().addToList("professor", "professor", "professor", "professor", "professor", "professor", "professor", "professor", "professor", "professor"));
+        KasperGlobalMap.newNode("f1").newCollection("prof");
+        var prof = KasperGlobalMap.getNode("f1").useCollection("prof");
+        var subjectList = new KasperList().addToList("Object Oriented Programming 1", "Data Structures and Algorithms", "Design and Analysis of Algorithms");
+        var serato = new KasperMap().put("name", "Jay Vince Serato").put("subjects", subjectList);
+        var tulin = new KasperMap().put("name", "Jasmine Tulin").put("subjects", new KasperReference("f1.prof.subs"));
+        prof.put("subs", subjectList);
+        prof.put("serato", serato);
+        prof.put("tulin", tulin);
+        for (int i=0; i<100000; i++){
+            prof.put("subs" + i, subjectList);
         }
     }
 

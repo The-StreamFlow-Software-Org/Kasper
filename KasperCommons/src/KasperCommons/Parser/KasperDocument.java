@@ -97,7 +97,6 @@ public class KasperDocument {
         args.appendChild(createNode("password", password));
     }
 
-
     /*
     Used in server components.
      */
@@ -121,12 +120,27 @@ public class KasperDocument {
         args.appendChild(valueTag);
     }
 
+    public void getRequest (String path) {
+        addValue(purpose, "get");
+        args.appendChild(createNode("path", path));
+    }
+
+    public void response (KasperObject value) {
+        var node = extract(value);
+        addValue(purpose, "response");
+        args.appendChild(node);
+    }
+
     /*
     This method declares that an exception has been thrown.
      */
     public void raiseException(KasperException e){
         var except = getTag("exception");
-        addValue(except, e.getClass().getSimpleName());
+        var type = createNode("type", e.getClass().getSimpleName());
+        var msg = createNode("msg", e.getMessage());
+        except.appendChild(type);
+        except.appendChild(msg);
+
     }
 
 

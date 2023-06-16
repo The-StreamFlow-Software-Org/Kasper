@@ -1,4 +1,4 @@
-package Server.SuperClass;
+package KasperCommons.Network;
 
 public class Timer {
         private long startTime;

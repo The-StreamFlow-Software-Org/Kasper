@@ -9,6 +9,7 @@ public class Meta {
     }
 
     public static int sample = 100000;
+    public static int port = 53182;
 
     public static void changePath (String path) {
         filename = path + ".knf";

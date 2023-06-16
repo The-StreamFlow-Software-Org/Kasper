@@ -1,15 +1,8 @@
-import Kasper.BeansDriver.DataStructures.CollectionReference;
-import Kasper.BeansDriver.DataStructures.KasperBean;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.DataStructures.KasperReference;
-import KasperCommons.DataStructures.KasperString;
-import KasperCommons.Exceptions.KasperException;
-import KasperCommons.Parser.KasperDocument;
+import KasperCommons.DataStructures.*;
 import KasperCommons.Parser.KasperWriter;
+import Network.Lobby;
 import Persistence.InstantiatorService;
-import Server.Handler.RequestHandler;
 import Server.SuperClass.KasperGlobalMap;
 import Server.SuperClass.Meta;
 
@@ -21,19 +14,8 @@ public class Main {
         var newDocument = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
 
         InstantiatorService.start();
-        puts();
-        if (false){
-            puts();
-            System.exit(0);
-        }
-        KasperList fave = new KasperList().addToList("banana", "pineapple", "orange");
-        document.setRequest("f3.prof", "myfaves", fave);
-        KasperMap person = new KasperMap().put("name", "Alexis").put("myfaves", new KasperReference("f3.prof.myfaves"));
-        newDocument.setRequest("f3.prof", "Alexis", person);
-        RequestHandler.handleQuery(document);
-        RequestHandler.handleQuery(newDocument);
-        System.out.println(KasperGlobalMap.findWithPath("f3.prof.Alexis").toMap().get("myfaves").toList());
-
+        Lobby.acceptConnections();
+        InstantiatorService.close();
 
     }
 

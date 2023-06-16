@@ -12,10 +12,12 @@ public class KasperConstructor {
     private Node args;
     private Node base_value;
     private Document document;
+    private Node purpose;
 
     public KasperConstructor(KasperDocument kasperDocument){
         this.document = kasperDocument.document;
         args = document.getElementsByTagName("args").item(0);
+        purpose = document.getElementsByTagName("for").item(0);
     }
 
     public static KasperObject constructNode (Node n) {
@@ -25,9 +27,7 @@ public class KasperConstructor {
 
     public KasperObject constructObject (){
         var nodes = args.getChildNodes();
-        var values = nodes.item(1);
-        base_value = values.getChildNodes().item(0);
-        return recursivelyConstruct(base_value);
+        return recursivelyConstruct(nodes.item(0));
     }
 
 

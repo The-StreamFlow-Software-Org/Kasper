@@ -10,7 +10,6 @@ public class PathParser {
 
     private ArrayList<String> list;
     public void addPath (String string) {
-        list = new ArrayList<>();
         list.add(0, string);
     }
 

@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class InstantiatorService {
 
     public static void start() throws Exception {
+        new KasperAccessAuthenticator("kasper.util.key");
         try {
             var s = DiskIO.getSerialized();
             KasperGlobalMap.getNodes();

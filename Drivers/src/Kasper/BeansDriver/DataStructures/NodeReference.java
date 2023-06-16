@@ -11,18 +11,21 @@ public class NodeReference extends AbstractReference{
         this.user = serverInstance.user;
         this.password = serverInstance.password;
         this.name = nodeName;
+        this.networkPackage = serverInstance.networkPackage;
     }
 
     public CollectionReference useCollection (String referenceName) {
         return new CollectionReference(referenceName, this);
     }
 
-    public KasperReference generateReference (String ... args) {
+    public KasperReference generateReference (String ... path) {
         PathParser parser = new PathParser();
-        for (var x : args) {
+        for (var x : path) {
             parser.addPathConventionally(x);
         }
         parser.addPath(name);
         return new KasperReference(parser.parsePath());
     }
+
+
 }
