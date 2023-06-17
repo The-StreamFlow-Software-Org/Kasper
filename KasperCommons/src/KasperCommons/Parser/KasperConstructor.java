@@ -15,6 +15,14 @@ public class KasperConstructor {
     private Document document;
     private Node purpose;
 
+    public static void checkForExceptions (String string) throws KasperException {
+        var document = KasperDocument.constructor(string).document;
+        var exception = document.getElementsByTagName("exception").item(0);
+        if (!exception.getTextContent().isEmpty()) {
+            throw new KasperException(exception.getTextContent());
+        }
+    }
+
     public KasperConstructor(KasperDocument kasperDocument){
         this.document = kasperDocument.document;
 

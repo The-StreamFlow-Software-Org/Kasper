@@ -31,7 +31,7 @@ public class KasperCollection extends KasperServerAbstracts {
         var meta = thisNode.getChildNodes();
         this.name = meta.item(0).getTextContent();
         var data = thisNode.getChildNodes().item(1);
-        var entries = data.getChildNodes();
+            var entries = data.getChildNodes();
         var x = this;
         for (int i=0; i<entries.getLength(); i+=2){
             var key = entries.item(i).getTextContent();

@@ -3,6 +3,9 @@ package Kasper.BeansDriver.DataStructures;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.Exceptions.KasperException;
+import KasperCommons.Exceptions.KasperIOException;
+import KasperCommons.Parser.KasperConstructor;
+import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
 
@@ -20,6 +23,18 @@ public class NodeReference extends AbstractReference{
     }
 
     public CollectionReference useCollection (String referenceName) {
+        try {
+            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+            PathParser parser = new PathParser();
+            parser.addPath(referenceName);
+            parser.addPath(name);
+            document.doesExist(parser.parsePath());
+            networkPackage.put(document.toString());
+            var x = KasperDocument.constructor(networkPackage.get()).document.getElementsByTagName("args").item(0).getTextContent().equals("yes");
+            if (!x) throw new KasperException("Kasper:> The collection + '" + referenceName + "' does not exist.");
+        } catch (Exception e) {
+            throw new KasperIOException(e.toString());
+        }
         return new CollectionReference(referenceName, this);
     }
 
@@ -38,8 +53,9 @@ public class NodeReference extends AbstractReference{
             parser.addPathConventionally(collectionName);
             parser.addPath(name);
             var doc = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
-            doc.createNode(parser.parsePath());
+            doc.createCollection(parser.parsePath());
             networkPackage.put(doc.toString());
+            KasperConstructor.checkForExceptions(networkPackage.get());
             return useCollection(collectionName);
         } catch (IOException e) {
             throw new KasperException(e.getMessage());

@@ -18,12 +18,12 @@ public class Room {
     }
 
     public void handleMethods(){
+        RequestHandler request = new RequestHandler();
         Pool.newThread(() -> {
             while (true) {
                 try {
                     var query = pack.get();
                     var document = KasperDocument.constructor(query);
-                    RequestHandler request = new RequestHandler();
                     assert document != null;
                     request.handleQuery(document, pack);
                 } catch (SocketException e) {

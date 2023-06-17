@@ -12,16 +12,19 @@ import Server.SuperClass.KasperGlobalMap;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class InstantiatorService {
 
     public static void start()  {
+        KasperGlobalMap.instantiate();
         new KasperAccessAuthenticator("kasper.util.key");
+        KasperGlobalMap.getNodes();
         try {
             var s = DiskIO.getSerialized();
             KasperGlobalMap.getNodes();
-            KasperGlobalMap.globalmap =  Serialize.constructFromBlob(AESUtils.decrypt(s));
-            s = null;
+            var temp =  Serialize.constructFromBlob(AESUtils.decrypt(s));
+            if (temp != null) KasperGlobalMap.globalmap = (ConcurrentHashMap<String, KasperNode>) temp;
         }
         catch (IOException e){}
         catch (Exception e) {

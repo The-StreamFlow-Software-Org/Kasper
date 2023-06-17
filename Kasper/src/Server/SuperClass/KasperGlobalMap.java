@@ -15,6 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KasperGlobalMap implements Serializable {
     @Serial
     private static final long serialVersionUID = 2804015076581134962L;
+
+    public static void instantiate(){
+        instance = new KasperGlobalMap();
+    }
     public static ConcurrentHashMap<String, KasperNode> globalmap;
 
 
@@ -22,7 +26,6 @@ public class KasperGlobalMap implements Serializable {
 
 
     public static ConcurrentHashMap<String, KasperNode> getNodes(){
-        if (instance == null) instance = new KasperGlobalMap();
         return instance.globalmap;
     }
 
@@ -31,14 +34,12 @@ public class KasperGlobalMap implements Serializable {
     }
 
     public static KasperNode getNode (String name){
-        if (instance == null) instance = new KasperGlobalMap();
         var x = instance.globalmap.get(name);
         if (x == null) throw new NoSuchKasperObject("node '" + name + "' does not exist");
         return x;
     }
 
     public static KasperNode newNode(String name){
-        if (instance == null) instance = new KasperGlobalMap();
         var node = new KasperNode(name);
         instance.globalmap.put(name, node);
         return node;

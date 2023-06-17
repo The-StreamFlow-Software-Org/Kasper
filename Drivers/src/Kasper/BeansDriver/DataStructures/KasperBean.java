@@ -3,7 +3,10 @@ package Kasper.BeansDriver.DataStructures;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.Exceptions.KasperException;
+import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Parser.KasperConstructor;
+import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
 
@@ -41,6 +44,7 @@ public class KasperBean extends AbstractReference{
             var doc = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             doc.createNode(parser.parsePath());
             networkPackage.put(doc.toString());
+            KasperConstructor.checkForExceptions(networkPackage.get());
             return useNode(nodename);
         } catch (IOException e) {
             throw new KasperException(e.getMessage());
@@ -48,6 +52,17 @@ public class KasperBean extends AbstractReference{
     }
 
     public NodeReference useNode(String name){
+        try {
+            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+            PathParser parser = new PathParser();
+            parser.addPath(name);
+            document.doesExist(parser.parsePath());
+            networkPackage.put(document.toString());
+            var x = KasperDocument.constructor(networkPackage.get()).document.getElementsByTagName("args").item(0).getTextContent().equals("yes");
+            if (!x) throw new KasperException("Kasper:> The node + '" + name + "' does not exist.");
+        } catch (Exception e) {
+            throw new KasperIOException(e.toString());
+        }
         return new NodeReference(name, this);
     }
 

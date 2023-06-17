@@ -36,6 +36,17 @@ public class KasperDocument {
     private Node args;
     private Node query;
 
+    public Element getRoot() {
+        return root;
+    }
+
+    public Node getPurpose() {
+        return purpose;
+    }
+
+    public Node getArgs() {
+        return args;
+    }
 
     KasperDocument (DocumentBuilder builder){
         this.builder = builder;
@@ -152,13 +163,31 @@ public class KasperDocument {
         root.appendChild(createNode("exception", ""));
     }
 
+    public void doesExist (String path) {
+        addValue(purpose, "has");
+        root.appendChild(createNode("path", path));
+        root.appendChild(createNode("exception", ""));
+    }
+
+    public void doesExistResponse (boolean x) {
+        if (x) {
+            addValue(purpose, "response");
+            addValue(args, "yes");
+            root.appendChild(createNode("exception", ""));
+            return;
+        }
+        addValue(purpose, "response");
+        addValue(args, "no");
+        root.appendChild(createNode("exception", ""));
+    }
+
     /*
     This method declares that an exception has been thrown.
      */
     public void raiseException(Exception e){
         var except = getTag("exception");
         var type = createNode("type", e.getClass().getSimpleName());
-        var msg = createNode("msg", e.getMessage());
+        var msg = createNode("msg", "\nThrown by KasperEngine: " + e.getMessage());
         except.appendChild(type);
         except.appendChild(msg);
         root.appendChild(except);

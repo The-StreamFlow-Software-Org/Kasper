@@ -57,7 +57,7 @@ public class CollectionReference extends AbstractReference{
             var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             document.setRequest(referencePath.toStr(), key, value);
             networkPackage.put(document.toString());
-            new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
+            KasperConstructor.checkForExceptions(networkPackage.get());
         } catch (Exception e){
             throw new KasperException(e.getMessage());
         }
@@ -77,6 +77,17 @@ public class CollectionReference extends AbstractReference{
 
     public KasperReference generateReference (String ... path) {
         PathParser parser = new PathParser();
+        for (var x : path) {
+            parser.addPathConventionally(x);
+        }
+        parser.addPath(name);
+        parser.addPath(parent.name);
+        return new KasperReference(parser.parsePath());
+    }
+
+    public KasperReference rawReference (String rawPath) {
+        PathParser parser = new PathParser();
+        var path = parser.unparsePath(rawPath);
         for (var x : path) {
             parser.addPathConventionally(x);
         }
