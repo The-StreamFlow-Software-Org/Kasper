@@ -3,6 +3,7 @@ package Kasper.BeansDriver.DataStructures;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperReference;
+import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Parser.KasperConstructor;
 import KasperCommons.Parser.KasperDocument;
@@ -17,8 +18,8 @@ public class CollectionReference extends AbstractReference{
         super("collection");
         this.parent = parent;
         password = parent.password;
-        serverLocation = parent.serverLocation;
-        user = parent.serverLocation;
+        host = parent.host;
+        user = parent.host;
         nodeName = parent.name;
         this.name = name;
         this.networkPackage = parent.networkPackage;
@@ -35,9 +36,43 @@ public class CollectionReference extends AbstractReference{
             networkPackage.put(document.toString());
             return new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
         } catch (Exception e) {
+            throw new KasperIOException(e.toString());
+        }
+    }
+
+    public KasperObject getKey(KasperReference reference){
+        try {
+            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+            document.getRequest(reference.toStr());
+            networkPackage.put(document.toString());
+            return new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
+        } catch (Exception e) {
             e.printStackTrace();
             throw new KasperIOException(e.toString());
         }
+    }
+
+    public void setKey(KasperReference referencePath, String key, KasperObject value) throws KasperException {
+        try {
+            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+            document.setRequest(referencePath.toStr(), key, value);
+            networkPackage.put(document.toString());
+            new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
+        } catch (Exception e){
+            throw new KasperException(e.getMessage());
+        }
+    }
+
+    public void setKey (KasperReference referencePath, String key, String value) throws KasperException{
+        setKey(referencePath, key, KasperObject.str(value));
+    }
+
+    public void setKey (String key, String value) throws KasperException {
+        setKey(key, KasperObject.str(value));
+    }
+
+    public void setKey(String key, KasperObject value) {
+        setKey(generateReference(), key, value);
     }
 
     public KasperReference generateReference (String ... path) {
@@ -49,6 +84,7 @@ public class CollectionReference extends AbstractReference{
         parser.addPath(parent.name);
         return new KasperReference(parser.parsePath());
     }
+
 
 
 

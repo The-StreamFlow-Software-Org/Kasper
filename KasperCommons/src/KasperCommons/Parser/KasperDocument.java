@@ -5,7 +5,6 @@ import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.DataStructures.KasperString;
-import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Network.Operations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,7 +21,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +93,15 @@ public class KasperDocument {
         addValue(purpose, "auth");
         args.appendChild(createNode("user", username));
         args.appendChild(createNode("password", password));
+        root.appendChild(createNode("exception", ""));
     }
+
+    public void sendOkResponse () {
+        addValue(purpose, "response");
+        addValue(args, "ok");
+        root.appendChild(createNode("exception", ""));
+    }
+
 
     /*
     Used in server components.
@@ -118,30 +124,46 @@ public class KasperDocument {
         var valueTag = getTag("data");
         valueTag.appendChild(extract(value));
         args.appendChild(valueTag);
+        root.appendChild(createNode("exception", ""));
     }
 
     public void getRequest (String path) {
         addValue(purpose, "get");
         args.appendChild(createNode("path", path));
+        root.appendChild(createNode("exception", ""));
     }
 
     public void response (KasperObject value) {
         var node = extract(value);
         addValue(purpose, "response");
         args.appendChild(node);
+        root.appendChild(createNode("exception", ""));
+    }
+
+    public void createNode(String path) {
+        addValue(purpose, "create node");
+        root.appendChild(createNode("path", path));
+        root.appendChild(createNode("exception", ""));
+    }
+
+    public void createCollection (String path){
+        addValue(purpose, "create collection");
+        root.appendChild(createNode("path", path));
+        root.appendChild(createNode("exception", ""));
     }
 
     /*
     This method declares that an exception has been thrown.
      */
-    public void raiseException(KasperException e){
+    public void raiseException(Exception e){
         var except = getTag("exception");
         var type = createNode("type", e.getClass().getSimpleName());
         var msg = createNode("msg", e.getMessage());
         except.appendChild(type);
         except.appendChild(msg);
-
+        root.appendChild(except);
     }
+
 
 
     /*
@@ -167,6 +189,8 @@ public class KasperDocument {
         element.appendChild(document.createTextNode(content));
         return element;
     }
+
+
 
 
     /*
@@ -206,7 +230,6 @@ public class KasperDocument {
     Stringifies a given node.
      */
     public String nodeToString(Node node) {
-        try {
             // Create a new document for serialization
             Document doc = builder.newDocument();
 
@@ -227,11 +250,6 @@ public class KasperDocument {
             serializer.write(doc, output);
 
             return writer.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     /*

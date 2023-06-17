@@ -6,6 +6,7 @@ import KasperCommons.Parser.KasperDocument;
 import Server.Handler.RequestHandler;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 public class Room {
     private NetworkPackage pack;
@@ -25,7 +26,11 @@ public class Room {
                     RequestHandler request = new RequestHandler();
                     assert document != null;
                     request.handleQuery(document, pack);
-                } catch (IOException e) {
+                } catch (SocketException e) {
+                    var x = e;
+                    return;
+                }
+                catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }

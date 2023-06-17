@@ -52,6 +52,16 @@ public class DiskIO {
         }
     }
 
+    public static void writeBackup(byte[] document) throws Exception {
+        Files.createDirectories(Path.of(Meta.backup));
+
+
+        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(Meta.backupCounter())))) {
+            writer.write(document);
+            writer.flush();
+        }
+    }
+
     private static byte[] encryptedBuffer() throws IOException, DataFormatException {
         try (DataInputStream read = new DataInputStream(new FileInputStream( Meta.getPath()))) {
             int size = read.readInt();

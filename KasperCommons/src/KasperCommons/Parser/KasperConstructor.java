@@ -4,6 +4,7 @@ import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperString;
+import KasperCommons.Exceptions.KasperException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,6 +17,13 @@ public class KasperConstructor {
 
     public KasperConstructor(KasperDocument kasperDocument){
         this.document = kasperDocument.document;
+
+        // exception checking
+        var exception = document.getElementsByTagName("exception").item(0);
+        if (!exception.getTextContent().isEmpty()) {
+            throw new KasperException(exception.getTextContent());
+        }
+
         args = document.getElementsByTagName("args").item(0);
         purpose = document.getElementsByTagName("for").item(0);
     }
@@ -26,6 +34,14 @@ public class KasperConstructor {
 
 
     public KasperObject constructObject (){
+
+        // check if purpose is for verification
+        if (purpose.getTextContent().equals("response")) {
+            if (args.getTextContent().equals("ok"))
+                return null;
+        }
+
+
         var nodes = args.getChildNodes();
         return recursivelyConstruct(nodes.item(0));
     }

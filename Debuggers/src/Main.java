@@ -21,7 +21,6 @@ public class Main {
 
     public static void puts(){
         KasperGlobalMap.newNode("f3").newCollection("prof");
-        KasperGlobalMap.newNode("f9");
         var prof = KasperGlobalMap.getNode("f3").useCollection("prof");
         for (int i = 0; i< Meta.sample; i++){
             //  var putting = new KasperList().addToList("Algorithms", "Data Structures", "Operating Systems", "Database Management Systems", "Computer Networks", "Software Engineering", "Artificial Intelligence", "Computer Graphics", "Computer Security", "Web Development", "Mobile App Development", "Machine Learning", "Natural Language Processing", "Computer Vision", "Distributed Systems", "Computer Architecture", "Human-Computer Interaction", "Cryptography", "Computer Ethics", "Computer Organization");

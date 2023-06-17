@@ -8,7 +8,7 @@ public abstract class AbstractReference {
     protected String type;
     protected String password;
     protected String user;
-    protected String serverLocation;
+    protected String host;
 
     protected AbstractReference (String type) {
         this.type = type;

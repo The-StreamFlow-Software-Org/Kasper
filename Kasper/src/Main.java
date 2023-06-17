@@ -1,12 +1,15 @@
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
+import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperReference;
 import Network.Lobby;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
 import Server.SuperClass.Meta;
 import KasperCommons.Network.Timer;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 import java.util.Scanner;
 
@@ -120,6 +123,7 @@ public class Main {
     public static void puts(){
         KasperGlobalMap.newNode("f1").newCollection("prof");
         var prof = KasperGlobalMap.getNode("f1").useCollection("prof");
+        /*
         var subjectList = new KasperList().addToList("Object Oriented Programming 1", "Data Structures and Algorithms", "Design and Analysis of Algorithms");
         var serato = new KasperMap().put("name", "Jay Vince Serato").put("subjects", subjectList);
         var tulin = new KasperMap().put("name", "Jasmine Tulin").put("subjects", new KasperReference("f1.prof.subs"));
@@ -128,6 +132,9 @@ public class Main {
         prof.put("tulin", tulin);
         for (int i=0; i<100000; i++){
             prof.put("subs" + i, subjectList);
+        } */
+        for (int i=0; i<100000; i++){
+            prof.put(Integer.toString(i), KasperObject.str(Integer.toString(i)));
         }
     }
 

@@ -1,24 +1,22 @@
 package KasperCommons.Parser;
 
-import KasperCommons.DataStructures.KasperList;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PathParser {
 
-    private ArrayList<String> list;
+    public ArrayList<String> pathMeta;
     public void addPath (String string) {
-        list.add(0, string);
+        pathMeta.add(0, string);
     }
 
+
     public PathParser (){
-        list = new ArrayList<>();
+        pathMeta = new ArrayList<>();
     }
 
     public void addPathConventionally (String string) {
-        list.add(string);
+        pathMeta.add(string);
     }
 
 
@@ -35,12 +33,11 @@ public class PathParser {
 
     public  String parsePath() {
         StringBuilder build = new StringBuilder();
-        for (int i=0; i<list.size(); i++){
-            var x = list.get(i);
+        for (int i = 0; i< pathMeta.size(); i++){
+            var x = pathMeta.get(i);
             build.append(parseString(x));
-            if (i != list.size() - 1) build.append('.');
+            if (i != pathMeta.size() - 1) build.append('.');
         }
-        list = null;
         return build.toString();
     }
 

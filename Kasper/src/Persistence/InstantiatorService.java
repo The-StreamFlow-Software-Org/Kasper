@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class InstantiatorService {
 
-    public static void start() throws Exception {
+    public static void start()  {
         new KasperAccessAuthenticator("kasper.util.key");
         try {
             var s = DiskIO.getSerialized();
@@ -33,6 +33,10 @@ public class InstantiatorService {
 
     public static void  close() throws Exception {
         DiskIO.writeDocument(AESUtils.encrypt(Serialize.writeToBytes(KasperGlobalMap.globalmap)));
+    }
+
+    public static void writeBackup() throws Exception{
+        DiskIO.writeBackup(AESUtils.encrypt(Serialize.writeToBytes(KasperGlobalMap.globalmap)));
     }
 
 

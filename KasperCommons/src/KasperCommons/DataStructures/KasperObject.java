@@ -90,13 +90,15 @@ public abstract class KasperObject implements Serializable {
         return (KasperMap) this;
     }
 
-
-
-
-
-
-
-
-
-
+    @Override
+    public String toString() {
+        if (this instanceof KasperMap m) {
+            return m.toMap().toString();
+        } else if (this instanceof KasperList l){
+            return l.toList().toString();
+        } else if (this instanceof KasperString s){
+            return s.toString();
+        }
+        return super.toString();
+    }
 }

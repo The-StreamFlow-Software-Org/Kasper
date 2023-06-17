@@ -36,7 +36,7 @@ public abstract class KasperServerAbstracts extends KasperObject {
     protected KasperObject get (String key)  {
         var data = getData().get(key);
         if (data == null) {
-            throw new NoSuchKasperObject(key + " does not exist in " + this.getType() + " " + getName());
+            throw new NoSuchKasperObject("\nReason:> '" + key + "' does not exist in " + this.getType() + " '" + getName() + "'");
         } return data;
     }
 
