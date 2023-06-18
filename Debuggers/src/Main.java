@@ -4,7 +4,7 @@ import KasperCommons.Parser.KasperWriter;
 import Network.Lobby;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
-import Server.SuperClass.Meta;
+import KasperCommons.Authenticator.Meta;
 
 
 public class Main {

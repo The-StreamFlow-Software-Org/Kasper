@@ -1,6 +1,11 @@
 package KasperCommons.Concurrent;
 
+import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Network.NetworkPackageRunnable;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class Pool {
@@ -11,8 +16,39 @@ public class Pool {
     private BlockingQueue<Runnable> tickets;
     private Pool () {
         tickets = new LinkedBlockingDeque<>();
-        executorService = new ThreadPoolExecutor(minThreads, maxThreads, keepAliveSeconds, TimeUnit.SECONDS, tickets);
+        executorService = new ThreadPoolExecutor(minThreads, maxThreads, keepAliveSeconds, TimeUnit.SECONDS, tickets, new CustomThreadFactory());
     }
+
+    class CustomThreadFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            try {
+                var thisRunnable = (NetworkPackageRunnable) runnable;
+                Thread thread = new Thread(runnable);
+                thread.setUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(thisRunnable.net));
+                return thread;
+            } catch (ClassCastException e) {
+                return new Thread(runnable);
+            }
+        }
+    }
+
+    class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+        NetworkPackage network;
+        public CustomUncaughtExceptionHandler (NetworkPackage net){
+            this.network = net;
+        }
+        @Override
+        public void uncaughtException(Thread thread, Throwable throwable) {
+            try {
+                network.put("Kasper:> An internal exception occurred in the KasperEngine. Please contact your vendor for fixes.\nReason:> " + Arrays.toString(throwable.getStackTrace()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
     private static Pool instance = null;
 
     private static Pool getInstance () {
@@ -20,7 +56,7 @@ public class Pool {
         return instance;
     }
 
-    public static void newThread (Runnable run) {
+    public static void newThread (NetworkPackageRunnable run) {
         getInstance().executorService.execute(run);
     }
     public static void invokeAll(ArrayList<Callable<Void>> runnables) throws InterruptedException {

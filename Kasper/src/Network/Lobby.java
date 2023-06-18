@@ -1,10 +1,9 @@
 package Network;
 
-import KasperCommons.Concurrent.Pool;
 import KasperCommons.Network.NetworkPackage;
 import KasperCommons.Network.Timer;
 import Persistence.InstantiatorService;
-import Server.SuperClass.Meta;
+import KasperCommons.Authenticator.Meta;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
@@ -21,6 +20,7 @@ public class Lobby {
         init();
         System.out.println("Kasper:> Ready to accept connections.");
 
+
         Thread t = new Thread(()->{
             while (!ending) {
                 try {
@@ -32,6 +32,7 @@ public class Lobby {
                 }
             }
         });
+
         t.start();
 
 

@@ -87,13 +87,9 @@ public class CollectionReference extends AbstractReference{
 
     public KasperReference rawReference (String rawPath) {
         PathParser parser = new PathParser();
-        var path = parser.unparsePath(rawPath);
-        for (var x : path) {
-            parser.addPathConventionally(x);
-        }
         parser.addPath(name);
         parser.addPath(parent.name);
-        return new KasperReference(parser.parsePath());
+        return new KasperReference(parser.parsePath() +  "." + rawPath);
     }
 
 

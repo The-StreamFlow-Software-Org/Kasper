@@ -1,10 +1,12 @@
-package Server.SuperClass;
+package KasperCommons.Authenticator;
 
 public class Meta {
 
     public static int snapshotTimeout = 24000;
     public static String folder = "data/";
     public static String filename = "cluster.knf";
+
+    public static int maxRecursionDepth = 1000;
 
     public static String getPath(){
         return folder + filename;

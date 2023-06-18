@@ -4,6 +4,7 @@ import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Concurrent.Pool;
 import KasperCommons.Exceptions.InvalidPersistenceData;
+import KasperCommons.Network.NetworkPackageRunnable;
 import KasperCommons.Network.Operations;
 import Server.Parser.AESUtils;
 import Server.Parser.DiskIO;
@@ -54,24 +55,29 @@ public class InstantiatorService {
     }
 
     private void startNonStatic () {
-        Pool.newThread(()->{});
+        Pool.newThread(new NetworkPackageRunnable() {
+            @Override
+            public void run() {}
+        });
         try {
             System.out.println("Kasper:> Constructor service has started. Unzipping and decrypting binaries.");
             Operations.reset();
             Scanner scan = new Scanner(System.in);
             //scan.nextLine();
             var construct = DiskIO.documentStringRetrieval();
-            Pool.newThread(()->{
-                while (!finish) {
-                    System.out.println("Kasper:> This may take a while. We are parsing binaries, parsed " + Operations.getOperations() + " items so far.");
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+            Pool.newThread(new NetworkPackageRunnable() {
+                @Override
+                public void run() {
+                    while (!finish) {
+                        System.out.println("Kasper:> This may take a while. We are parsing binaries, parsed " + Operations.getOperations() + " items so far.");
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             });
-            //scan.nextLine();
             var data = KasperDocument.constructor(construct);
             finish = true;
             var document = data.getDocument(KasperAccessAuthenticator.getKey());
@@ -81,13 +87,16 @@ public class InstantiatorService {
             if (!purpose.getTextContent().equals("reconstruction"))
                 throw new InvalidPersistenceData("The persistence data has an invalid header for args, provided: '" + purpose.getTextContent() + "' instead of 'reconstruction'");
             finish = false;
-            Pool.newThread(()->{
-                while (!finish) {
-                    System.out.println("Kasper:> Please wait, this may take a while. We are constructing your snapshots, loaded " + Operations.getOperations() + " objects so far.");
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+            Pool.newThread(new NetworkPackageRunnable() {
+                @Override
+                public void run() {
+                    while (!finish) {
+                        System.out.println("Kasper:> Please wait, this may take a while. We are constructing your snapshots, loaded " + Operations.getOperations() + " objects so far.");
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             });
@@ -116,13 +125,16 @@ public class InstantiatorService {
         Outstream root = null;
         Operations.reset();
         finish = false;
-        Pool.newThread(()->{
-            while (!finish) {
-                System.out.println("Kasper:> Please wait, this may take a while. We are bucketizing your nodes, " + Operations.getOperations() + " objects are ready for dispatch.");
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        Pool.newThread(new NetworkPackageRunnable() {
+            @Override
+            public void run() {
+                while (!finish) {
+                    System.out.println("Kasper:> Please wait, this may take a while. We are bucketizing your nodes, " + Operations.getOperations() + " objects are ready for dispatch.");
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });

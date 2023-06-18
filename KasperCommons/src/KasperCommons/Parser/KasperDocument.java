@@ -1,10 +1,12 @@
 package KasperCommons.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Authenticator.Meta;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.DataStructures.KasperString;
+import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Network.Operations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -227,10 +229,15 @@ public class KasperDocument {
     out of a KasperObject instance.
      */
     public Node extract (KasperObject o){
+        stackCounter = 0;
         return recursive_extraction(o);
     }
 
+    private int stackCounter = 0;
+
     private Node recursive_extraction (KasperObject o){
+        stackCounter++;
+        if (stackCounter > Meta.maxRecursionDepth) throw new KasperException("Max recursive depth reached. Stack overflow error.\nProbable cause:> due to circular references.");
         if (o instanceof KasperString) {
             return createNode(o.getType(), o.toStr());
         }

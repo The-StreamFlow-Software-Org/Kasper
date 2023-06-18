@@ -1,7 +1,6 @@
 package Server.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import KasperCommons.Network.Operations;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -16,7 +15,7 @@ import java.util.zip.DataFormatException;
 
 import KasperCommons.Parser.ByteCompression;
 import KasperCommons.Parser.KasperDocument;
-import Server.SuperClass.Meta;
+import KasperCommons.Authenticator.Meta;
 
 public class DiskIO {
 

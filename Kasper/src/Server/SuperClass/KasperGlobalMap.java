@@ -5,11 +5,14 @@ import DataStructures.KasperNode;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Parser.PathParser;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class KasperGlobalMap implements Serializable {
@@ -68,11 +71,21 @@ public class KasperGlobalMap implements Serializable {
                     currobject = m.get(list.get(i));
                     if (currobject == null) throw new NoSuchKasperObject("Specified object with path: '" + path + "' does not exist.");
                 } else if (currobject instanceof KasperList l) {
+                    var key = list.get(i);
                     try {
-                        int index = Integer.parseInt(list.get(i));
-                        currobject = l.toArray().get(index);
-                    } catch (Exception e){
-                        throw new NoSuchKasperObject("Specified object with path: '" + path + "' does not exist.");
+                        if (key.equals("head")) {
+                            currobject = l.toList().getFirst();
+                        } else if (key.equals("tail")) {
+                            currobject = l.toList().getLast();
+                        } else {
+                            int index = Integer.parseInt(key);
+                            var ll = (LinkedList)l.toList();
+                            currobject = (KasperObject) ll.get(index);
+                        }
+                    } catch (Exception e) {
+                        if (e instanceof NoSuchElementException) throw new KasperException("Reason:> The list is empty. Unable to use nested queries on this object.");
+                        if (e instanceof ArrayIndexOutOfBoundsException) throw new KasperException("Reason:> Your index is invalid, array index out of bounds.");
+                        throw new KasperException("Reason:> Invalid list index was found. Use values [head/tail] to add an element to the head or tail respectively. Else, use a numeric string to specify the index.");
                     }
                 }
                 else {
