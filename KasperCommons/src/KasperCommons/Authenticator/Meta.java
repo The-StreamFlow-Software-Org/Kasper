@@ -1,12 +1,18 @@
 package KasperCommons.Authenticator;
 
+import java.math.BigInteger;
+
 public class Meta {
+
+    public static boolean serverMode = false;
 
     public static int snapshotTimeout = 24000;
     public static String folder = "data/";
     public static String filename = "cluster.knf";
 
-    public static int maxRecursionDepth = 1000;
+    public static String version = "Alfalfa 0.1.0";
+
+    public static BigInteger maxRecursionDepth = BigInteger.valueOf(100000);
 
     public static String getPath(){
         return folder + filename;

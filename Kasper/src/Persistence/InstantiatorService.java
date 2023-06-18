@@ -12,12 +12,14 @@ import KasperCommons.Parser.KasperDocument;
 import Server.SuperClass.KasperGlobalMap;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InstantiatorService {
 
-    public static void start()  {
+    public static void start() throws IOException {
+        DiskIO.writeConfig();
         KasperGlobalMap.instantiate();
         new KasperAccessAuthenticator("kasper.util.key");
         KasperGlobalMap.getNodes();
@@ -57,8 +59,11 @@ public class InstantiatorService {
     private void startNonStatic () {
         Pool.newThread(new NetworkPackageRunnable() {
             @Override
-            public void run() {}
+            public void run() {
+
+            }
         });
+
         try {
             System.out.println("Kasper:> Constructor service has started. Unzipping and decrypting binaries.");
             Operations.reset();
@@ -118,6 +123,8 @@ public class InstantiatorService {
             throw new RuntimeException(e);
         }
     }
+
+
 
     public static void writeMigration() throws Exception {
         var x = KasperGlobalMap.getNodes();

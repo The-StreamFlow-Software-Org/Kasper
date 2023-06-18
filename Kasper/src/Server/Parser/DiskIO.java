@@ -6,6 +6,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,8 +30,45 @@ public class DiskIO {
         }
     }
 
+    public static void writeConfig () throws IOException {
+        File file = new File("data", "kasper.init");
+        if (file.exists()) {
+            try (var reader = new BufferedReader(new FileReader("data/kasper.init"))){
+                var str = reader.readLine();
+                if (str.equals("server_mode=true")) {
+                    Meta.serverMode = true;
+                    str = reader.readLine();
+                }
+                var timeout = str.split("=");
+                Meta.snapshotTimeout = Integer.parseInt(timeout[1]);
+                var port = reader.readLine().split("=");
+                Meta.port = Integer.parseInt(port[1]);
+                var recursionDepth = reader.readLine().split("=");
+                Meta.maxRecursionDepth = new BigInteger(recursionDepth[1]);
+            } catch (IOException ignored){
+                Files.createDirectories(Path.of(Meta.folder));
+                try (BufferedWriter write = new BufferedWriter(new FileWriter("data/kasper.init"))){
+                    Files.createDirectories(Path.of(Meta.folder));
+                    write.write("kasper_driver_instance=true");
+                    write.write("snapshot_time_buffer_ms=2400\n");
+                    write.write("connect_with_port=53182\n");
+                    write.write("max_recursion_depth=" + Meta.maxRecursionDepth);
+                }catch (IOException ignored2){}
+            }
+
+        } else {
+            Files.createDirectories(Path.of(Meta.folder));
+            try (BufferedWriter write = new BufferedWriter(new FileWriter("data/kasper.init"))){
+                write.write("snapshot_time_buffer_ms=2400\n");
+                write.write("connect_with_port=53182\n");
+                write.write("max_recursion_depth=" + Meta.maxRecursionDepth);
+            }catch (IOException ignored){}
+            writeConfig();
+
+        }
+    }
+
     public static void writeDocument(KasperDocument document) throws Exception {
-        Files.createDirectories(Path.of(Meta.folder));
 
         byte[] resolvedBytes = EncryptionModule.encrypt(document.toString(), secretKey);
         byte[] compressedBytes = ByteCompression.compress(resolvedBytes);

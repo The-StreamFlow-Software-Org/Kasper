@@ -24,6 +24,10 @@ public class KasperBean extends AbstractReference{
 
 
     public KasperBean(String host, String user, String password) throws KasperException {
+        this(host, user, password, 53182);
+    }
+
+    public KasperBean(String host, String user, String password, int port) throws KasperException {
         super("server");
         new KasperAccessAuthenticator("kasper.util.key");
         try {
@@ -31,11 +35,13 @@ public class KasperBean extends AbstractReference{
             this.user = user;
             this.password = password;
             this.name = this.host;
-            networkPackage = new NetworkPackage(new Socket(host, 53182));
+            networkPackage = new NetworkPackage(new Socket(host, port));
         } catch (Exception e) {
             throw new KasperException(e.toString());
         }
     }
+
+
 
     public NodeReference createNode(String nodename) {
         try {

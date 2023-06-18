@@ -67,6 +67,10 @@ public class CollectionReference extends AbstractReference{
         setKey(referencePath, key, KasperObject.str(value));
     }
 
+    public void setKey (String referencePath, String key, String value) throws KasperException{
+        setKey(generateReference(referencePath), key, KasperObject.str(value));
+    }
+
     public void setKey (String key, String value) throws KasperException {
         setKey(key, KasperObject.str(value));
     }

@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class KasperDocument {
     }
 
     public KasperDocument (Document document) throws ParserConfigurationException {
-        builder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
+        builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         root = (Element)document.getChildNodes().item(0);
         this.document = document;
     }
@@ -91,7 +92,7 @@ public class KasperDocument {
     }
 
     public void addQuery (Node query){
-        var clone = query.cloneNode(true);
+        Node clone = query.cloneNode(true);
         document.adoptNode(clone);
         root.appendChild(clone);
     }
@@ -229,15 +230,15 @@ public class KasperDocument {
     out of a KasperObject instance.
      */
     public Node extract (KasperObject o){
-        stackCounter = 0;
+        stackCounter = BigInteger.valueOf(0);
         return recursive_extraction(o);
     }
 
-    private int stackCounter = 0;
+    private BigInteger stackCounter;
 
     private Node recursive_extraction (KasperObject o){
-        stackCounter++;
-        if (stackCounter > Meta.maxRecursionDepth) throw new KasperException("Max recursive depth reached. Stack overflow error.\nProbable cause:> due to circular references.");
+        stackCounter = stackCounter.add(BigInteger.ONE);
+        if (Meta.serverMode) if (stackCounter.compareTo(Meta.maxRecursionDepth) > 0) throw new KasperException("Max recursive depth reached [" + Meta.maxRecursionDepth.toString() + "]. Stack overflow error.\nProbable cause:> due to circular references.");
         if (o instanceof KasperString) {
             return createNode(o.getType(), o.toStr());
         }
