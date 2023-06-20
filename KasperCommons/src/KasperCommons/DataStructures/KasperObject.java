@@ -1,8 +1,10 @@
 package KasperCommons.DataStructures;
 
 
+import KasperCommons.Exceptions.UniteratableObjectException;
+
 import java.io.Serializable;
-import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -10,10 +12,21 @@ import java.util.Map;
  * complex KasperObject data structures, using polymorphic
  * design structures.
  */
-public abstract class KasperObject implements Serializable {
+public class KasperObject implements Serializable {
 
 
     private static final long serialVersionUID = -7689140920033408553L;
+
+    /*
+    Contains the path of the topmost object in the hierarchy. Returns NULL
+     */
+    public String path = "";
+
+    public KasperObject setPath(String path) {
+        this.path = path;
+        return this;
+    }
+
     /**
      * Type is used to store and introspect the type
      * of this data structure. This can be of type
@@ -49,8 +62,8 @@ public abstract class KasperObject implements Serializable {
      * @return the data of this object as a list.
      * @throws ClassCastException if the original type of this object is not a list.
      */
-    public Deque<KasperObject> toList (){
-        return (Deque) data;
+    public LinkedList<KasperObject> toList (){
+        return (LinkedList<KasperObject>) data;
     }
 
     /**
@@ -98,5 +111,11 @@ public abstract class KasperObject implements Serializable {
             return s.toString();
         }
         return super.toString();
+    }
+
+    public Iterable getIterable(){
+        if (this instanceof KasperList list) return list.toList();
+        if (this instanceof KasperMap map) return map.toMap().entrySet();
+        throw new UniteratableObjectException(path);
     }
 }

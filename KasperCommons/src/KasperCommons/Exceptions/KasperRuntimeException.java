@@ -1,6 +1,6 @@
 package KasperCommons.Exceptions;
 
-public class KasperRuntimeException extends RuntimeException{
+public class KasperRuntimeException extends KasperException {
     public KasperRuntimeException() {
     }
 

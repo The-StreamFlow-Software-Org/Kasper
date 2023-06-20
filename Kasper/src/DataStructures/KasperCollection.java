@@ -8,6 +8,7 @@ import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Node;
 
 import java.io.Serial;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +49,7 @@ public class KasperCollection extends KasperServerAbstracts {
         return this;
     }
 
+
     public KasperCollection put (String key, String value){
         return put(key, KasperObject.str(value));
     }
@@ -71,6 +73,10 @@ public class KasperCollection extends KasperServerAbstracts {
 
     }
 
+    @Override
+    public Map<String, KasperObject> toMap() {
+        return data;
+    }
 
 
 }

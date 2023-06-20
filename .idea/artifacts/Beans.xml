@@ -10,6 +10,8 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjdk/jol/jol-core/0.17/jol-core-0.17.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/github_ben_manes_caffeine/caffeine-3.1.6.jar" />
+      <element id="dir-copy" path="$PROJECT_DIR$/out/artifacts/github_ben_manes_caffeine/com" />
     </root>
   </artifact>
 </component>

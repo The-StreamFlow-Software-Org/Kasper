@@ -10,5 +10,7 @@
     <orderEntry type="module" module-name="KasperCommons" />
     <orderEntry type="module" module-name="Drivers" />
     <orderEntry type="module" module-name="Kasper" />
+    <orderEntry type="library" name="google.code.gson" level="project" />
+    <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
   </component>
 </module>

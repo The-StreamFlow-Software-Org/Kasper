@@ -1,12 +1,9 @@
 package KasperCommons.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import com.sun.tools.javac.Main;
 import org.jetbrains.annotations.Contract;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  The Manifest class contains and reads data from the manifest file.

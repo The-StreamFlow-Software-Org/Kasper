@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="github_ben_manes_caffeine">
+    <output-path>$PROJECT_DIR$/out/artifacts/github_ben_manes_caffeine</output-path>
+    <root id="root">
+      <element id="library" level="project" name="github.ben.manes.caffeine" />
+    </root>
+  </artifact>
+</component>

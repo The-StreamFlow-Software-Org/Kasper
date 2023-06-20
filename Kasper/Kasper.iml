@@ -7,7 +7,10 @@
     </content>
     <orderEntry type="jdk" jdkName="openjdk-19" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="KasperCommons" />
-    <orderEntry type="library" name="openjdk.jol.core" level="project" />
+    <orderEntry type="module" module-name="KasperCommons" exported="" />
+    <orderEntry type="library" exported="" name="openjdk.jol.core" level="project" />
+    <orderEntry type="library" exported="" name="github.ben.manes.caffeine" level="project" />
+    <orderEntry type="library" name="google.code.gson" level="project" />
+    <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
   </component>
 </module>

@@ -2,12 +2,8 @@ package KasperCommons.Parser;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.Meta;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.KasperReference;
-import KasperCommons.DataStructures.KasperString;
+import KasperCommons.DataStructures.*;
 import KasperCommons.Exceptions.KasperException;
-import KasperCommons.Network.Operations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -32,14 +28,16 @@ public class KasperDocument {
     The Kasper Document class helps generate a DOM that defines the query.
      */
     public Document document;
+
+    private CacheNodes CacheNodes = new CacheNodes();
     private DocumentBuilder builder;
-    private Element root;
+    private Node root;
     private Node purpose;
     private Node database;
     private Node args;
     private Node query;
 
-    public Element getRoot() {
+    public Node getRoot() {
         return root;
     }
 
@@ -67,7 +65,7 @@ public class KasperDocument {
 
     public KasperDocument (Document document) throws ParserConfigurationException {
         builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        root = (Element)document.getChildNodes().item(0);
+        root = document.getElementsByTagName("kasper").item(0);
         this.document = document;
     }
 
@@ -107,13 +105,24 @@ public class KasperDocument {
         addValue(purpose, "auth");
         args.appendChild(createNode("user", username));
         args.appendChild(createNode("password", password));
-        root.appendChild(createNode("exception", ""));
+        addEmptyException();
     }
+
+
+
+    public void containsRequest  (String thisObject, String containsThis){
+        addPath(thisObject);
+        addValue(purpose, "contains");
+        addArgs(createNode("innerPath", containsThis));
+        addEmptyException();
+    }
+
+
 
     public void sendOkResponse () {
         addValue(purpose, "response");
         addValue(args, "ok");
-        root.appendChild(createNode("exception", ""));
+        addEmptyException();
     }
 
 
@@ -128,6 +137,14 @@ public class KasperDocument {
         args.appendChild(n);
     }
 
+    private void addPath (String path) {
+        query.appendChild(createNode("path", path));
+    }
+
+    private void addEmptyException(){
+        root.appendChild(createNode("exception", ""));
+    }
+
     /*
     This method is for set requests.
      */
@@ -138,20 +155,20 @@ public class KasperDocument {
         var valueTag = getTag("data");
         valueTag.appendChild(extract(value));
         args.appendChild(valueTag);
-        root.appendChild(createNode("exception", ""));
+        addEmptyException();
     }
 
     public void getRequest (String path) {
         addValue(purpose, "get");
         args.appendChild(createNode("path", path));
-        root.appendChild(createNode("exception", ""));
+        addEmptyException();
     }
 
     public void response (KasperObject value) {
         var node = extract(value);
         addValue(purpose, "response");
         args.appendChild(node);
-        root.appendChild(createNode("exception", ""));
+        addEmptyException();
     }
 
     public void createNode(String path) {
@@ -189,6 +206,7 @@ public class KasperDocument {
      */
     public void raiseException(Exception e){
         var except = getTag("exception");
+        ((Element) except).setAttribute("exception_type", e.getClass().getName());
         var type = createNode("type", e.getClass().getSimpleName());
         var msg = createNode("msg", "\nThrown by KasperEngine: " + e.getMessage());
         except.appendChild(type);
@@ -224,14 +242,20 @@ public class KasperDocument {
 
 
 
-
     /*
     Creates an XML node that extracts the data
     out of a KasperObject instance.
      */
-    public Node extract (KasperObject o){
-        stackCounter = BigInteger.valueOf(0);
-        return recursive_extraction(o);
+    public Node extract (KasperObject o) {
+        Node cachedNode = CacheNodes.get(o.hashCode());
+        if (cachedNode != null) {
+            return cachedNode;
+        } else {
+            stackCounter = BigInteger.valueOf(0);
+            Node extractedNode = recursive_extraction(o);
+            CacheNodes.set(o.hashCode(), extractedNode);
+            return extractedNode;
+        }
     }
 
     private BigInteger stackCounter;
@@ -240,12 +264,18 @@ public class KasperDocument {
         stackCounter = stackCounter.add(BigInteger.ONE);
         if (Meta.serverMode) if (stackCounter.compareTo(Meta.maxRecursionDepth) > 0) throw new KasperException("Max recursive depth reached [" + Meta.maxRecursionDepth.toString() + "]. Stack overflow error.\nProbable cause:> due to circular references.");
         if (o instanceof KasperString) {
-            return createNode(o.getType(), o.toStr());
+            var strNode = (Element) createNode(o.getType(), o.toStr());
+            strNode.setAttribute("path", o.path);
+            return strNode;
         }
         if (o instanceof KasperList) {
             var holder = getTag(o.getType());
+            ((Element)holder).setAttribute("path", o.path);
+            int i = 0;
             for (var elem : o.toList()) {
-                holder.appendChild(recursive_extraction(elem));
+                var innerNode = ((Element)recursive_extraction(elem));
+                holder.appendChild(innerNode);
+                i++;
             } return holder;
         }
         if (o instanceof KasperReference) {
@@ -258,6 +288,7 @@ public class KasperDocument {
             key.appendChild(document.createTextNode(((Map.Entry<String, KasperObject>) elem).getKey()));
             var value = getTag("value");
             value.appendChild(recursive_extraction((KasperObject) kvp.getValue()));
+            ((Element)holder).setAttribute("path", o.path);
             holder.appendChild(key);
             holder.appendChild(value);
         } return holder;
@@ -310,9 +341,7 @@ public class KasperDocument {
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             InputSource inputSource = new InputSource(new StringReader(xmlString));
-            xmlString = null;
             Document document = builder.parse(inputSource);
-            inputSource = null;
 
             // Remove #text nodes from the document
             removeTextNodes(document);
@@ -325,8 +354,8 @@ public class KasperDocument {
     }
 
     private static void removeTextNodes(Node node) {
-        Operations.incrementOperation();
-        Operations.incrementOperation();
+        ;
+        ;
         NodeList childNodes = node.getChildNodes();
         List<Node> nodesToRemove = new ArrayList<>();
 

@@ -3,9 +3,6 @@ import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.Network.Timer;
-
-import java.net.Socket;
 
 public class BeansMain {
     public static void main(String[] args) {

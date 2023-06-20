@@ -1,6 +1,8 @@
 package KasperCommons.Parser;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PathParser {
@@ -41,10 +43,10 @@ public class PathParser {
         return build.toString();
     }
 
-    public  List<String> unparsePath(String input) {
+    public static ArrayList<String> unparsePath(String input) {
         String[] parts = input.split("(?<!\\$)\\.(?!\\$)");
 
-        List<String> unparsedList = new ArrayList<>();
+        ArrayList<String> unparsedList = new ArrayList<>();
         for (String part : parts) {
             String unparseString = part.replace("$.", ".").replaceAll("\\$\\$", "\\$");
             unparsedList.add(unparseString);

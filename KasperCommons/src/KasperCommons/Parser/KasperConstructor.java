@@ -5,6 +5,8 @@ import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperString;
 import KasperCommons.Exceptions.KasperException;
+import KasperCommons.Handlers.ExceptionHandler;
+import KasperCommons.Network.Timer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,6 +21,7 @@ public class KasperConstructor {
         var document = KasperDocument.constructor(string).document;
         var exception = document.getElementsByTagName("exception").item(0);
         if (!exception.getTextContent().isEmpty()) {
+            ExceptionHandler.attemptException(exception.getAttributes().getNamedItem("exception_type").getTextContent(), exception.getTextContent());
             throw new KasperException(exception.getTextContent());
         }
     }
@@ -29,7 +32,7 @@ public class KasperConstructor {
         // exception checking
         var exception = document.getElementsByTagName("exception").item(0);
         if (!exception.getTextContent().isEmpty()) {
-            throw new KasperException(exception.getTextContent());
+            ExceptionHandler.attemptException(exception.getAttributes().getNamedItem("exception_type").getTextContent(), exception.getTextContent());
         }
 
         args = document.getElementsByTagName("args").item(0);
@@ -43,15 +46,14 @@ public class KasperConstructor {
 
     public KasperObject constructObject (){
 
-        // check if purpose is for verification
-        if (purpose.getTextContent().equals("response")) {
-            if (args.getTextContent().equals("ok"))
-                return null;
-        }
 
-
-        var nodes = args.getChildNodes();
-        return recursivelyConstruct(nodes.item(0));
+        if (purpose.getTextContent().equals("response") && args.getTextContent().equals("ok"))
+            return null;
+        Timer t = new Timer();
+        t.start();
+        var returnval = recursivelyConstruct(args.getChildNodes().item(0));
+        System.out.println("XML Overhead :" + t.stop());
+        return returnval;
     }
 
 
@@ -60,24 +62,24 @@ public class KasperConstructor {
 
     private static KasperObject recursivelyConstruct (Node currNode){
         var type = currNode.getNodeName();
+        var element = currNode.getAttributes().getNamedItem("path").getTextContent();
+        var list = currNode.getChildNodes();
         if (type.equals("string")) {
-            return new KasperString(currNode.getTextContent());
+            return new KasperString(currNode.getTextContent()).setPath(element);
         }
         else if (type.equals("list")){
-            var list = currNode.getChildNodes();
-            var objList = new KasperList();
+            var objList = new KasperList().setPath(element).castToList();
             for (int i = 0; i<list.getLength(); i++){
                 objList.addToList(recursivelyConstruct(list.item(i)));
             } return objList;
+        } else {
+            var objMap = new KasperMap().setPath(element).castToMap();
+            for (int i=0; i<list.getLength(); i+=2){
+                var keyNode = list.item(i+1);
+                var valueNode = keyNode.getChildNodes().item(0);
+                var keyName = list.item(i);
+                objMap.put(keyName.getTextContent(), recursivelyConstruct(valueNode));
+            } return objMap;
         }
-
-        var list = currNode.getChildNodes();
-        var objMap = new KasperMap();
-        for (int i=0; i<list.getLength(); i+=2){
-            var keyNode = list.item(i+1);
-            var valueNode = keyNode.getChildNodes().item(0);
-            var keyName = list.item(i);
-            objMap.put(keyName.getTextContent(), recursivelyConstruct(valueNode));
-        } return objMap;
     }
 }

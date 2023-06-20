@@ -32,7 +32,7 @@ public class NodeReference extends AbstractReference{
             networkPackage.put(document.toString());
             var x = KasperDocument.constructor(networkPackage.get()).document.getElementsByTagName("args").item(0).getTextContent().equals("yes");
             if (!x) throw new KasperException("Kasper:> The collection + '" + referenceName + "' does not exist.");
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new KasperIOException(e.toString());
         }
         return new CollectionReference(referenceName, this);

@@ -10,11 +10,9 @@ import KasperCommons.Authenticator.Meta;
 public class Main {
     private static long startTime;
     public static void main(String[] args) throws Exception {
-        var document = KasperWriter.newDocument(new KasperAccessAuthenticator("kasper.util.key"));
-        var newDocument = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
-
         InstantiatorService.start();
-        Lobby.acceptConnections();
+        var res = KasperGlobalMap.findWithPath("CS000111.new1.head").toList();
+        System.out.println(res);
         InstantiatorService.close();
 
     }

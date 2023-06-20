@@ -24,11 +24,44 @@ public class KasperConstructor {
     }
 
 
+
+    public static KasperObject constructNode (Node n, String paths) {
+        return recursivelyConstruct(n, paths);
+    }
+
+
     public KasperObject constructObject (){
         var nodes = args.getChildNodes();
         var values = nodes.item(1);
         base_value = values.getChildNodes().item(0);
         return recursivelyConstruct(base_value);
+    }
+
+
+
+    private static KasperObject recursivelyConstruct (Node currNode, String pathPointer){
+        var type = currNode.getNodeName();
+        if (type.equals("string")) {
+            return new KasperString(currNode.getTextContent()).setPath(pathPointer);
+        }
+        else if (type.equals("list")){
+            var list = currNode.getChildNodes();
+            var objList = new KasperList().setPath(pathPointer).castToList();
+            for (int i = 0; i<list.getLength(); i++){
+                objList.addToList(recursivelyConstruct(list.item(i), pathPointer+ "." + i));
+            } return objList;
+        } else if (type.equals("reference")){
+            return KasperGlobalMap.findWithPath(currNode.getTextContent());
+        }
+
+        var list = currNode.getChildNodes();
+        var objMap = new KasperMap().setPath(pathPointer).castToMap();
+        for (int i=0; i<list.getLength(); i+=2){
+            var keyNode = list.item(i+1);
+            var valueNode = keyNode.getChildNodes().item(0);
+            var keyName = list.item(i);
+            objMap.put(keyName.getTextContent(), recursivelyConstruct(valueNode, pathPointer+"."+keyName.getTextContent()));
+        } return objMap;
     }
 
 

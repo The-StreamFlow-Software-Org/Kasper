@@ -1,6 +1,7 @@
 package Kasper.BeansDriver.DataStructures;
 
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.DataStructures.CacheNodes;
 import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperIOException;
@@ -36,8 +37,8 @@ public class KasperBean extends AbstractReference{
             this.password = password;
             this.name = this.host;
             networkPackage = new NetworkPackage(new Socket(host, port));
-        } catch (Exception e) {
-            throw new KasperException(e.toString());
+        } catch (IOException e) {
+            throw new KasperIOException("thrown by KasperDriver:> Make sure that you are connected to the KasperEngine instance.");
         }
     }
 
@@ -53,7 +54,7 @@ public class KasperBean extends AbstractReference{
             KasperConstructor.checkForExceptions(networkPackage.get());
             return useNode(nodename);
         } catch (IOException e) {
-            throw new KasperException(e.getMessage());
+           throw new KasperException(e.getMessage());
         }
     }
 

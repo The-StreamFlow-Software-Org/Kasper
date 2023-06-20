@@ -53,6 +53,10 @@ public class KasperNode extends KasperServerAbstracts {
         return (KasperCollection) get(name);
     }
 
+    @Override
+    public Map<String, KasperObject> toMap() {
+        return data;
+    }
 
     public KasperNode addCollection (String key, KasperCollection value){
         data.put(key, value);

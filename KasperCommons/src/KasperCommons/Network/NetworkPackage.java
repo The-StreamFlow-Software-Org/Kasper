@@ -22,22 +22,21 @@ public class NetworkPackage {
     }
 
     public String get () throws IOException {
-        Vector<Byte> bytestream = new Vector<>();
+        StringBuilder build = new StringBuilder();
         while (true){
             int x = inputStream.read();
-            if (x != 255) bytestream.add((byte)x);
+            if (x != 255) build.append((char)x);
             else break;
-        }
-        StringBuilder build = new StringBuilder();
-        for (byte b : bytestream) {
-            build.append((char) b);
         }
         return build.toString();
     }
 
     public void put (String str) throws IOException {
+        Timer t = new Timer();
+        t.start();
         outputStream.write(str.getBytes());
         outputStream.write(255);
         outputStream.flush();
+        System.out.println("Finished sending over network " + (str.length()/1000.0) + " megabytes in " + t.stop() + "s.");
     }
 }

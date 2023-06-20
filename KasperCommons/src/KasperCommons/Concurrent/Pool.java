@@ -41,7 +41,7 @@ public class Pool {
         @Override
         public void uncaughtException(Thread thread, Throwable throwable) {
             try {
-                network.put("Thrown by KasperEngine: Reason:> An internal exception occurred in the KasperEngine. Please contact your vendor for fixes.\nReason:> " + Arrays.toString(throwable.getStackTrace()));
+                network.put("Thrown by KasperEngine: Reason:> An internal exception occurred in the KasperEngine. Please contact your vendor for fixes.\nReason:> " + throwable.getMessage());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

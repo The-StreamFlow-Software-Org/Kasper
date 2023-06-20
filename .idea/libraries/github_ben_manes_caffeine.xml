@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="github.ben.manes.caffeine" type="repository">
+    <properties maven-id="com.github.ben-manes.caffeine:caffeine:3.1.6" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/ben-manes/caffeine/caffeine/3.1.6/caffeine-3.1.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -22,6 +22,11 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
         data = new HashMap<String, KasperObject>();
     }
 
+    public KasperMap(String type) {
+        super(type);
+        data = new HashMap<String, KasperObject>();
+    }
+
     public KasperMap put (String key, KasperObject value){
         toMap().put(key, value);
         return this;

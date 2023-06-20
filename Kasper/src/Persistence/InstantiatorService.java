@@ -3,6 +3,7 @@ package Persistence;
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Concurrent.Pool;
+import KasperCommons.DataStructures.CacheNodes;
 import KasperCommons.Exceptions.InvalidPersistenceData;
 import KasperCommons.Network.NetworkPackageRunnable;
 import KasperCommons.Network.Operations;
@@ -20,6 +21,7 @@ public class InstantiatorService {
 
     public static void start() throws IOException {
         DiskIO.writeConfig();
+        Cache.init();
         KasperGlobalMap.instantiate();
         new KasperAccessAuthenticator("kasper.util.key");
         KasperGlobalMap.getNodes();

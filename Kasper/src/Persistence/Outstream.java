@@ -46,7 +46,7 @@ public class Outstream {
         var key = document.createNode("collection_key", collection.getName());
         var value = document.getTag("collection_data");
         for (var x : collection.getData().entrySet()){
-            Operations.incrementOperation();
+            ;
             var entry_key = document.createNode("entry_key", x.getKey());
             value.appendChild(entry_key);
             value.appendChild(document.extract(x.getValue()));
