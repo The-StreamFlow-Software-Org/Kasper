@@ -8,5 +8,7 @@
     <orderEntry type="jdk" jdkName="openjdk-19" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
+    <orderEntry type="library" name="io.netty.all" level="project" />
+    <orderEntry type="library" name="google.protobuf.java" level="project" />
   </component>
 </module>

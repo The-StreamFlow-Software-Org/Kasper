@@ -1,10 +1,8 @@
-import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import KasperCommons.DataStructures.*;
-import KasperCommons.Parser.KasperWriter;
-import Network.Lobby;
+import KasperCommons.Authenticator.PacketOuterClass;
+import KasperCommons.Authenticator.Meta;
+import KasperCommons.DataStructures.KasperList;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
-import KasperCommons.Authenticator.Meta;
 
 
 public class Main {

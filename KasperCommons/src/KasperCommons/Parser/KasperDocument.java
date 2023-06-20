@@ -4,6 +4,7 @@ import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.Meta;
 import KasperCommons.DataStructures.*;
 import KasperCommons.Exceptions.KasperException;
+import KasperCommons.Network.Timer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,6 +23,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 public class KasperDocument {
     /*
@@ -251,9 +253,12 @@ public class KasperDocument {
         if (cachedNode != null) {
             return cachedNode;
         } else {
+            Timer t = new Timer();
+            t.start();
             stackCounter = BigInteger.valueOf(0);
             Node extractedNode = recursive_extraction(o);
             CacheNodes.set(o.hashCode(), extractedNode);
+            System.out.println("XML Overhead :" + t.stop());
             return extractedNode;
         }
     }

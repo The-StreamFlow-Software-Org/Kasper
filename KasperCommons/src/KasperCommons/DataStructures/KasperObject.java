@@ -1,7 +1,7 @@
 package KasperCommons.DataStructures;
 
 
-import KasperCommons.Exceptions.UniteratableObjectException;
+import KasperCommons.Exceptions.NotIterableException;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -116,6 +116,6 @@ public class KasperObject implements Serializable {
     public Iterable getIterable(){
         if (this instanceof KasperList list) return list.toList();
         if (this instanceof KasperMap map) return map.toMap().entrySet();
-        throw new UniteratableObjectException(path);
+        throw new NotIterableException(path);
     }
 }

@@ -7,6 +7,7 @@ import KasperCommons.DataStructures.CacheNodes;
 import KasperCommons.Exceptions.InvalidPersistenceData;
 import KasperCommons.Network.NetworkPackageRunnable;
 import KasperCommons.Network.Operations;
+import KasperCommons.Parser.ByteCompression;
 import Server.Parser.AESUtils;
 import Server.Parser.DiskIO;
 import KasperCommons.Parser.KasperDocument;
@@ -28,7 +29,7 @@ public class InstantiatorService {
         try {
             var s = DiskIO.getSerialized();
             KasperGlobalMap.getNodes();
-            var temp =  Serialize.constructFromBlob(AESUtils.decrypt(s));
+            var temp =  Serialize.constructFromBlob(ByteCompression.decompress(AESUtils.decrypt(s)));
             if (temp != null) KasperGlobalMap.globalmap = (ConcurrentHashMap<String, KasperNode>) temp;
         }
         catch (IOException e){}
@@ -40,7 +41,7 @@ public class InstantiatorService {
     }
 
     public static void  close() throws Exception {
-        DiskIO.writeDocument(AESUtils.encrypt(Serialize.writeToBytes(KasperGlobalMap.globalmap)));
+        DiskIO.writeDocument(AESUtils.encrypt(ByteCompression.compress(Serialize.writeToBytes(KasperGlobalMap.globalmap))));
     }
 
     public static void writeBackup() throws Exception{

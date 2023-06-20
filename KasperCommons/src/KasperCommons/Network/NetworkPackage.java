@@ -22,12 +22,15 @@ public class NetworkPackage {
     }
 
     public String get () throws IOException {
+        Timer t = new Timer();
+        t.start();
         StringBuilder build = new StringBuilder();
         while (true){
             int x = inputStream.read();
             if (x != 255) build.append((char)x);
             else break;
         }
+        System.out.println("Finished getting over network " + (build.length()/1000.0) + " megabytes in " + t.stop() + "s.");
         return build.toString();
     }
 
@@ -37,6 +40,7 @@ public class NetworkPackage {
         outputStream.write(str.getBytes());
         outputStream.write(255);
         outputStream.flush();
-        System.out.println("Finished sending over network " + (str.length()/1000.0) + " megabytes in " + t.stop() + "s.");
+        // @debug
+         System.out.println("Finished sending over network " + (str.length()/1000.0) + " megabytes in " + t.stop() + "s.");
     }
 }

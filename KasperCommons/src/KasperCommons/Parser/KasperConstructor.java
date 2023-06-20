@@ -46,13 +46,12 @@ public class KasperConstructor {
 
     public KasperObject constructObject (){
 
-
         if (purpose.getTextContent().equals("response") && args.getTextContent().equals("ok"))
             return null;
         Timer t = new Timer();
         t.start();
         var returnval = recursivelyConstruct(args.getChildNodes().item(0));
-        System.out.println("XML Overhead :" + t.stop());
+        System.out.println("Object Construction Overhead :" + t.stop());
         return returnval;
     }
 

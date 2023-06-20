@@ -4,6 +4,7 @@ import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperString;
+import KasperCommons.Network.Timer;
 import KasperCommons.Parser.KasperDocument;
 import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
@@ -26,7 +27,11 @@ public class KasperConstructor {
 
 
     public static KasperObject constructNode (Node n, String paths) {
-        return recursivelyConstruct(n, paths);
+        Timer t = new Timer();
+        t.start();
+        var nodes =  recursivelyConstruct(n, paths);
+        System.out.println("Construction from n -> obj : " + t.stop());
+        return nodes;
     }
 
 

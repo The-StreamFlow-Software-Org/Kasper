@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package KasperCommons.Authenticator;
+
+
+message Packet {
+  message Args {
+    string path = 1;
+    string uri = 2;
+    string match_path = 3;
+  }
+
+  message ExceptionData {
+    int32 exception_type = 1;
+    string exception_message = 2;
+  }
+
+  int32 header = 1;
+  map<string, string> args = 2;
+  string data = 3;
+  int32 exception = 4;
+  string exception_message = 5;
+}

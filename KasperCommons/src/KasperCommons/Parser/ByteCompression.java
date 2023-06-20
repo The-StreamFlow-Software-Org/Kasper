@@ -8,9 +8,6 @@ import java.util.zip.Inflater;
 
 public class ByteCompression {
     public static byte[] compress(byte[] data) throws IOException {
-        if (true){
-            return data;
-        }
         Deflater deflater = new Deflater();
         deflater.setInput(data);
         deflater.finish();
@@ -28,9 +25,6 @@ public class ByteCompression {
     }
 
     public static byte[] decompress(byte[] compressedData) throws IOException, DataFormatException {
-        if (true){
-            return compressedData;
-        }
         Inflater inflater = new Inflater();
         inflater.setInput(compressedData);
 
