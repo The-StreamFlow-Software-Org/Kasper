@@ -1,6 +1,9 @@
 # Kasper
 Kasper is a scalable, persistent, in-memory nested key-value database designed for asynchronous operations and blazingly fast access. Built with Java.
 
+## Where We Are Heading
+Kasper's initial implementation for it's network protocols was through raw Java Sockets and the DOM. However, with XML latency taking up more than 90% of the query duration, I had to switch protocols. From here on forward, we will be using Protocol Buffers for sending data over our sockets-- as well as using Netty for sockets. 
+
 ## Kasper References: Absolute References
 I'm so excited to bring to you my most ambitious feature yet: **Absolute References!**
 
