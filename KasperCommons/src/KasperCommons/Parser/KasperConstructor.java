@@ -8,7 +8,6 @@ import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Handlers.ExceptionHandler;
 import KasperCommons.Network.Timer;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class KasperConstructor {
@@ -64,15 +63,15 @@ public class KasperConstructor {
         var element = currNode.getAttributes().getNamedItem("path").getTextContent();
         var list = currNode.getChildNodes();
         if (type.equals("string")) {
-            return new KasperString(currNode.getTextContent()).setPath(element);
+            return new KasperString(currNode.getTextContent()).setId(element);
         }
         else if (type.equals("list")){
-            var objList = new KasperList().setPath(element).castToList();
+            var objList = new KasperList().setId(element).castToList();
             for (int i = 0; i<list.getLength(); i++){
                 objList.addToList(recursivelyConstruct(list.item(i)));
             } return objList;
         } else {
-            var objMap = new KasperMap().setPath(element).castToMap();
+            var objMap = new KasperMap().setId(element).castToMap();
             for (int i=0; i<list.getLength(); i+=2){
                 var keyNode = list.item(i+1);
                 var valueNode = keyNode.getChildNodes().item(0);

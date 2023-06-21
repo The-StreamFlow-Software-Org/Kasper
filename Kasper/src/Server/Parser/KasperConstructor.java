@@ -47,11 +47,11 @@ public class KasperConstructor {
     private static KasperObject recursivelyConstruct (Node currNode, String pathPointer){
         var type = currNode.getNodeName();
         if (type.equals("string")) {
-            return new KasperString(currNode.getTextContent()).setPath(pathPointer);
+            return new KasperString(currNode.getTextContent()).setId(pathPointer);
         }
         else if (type.equals("list")){
             var list = currNode.getChildNodes();
-            var objList = new KasperList().setPath(pathPointer).castToList();
+            var objList = new KasperList().setId(pathPointer).castToList();
             for (int i = 0; i<list.getLength(); i++){
                 objList.addToList(recursivelyConstruct(list.item(i), pathPointer+ "." + i));
             } return objList;
@@ -60,7 +60,7 @@ public class KasperConstructor {
         }
 
         var list = currNode.getChildNodes();
-        var objMap = new KasperMap().setPath(pathPointer).castToMap();
+        var objMap = new KasperMap().setId(pathPointer).castToMap();
         for (int i=0; i<list.getLength(); i+=2){
             var keyNode = list.item(i+1);
             var valueNode = keyNode.getChildNodes().item(0);

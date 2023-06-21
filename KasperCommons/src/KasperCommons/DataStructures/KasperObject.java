@@ -4,6 +4,7 @@ package KasperCommons.DataStructures;
 import KasperCommons.Exceptions.NotIterableException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -13,17 +14,54 @@ import java.util.Map;
  * design structures.
  */
 public class KasperObject implements Serializable {
+    protected KasperObject parent;
 
+    // listening threads asking for path
+    protected ArrayList<Thread> inquirers;
+
+    protected void setParent (KasperObject parent) {
+        this.parent = parent;
+    }
+
+
+    // holds the final path upon path construction
+    protected String finalPath = "";
+
+    public String getPath() {
+        if (finalPath.equals("")) {
+            if (inquirers == null) inquirers = new ArrayList<>(1);
+            if (id.equals("")) {
+                inquirers.add(Thread.currentThread());
+                try {
+                    while (true) Thread.sleep(1000000000);
+                } catch (InterruptedException e) {}
+            } resolvePath(this);
+        } return finalPath;
+    }
+
+    public KasperObject parent() {
+        return parent;
+    }
+
+    protected void resolvePath(KasperObject current) {
+        if (!current.finalPath.equals("")) return;
+        if (!current.parent.finalPath.equals("")) {
+            current.finalPath = current.parent.finalPath + "." + id;
+            return;
+        }
+        resolvePath(current.parent);
+
+    }
 
     private static final long serialVersionUID = -7689140920033408553L;
 
     /*
     Contains the path of the topmost object in the hierarchy. Returns NULL
      */
-    public String path = "";
+    protected String id = "";
 
-    public KasperObject setPath(String path) {
-        this.path = path;
+    public KasperObject setId(String id) {
+        this.id = id;
         return this;
     }
 
@@ -116,6 +154,6 @@ public class KasperObject implements Serializable {
     public Iterable getIterable(){
         if (this instanceof KasperList list) return list.toList();
         if (this instanceof KasperMap map) return map.toMap().entrySet();
-        throw new NotIterableException(path);
+        throw new NotIterableException(id);
     }
 }

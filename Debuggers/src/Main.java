@@ -1,10 +1,13 @@
+import Kasper.BeansDriver.DataStructures.KasperBean;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.Authenticator.Meta;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
+import KasperCommons.DataStructures.*;
 import KasperCommons.Network.Timer;
+import Server.Handler.PathCrawler;
 import Server.SuperClass.KasperGlobalMap;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,20 +18,43 @@ public class Main {
         Random random = new Random();
         // InstantiatorService.start();
         KasperList list = new KasperList();
+        KasperBean bean = new KasperBean("", "" , "");
+        var ref = bean.generateRawReference("try.me");
+        System.out.println(JSONUtils.objectToJsonStream(ref));
+        var map = new KasperMap().put("top-level", list);
 
-        for (int i=0; i<1000000; i++) {
-            list.addToList(new KasperMap().put("name", newName(random)).put("sub", generateRandomSubjects(random)));
-        } list.addToList("final");
+        for (int i=0; i<10; i++) {
+            var li = generateRandomSubjects(random);
+            list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
+            list = li;
+        } map.put("final", "final");
+        var newObj = JSONUtils.parseJson(JSONUtils.objectToJsonStream(map));
+        var mapper = newObj.toMap().get("final");
         Timer.getTimer().start();
-        PreparedPacket packet = new PreparedPacket();
-        packet.addArg("type", "command");
-        packet.setData(list);
-        var result = packet.build();
+        LocalPathCrawler.finalPathSetter(newObj, "finalpath");
+        LocalPathCrawler.crawlPaths(newObj);
+        System.out.println(mapper.getPath());
         System.out.println("Serialization overhead with protocol buffers: "+ Timer.getTimer().stop() + "s" );
-        new Scanner(System.in).nextLine();
-        System.out.println(result.getData());
     }
 
+    public static void benchmark() throws IOException {
+        Random random = new Random();
+        // InstantiatorService.start();
+        KasperList list = new KasperList();
+        var map = new KasperMap().put("top-level", list);
+
+        for (int i=0; i<1000000; i++) {
+            var li = generateRandomSubjects(random);
+            list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
+            list = li;
+        } map.put("final", "final");
+        var newObj = JSONUtils.parseJson(JSONUtils.objectToJsonStream(map));
+        var mapper = newObj.toMap().get("final");
+        Timer.getTimer().start();
+        System.out.println(mapper.getPath());
+        System.out.println("Serialization overhead with protocol buffers: "+ Timer.getTimer().stop() + "s" );
+        new Scanner(System.in).nextLine();
+    }
 
     public static void puts(){
         KasperGlobalMap.newNode("f3").newCollection("prof");

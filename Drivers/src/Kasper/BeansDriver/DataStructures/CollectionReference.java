@@ -104,6 +104,7 @@ public class CollectionReference extends AbstractReference{
      */
     public void setKey(KasperReference referencePath, String key, KasperObject value) {
         try {
+            if (key.charAt(0) == '$') throw new KasperException("Thrown by KasperDriver.\nReason:> Keys cannot start with reserved character '$'.");
             var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             document.setRequest(referencePath.toStr(), key, value);
             networkPackage.put(document.toString());
@@ -218,7 +219,7 @@ public class CollectionReference extends AbstractReference{
     @RawKasperReferenceUsage
     public KasperFindQuery in (String path) {
         var ref = new KasperReference("");
-        ref.path = path;
+     //   ref.getPath() = path;
         return new KasperFindQuery(ref, networkPackage);
     }
 

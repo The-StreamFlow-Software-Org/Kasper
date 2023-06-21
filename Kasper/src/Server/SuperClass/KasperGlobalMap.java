@@ -58,12 +58,12 @@ public class KasperGlobalMap implements Serializable {
             PathParser parser = new PathParser();
             var list = parser.unparsePath(path);
             if (list.size() == 1) {
-                return getNode(list.get(0)).setPath(path);
+                return getNode(list.get(0)).setId(path);
             } else if (list.size() == 2) {
-                return getNode(list.get(0)).get(list.get(1)).setPath(path);
+                return getNode(list.get(0)).get(list.get(1)).setId(path);
             } else if (list.size() == 3) {
                 var currnode = getNode(list.get(0));
-                return currnode.useCollection(list.get(1)).getValue(list.get(2)).setPath(path);
+                return currnode.useCollection(list.get(1)).getValue(list.get(2)).setId(path);
             } else {
                 var currnode = getNode(list.get(0));
                 var object = currnode.useCollection(list.get(1)).getValue(list.get(2));

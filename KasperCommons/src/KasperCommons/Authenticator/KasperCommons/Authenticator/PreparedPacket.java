@@ -3,7 +3,7 @@ package KasperCommons.Authenticator.KasperCommons.Authenticator;
 
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.Network.Timer;
-import KasperCommons.Parser.JSONUtils;
+import KasperCommons.DataStructures.JSONUtils;
 
 import java.util.HashMap;
 import java.util.Map;

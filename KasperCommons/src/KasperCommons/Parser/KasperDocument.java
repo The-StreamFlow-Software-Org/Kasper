@@ -249,6 +249,7 @@ public class KasperDocument {
     out of a KasperObject instance.
      */
     public Node extract (KasperObject o) {
+        if (true) return null;
         Node cachedNode = CacheNodes.get(o.hashCode());
         if (cachedNode != null) {
             return cachedNode;
@@ -256,15 +257,18 @@ public class KasperDocument {
             Timer t = new Timer();
             t.start();
             stackCounter = BigInteger.valueOf(0);
-            Node extractedNode = recursive_extraction(o);
+            /*Node extractedNode = recursive_extraction(o);
             CacheNodes.set(o.hashCode(), extractedNode);
             System.out.println("XML Overhead :" + t.stop());
-            return extractedNode;
+
+             */
+            return null;
         }
     }
 
     private BigInteger stackCounter;
 
+    /*
     private Node recursive_extraction (KasperObject o){
         stackCounter = stackCounter.add(BigInteger.ONE);
         if (Meta.serverMode) if (stackCounter.compareTo(Meta.maxRecursionDepth) > 0) throw new KasperException("Max recursive depth reached [" + Meta.maxRecursionDepth.toString() + "]. Stack overflow error.\nProbable cause:> due to circular references.");
@@ -297,7 +301,7 @@ public class KasperDocument {
             holder.appendChild(key);
             holder.appendChild(value);
         } return holder;
-    }
+    } */
 
     /*
     Stringifies a given node.

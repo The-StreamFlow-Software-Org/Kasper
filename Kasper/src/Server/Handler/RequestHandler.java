@@ -70,6 +70,8 @@ public class RequestHandler {
 
 
     private void setRequest (Document document) throws IOException {
+        if (true)return;
+        /*
         var response = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
         try {
             var path = document.getElementsByTagName("path").item(0);
@@ -121,6 +123,8 @@ public class RequestHandler {
         }
         response.sendOkResponse();
         pack.put(response.toString());
+
+         */
     }
 
 

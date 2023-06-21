@@ -15,7 +15,7 @@ public class PathCrawler {
     // iterate through the iterable object and find if they all have path 'withPath'.
     @SuppressWarnings("unchecked")
     public static KasperList getAllThatHasPath (String iterable, String withPath) {
-        KasperList list = new KasperList().setPath(iterable).castToList();
+        KasperList list = new KasperList().setId(iterable).castToList();
         var paths = PathParser.unparsePath(withPath);
         var baseObject = KasperGlobalMap.findWithPath(iterable);
         var iterableObject = baseObject.getIterable();

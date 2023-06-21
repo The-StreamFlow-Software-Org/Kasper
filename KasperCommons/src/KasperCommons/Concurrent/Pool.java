@@ -59,6 +59,10 @@ public class Pool {
     public static void newThread (NetworkPackageRunnable run) {
         getInstance().executorService.execute(run);
     }
+
+    public static void newThread (Runnable run) {
+        getInstance().executorService.execute(run);
+    }
     public static void invokeAll(ArrayList<Callable<Void>> runnables) throws InterruptedException {
         getInstance().executorService.invokeAll(runnables);
     }
