@@ -2,9 +2,7 @@ package KasperCommons.Network;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Vector;
+import java.util.LinkedList;
 
 public class NetworkPackage {
     public BufferedInputStream inputStream;
@@ -12,6 +10,7 @@ public class NetworkPackage {
     public Socket socket;
     public InputStream in;
     public OutputStream out;
+
 
     public NetworkPackage (Socket socket) throws IOException {
         this.socket = socket;
@@ -21,7 +20,21 @@ public class NetworkPackage {
         inputStream = new BufferedInputStream(in);
     }
 
-    public String get () throws IOException {
+    public byte[] get () throws IOException {
+        var size = inputStream.read();
+        byte[] stream = new byte[size];
+        for (int i=0; i<size; i++) {
+            stream[i] = (byte)inputStream.read();
+        } return stream;
+    }
+
+    public void put (byte[] stream) throws IOException {
+        outputStream.write(stream.length);
+        outputStream.write(stream);
+        outputStream.flush();
+    }
+
+    public String getString () throws IOException {
         Timer t = new Timer();
         t.start();
         StringBuilder build = new StringBuilder();

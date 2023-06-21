@@ -36,24 +36,24 @@ public class Lobby {
         t.start();
 
 
-
-        while (true) {
-            Signal.handle(new Signal("INT"), new SignalHandler() {
-                public void handle(Signal signal) {
-                    try {
-                        ending = true;
-                        System.out.println("Kasper:> Saving data snapshots...");
-                        Timer.getTimer().start();
-                        InstantiatorService.close();
-                        System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
-                        System.exit(0);
-                    } catch (Exception e) {
-                        System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
-                        System.exit(0);
-                    }
+        Signal.handle(new Signal("INT"), new SignalHandler() {
+            public void handle(Signal signal) {
+                try {
+                    ending = true;
+                    System.out.println("Kasper:> Saving data snapshots...");
+                    Timer.getTimer().start();
+                    InstantiatorService.close();
+                    System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
+                    System.exit(0);
+                } catch (Exception e) {
+                    System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
                     System.exit(0);
                 }
-            });
+                System.exit(0);
+            }
+        });
+
+        while (true) {
             new Room(new NetworkPackage(instance.server.accept()));
         }
     }

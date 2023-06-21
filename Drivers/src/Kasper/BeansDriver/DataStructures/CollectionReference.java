@@ -10,13 +10,11 @@ import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Handlers.ExceptionHandler;
 import KasperCommons.Network.NetworkPackage;
-import KasperCommons.Parser.KasperConstructor;
 import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
 public class CollectionReference extends AbstractReference{
@@ -72,11 +70,11 @@ public class CollectionReference extends AbstractReference{
             parser.addPath(parent.name);
             document.getRequest(parser.parsePath());
             networkPackage.put(document.toString());
-            var kdoc  = KasperDocument.constructor(networkPackage.get());
-            return new KasperConstructor(kdoc).constructObject();
+          //  var kdoc  = KasperDocument.constructor(networkPackage.get());
+         //   return new KasperConstructor(kdoc).constructObject();
         } catch (IOException e) {
             throw new KasperIOException(e.toString());
-        }
+        } return null;
     }
 
     /**
@@ -90,10 +88,10 @@ public class CollectionReference extends AbstractReference{
             var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             document.getRequest(reference.toStr());
             networkPackage.put(document.toString());
-            return new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
+        //    return new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
         } catch (IOException e) {
             throw new KasperIOException(e.toString());
-        }
+        } return null;
     }
 
     /**
@@ -109,7 +107,7 @@ public class CollectionReference extends AbstractReference{
             document.setRequest(referencePath.toStr(), key, value);
             networkPackage.put(document.toString());
             var x = networkPackage.get();
-            KasperConstructor.checkForExceptions(x);
+        //    KasperConstructor.checkForExceptions(x);
         } catch (IOException e){
             ExceptionHandler.attemptException(e.getClass().getName(), e.getMessage());
             throw new KasperException(e.getMessage());
@@ -246,10 +244,10 @@ public class CollectionReference extends AbstractReference{
                 build.append(basePath).append(".").append(properties);
                 document.containsRequest(basePath, build.toString());
                 pack.put(document.toString());
-                return new KasperConstructor(Objects.requireNonNull(KasperDocument.constructor(pack.get()))).constructObject().castToList();
+              //  return new KasperConstructor(Objects.requireNonNull(KasperDocument.constructor(pack.get()))).constructObject().castToList();
             } catch (IOException e) {
                 throw new KasperException(e.getMessage());
-            }
+            } return null;
         }
 
         /**
@@ -265,10 +263,10 @@ public class CollectionReference extends AbstractReference{
                 }
                 document.containsRequest(basePath, this.path.toStr());
                 pack.put(document.toString());
-                return new KasperConstructor(Objects.requireNonNull(KasperDocument.constructor(pack.get()))).constructObject().castToList();
+          //      return new KasperConstructor(Objects.requireNonNull(KasperDocument.constructor(pack.get()))).constructObject().castToList();
             } catch (IOException e) {
                 throw new KasperException(e.getMessage());
-            }
+            } return null;
         }
 
 

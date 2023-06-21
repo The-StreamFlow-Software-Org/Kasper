@@ -1,5 +1,6 @@
 package Network;
 
+import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Concurrent.Pool;
 import KasperCommons.Network.NetworkPackage;
 import KasperCommons.Network.NetworkPackageRunnable;
@@ -27,9 +28,8 @@ public class Room {
                 while (true) {
                     try {
                         var query = pack.get();
-                        var document = KasperDocument.constructor(query);
-                        assert document != null;
-                        request.handleQuery(document, pack);
+                        var packet = PacketOuterClass.Packet.parseFrom(query);
+                        request.handleQuery(packet, pack);
                     } catch (SocketException e) {
                         var x = e;
                         return;

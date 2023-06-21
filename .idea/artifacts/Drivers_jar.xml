@@ -6,6 +6,8 @@
       <element id="module-output" name="KasperCommons" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
       <element id="artifact" artifact-name="github_ben_manes_caffeine" />
+      <element id="dir-copy" path="$PROJECT_DIR$/LocalDependencies" />
+      <element id="dir-copy" path="$PROJECT_DIR$/LocalDependencies/com" />
     </root>
   </artifact>
 </component>

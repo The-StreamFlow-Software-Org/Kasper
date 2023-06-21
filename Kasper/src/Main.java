@@ -1,5 +1,5 @@
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import KasperCommons.Authenticator.PacketOuterClass;
+import KasperCommons.Authenticator.Meta;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
@@ -7,7 +7,6 @@ import KasperCommons.Network.Timer;
 import Network.Lobby;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
-import KasperCommons.Authenticator.Meta;
 
 import java.util.Scanner;
 

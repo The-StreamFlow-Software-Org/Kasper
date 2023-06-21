@@ -13,6 +13,6 @@
     <orderEntry type="library" name="google.code.gson" level="project" />
     <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
     <orderEntry type="library" name="io.netty.all" level="project" />
-    <orderEntry type="library" name="google.protobuf.java" level="project" />
+    <orderEntry type="library" name="protobuf-java-3.23.3" level="project" />
   </component>
 </module>

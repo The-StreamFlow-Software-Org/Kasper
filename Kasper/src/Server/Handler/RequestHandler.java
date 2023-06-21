@@ -3,34 +3,40 @@ package Server.Handler;
 import DataStructures.KasperCollection;
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
+import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Exceptions.KasperObjectAlreadyExists;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Network.NetworkPackage;
 import KasperCommons.Network.Timer;
-import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
+import KasperCommons.Parser.TokenSender;
 import Server.Parser.KasperConstructor;
 import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Map;
 
 
 public class RequestHandler {
     protected NetworkPackage pack;
-    public void handleQuery(KasperDocument document, NetworkPackage pack) throws IOException {
-        var doc = document.getDocument(KasperAccessAuthenticator.getKey());
-        var purpose = doc.getElementsByTagName("for").item(0).getTextContent();
+    public void handleQuery(PacketOuterClass.Packet packet, NetworkPackage pack) throws IOException {
         this.pack = pack;
-        switch (purpose) {
+        PreparedPacket packet1 = new PreparedPacket();
+        packet1.setHeader(1);
+        switch (packet.getHeader()) {
+            case 3 -> createNode(packet);
+            case 4 -> createCollection(packet);
+            case 5 -> exists(packet);
+        }
+
+        /*switch (purpose) {
             case "set" -> setRequest(doc);
             case "get" -> getRequest(doc);
             case "create node" -> createNode(doc);
@@ -39,56 +45,12 @@ public class RequestHandler {
             case "contains" -> contains(doc);
             default -> throw new NoSuchKasperObject("Reason:> Command '" + purpose + "' is not a recognized KasperDOM command.");
 
-        }
+        } */
 
 
     }
 
-    @SuppressWarnings("unchecked")
-    private KasperList getAllThatHasPath (String iterable, String withPath) {
-        KasperList list = new KasperList().setPath(iterable).castToList();
-        var paths = PathParser.unparsePath(withPath);
-        var baseObject = KasperGlobalMap.findWithPath(iterable);
-        var iterableObject = baseObject.getIterable();
-        try {
-            for (var x : iterableObject) {
-                // iterate through the  base object
-                KasperObject currObject = null;
-                if (x instanceof Map.Entry<?,?>) {
-                    currObject = ((Map.Entry<String, KasperObject>) x).getValue();
-                } else currObject = (KasperObject) x;
-                var container = currObject;
-                // iterate through inner paths
-                try {
-                    for (int i = 0; i < paths.size(); i++) {
-                        currObject = accessElement(currObject, paths.get(i));
-                    }
-                    list.addToList(container);
-                } catch (Exception ignored) {}
-            }
-        } catch (Exception ignored) {}
-        return list;
-    }
 
-    private KasperObject accessElement (KasperObject currObject, String hasInstance) {
-        if (currObject instanceof KasperMap m) {
-            var x =  m.toMap().get(hasInstance);
-            if (x == null) throw new RuntimeException();
-            return x;
-        } else {
-            var list = currObject.toList();
-            if (hasInstance.equals("head")) return list.getFirst();
-            if (hasInstance.equals("tail")) return list.getLast();
-            try {
-                var index = Integer.parseInt(hasInstance);
-                return list.get(index);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new NoSuchKasperObject("Reason:> The index provided is invalid, ArrayIndexOutOfBounds was thrown.");
-            } catch (Exception e) {
-                throw new KasperException("Reason:> Invalid list index was found. Use values [head/tail] to add an element to the head or tail respectively. Else, use a numeric string to specify the index.");
-            }
-        }
-    }
 
     private void contains(Document document) throws IOException {
         var response = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
@@ -96,7 +58,7 @@ public class RequestHandler {
             var base_path = document.getElementsByTagName("path").item(0).getTextContent();
             var args = document.getElementsByTagName("args").item(0);
             var matchWith = args.getChildNodes().item(0).getTextContent();
-            var list = getAllThatHasPath(base_path, matchWith);
+            var list = PathCrawler.getAllThatHasPath(base_path, matchWith);
             response.response(list);
             pack.put(response.toString());
         } catch (Exception e) {
@@ -182,32 +144,27 @@ public class RequestHandler {
         }
     }
 
-    public void createNode (Document document) throws IOException {
-        var response  = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+    public void createNode (PacketOuterClass.Packet packet) throws IOException {
         try {
-            PathParser parser = new PathParser();
-            var path = parser
-                    .unparsePath(document.getElementsByTagName("path")
-                            .item(0).getTextContent());
+            var path = PathParser.unparsePath(packet.getArgsMap().get("name"));
             if (KasperGlobalMap.globalmap.get(path.get(0)) != null)
                 throw new KasperObjectAlreadyExists("Reason:> The node '" + path.get(0) + "' already exists.");
             KasperGlobalMap.newNode(path.get(0));
         } catch (Exception e){
-            response.raiseException(e);
-            pack.put(response.toString());
-        } response.sendOkResponse();
-        pack.put(response.toString());
+            var bufferProtocol = TokenSender.raise(TokenSender.classifyException(e), e.getMessage()).toByteArray();
+            pack.put(bufferProtocol);
+        }
+        var bufferProtocol = TokenSender.responseOK().toByteArray();
+        pack.put(bufferProtocol);
     }
 
-    public void createCollection (Document document) throws IOException {
-        var response  = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+    public void createCollection (PacketOuterClass.Packet packet) throws IOException {
         try {
-        PathParser parser = new PathParser();
-        var path = parser.unparsePath(document.getElementsByTagName("path").item(0).getTextContent());
+            var path = PathParser.unparsePath(packet.getArgsMap().get("path"));
             var node = (KasperNode)KasperGlobalMap.getNode(path.get(0));
             boolean exists = false;
             try {
-                var collection = node.useCollection(path.get(1));
+                node.useCollection(path.get(1));
                 exists = true;
             } catch (Exception ignored) {}
             if (exists) throw new KasperObjectAlreadyExists("Reason:> The collection '" + path.get(1) + "' already exists.");
@@ -215,27 +172,28 @@ public class RequestHandler {
                 KasperGlobalMap.getNode(path.get(0)).newCollection(path.get(1));
             } catch (Exception ignored){}
         } catch (Exception e){
-            response.raiseException(e);
-            pack.put(response.toString());
-        } response.sendOkResponse();
-        pack.put(response.toString());
+            var bufferProtocol = TokenSender.raise(TokenSender.classifyException(e), e.getMessage()).toByteArray();
+            pack.put(bufferProtocol);
+        } var bufferProtocol = TokenSender.responseOK().toByteArray();
+        pack.put(bufferProtocol);
     }
 
-    public void has(Document document) throws IOException{
-        var response  = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+    public void exists(PacketOuterClass.Packet packet) throws IOException{
+        PacketOuterClass.Packet prepared = null;
         try {
             PathParser parser = new PathParser();
-            var path = PathParser.unparsePath(document.getElementsByTagName("path").item(0).getTextContent());
+            var unparsed = packet.getArgsMap().get("path");
+            var path = PathParser.unparsePath(unparsed);
             for (var x : path) {
                 parser.addPathConventionally(x);
             } var result = KasperGlobalMap.findWithPath(parser.parsePath());
             if (result == null) {
-                response.doesExistResponse(false);
-            } else response.doesExistResponse(true);
-            pack.put(response.toString());
+                prepared = TokenSender.raise(5, NoSuchKasperObject.buildCommand("object", path.get(path.size()-1), unparsed));
+            } else prepared = TokenSender.responseOK();
+            pack.put(prepared.toByteArray());
         } catch (Exception e) {
-            response.raiseException(e);
-            pack.put(response.toString());
+            prepared = TokenSender.raise(TokenSender.classifyException(e), e.getMessage());
+            pack.put(prepared.toByteArray());
         }
     }
 }
