@@ -2,6 +2,7 @@ package Kasper.BeansDriver.DataStructures;
 
 import KasperCommons.Annotations.RawKasperReferenceUsage;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperObject;
 import KasperCommons.DataStructures.KasperReference;
@@ -63,15 +64,15 @@ public class CollectionReference extends AbstractReference{
      */
     public KasperObject getKey(String keyName){
         try {
-            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             PathParser parser = new PathParser();
             parser.addPath(keyName);
             parser.addPath(name);
             parser.addPath(parent.name);
-            document.getRequest(parser.parsePath());
-            networkPackage.put(document.toString());
-          //  var kdoc  = KasperDocument.constructor(networkPackage.get());
-         //   return new KasperConstructor(kdoc).constructObject();
+            PreparedPacket packet = new PreparedPacket();
+            packet.setHeader(2);
+            packet.addArg("path", parser.parsePath());
+            networkPackage.put(packet.build().toByteArray());
+
         } catch (IOException e) {
             throw new KasperIOException(e.toString());
         } return null;
