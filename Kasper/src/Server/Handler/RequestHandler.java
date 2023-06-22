@@ -5,6 +5,7 @@ import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
+import KasperCommons.DataStructures.JSONUtils;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.Exceptions.KasperException;
@@ -16,7 +17,7 @@ import KasperCommons.Network.Timer;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
 import KasperCommons.Parser.TokenSender;
-import Server.Parser.KasperConstructor;
+import Persistence.Cache;
 import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
 
@@ -29,11 +30,17 @@ public class RequestHandler {
     public void handleQuery(PacketOuterClass.Packet packet, NetworkPackage pack) throws IOException {
         this.pack = pack;
         PreparedPacket packet1 = new PreparedPacket();
-        packet1.setHeader(1);
+        // packet1.setHeader(1);
         switch (packet.getHeader()) {
+            case 1 -> setRequest(packet);
+            case 2 -> getRequest(packet);
             case 3 -> createNode(packet);
             case 4 -> createCollection(packet);
             case 5 -> exists(packet);
+            case 16 -> clear();
+            default -> {
+                pack.put(TokenSender.raise(2, "KasperEngine:> Driver failure, unknown command sent.").toByteArray());
+            }
         }
 
         /*switch (purpose) {
@@ -48,6 +55,12 @@ public class RequestHandler {
         } */
 
 
+    }
+
+    private void clear () throws IOException {
+        KasperGlobalMap.globalmap.clear();
+        Cache.cache().invalidateAll();
+        pack.put(TokenSender.responseOK().toByteArray());
     }
 
 
@@ -69,35 +82,28 @@ public class RequestHandler {
     }
 
 
-    private void setRequest (Document document) throws IOException {
-        if (true)return;
-        /*
-        var response = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
+    private void setRequest (PacketOuterClass.Packet packet) throws IOException {
         try {
-            var path = document.getElementsByTagName("path").item(0);
-            var object = KasperConstructor.constructNode(document.getElementsByTagName("data").item(0).getChildNodes().item(0), path.getTextContent());
-            var destination = KasperGlobalMap.findWithPath(path.getTextContent());
-            var key = document.getElementsByTagName("data_key").item(0).getTextContent();
-
+            var path = packet.getArgsMap().get("path");
+            var object = JSONUtils.parseJson(packet.getData());
+            var key = packet.getArgsMap().get("key");
+            var destination = KasperGlobalMap.findWithPath(path);
             if (destination instanceof KasperCollection c) {
                 try {
                     c.getValue(key);
-                    throw new KasperObjectAlreadyExists("Reason:> The object '" + key + "' already exists in path: " + path.getTextContent() + ".");
+                    throw new KasperObjectAlreadyExists("Reason:> The object '" + key + "' already exists in path: " + path + ".");
                 } catch (NoSuchKasperObject ignored) {}
                 c.put(key, object);
             }
             else if (destination instanceof KasperList l) {
                 try {
                     if (key.equals("head")) {
-                        object.path += ".0";
                         l.toList().push(object);
                     } else if (key.equals("tail")) {
-                        object.path += "." + l.toList().size();
                         l.toList().add(object);
                     } else {
                         int index = Integer.parseInt(key);
                         var ll = (LinkedList)l.toList();
-                        object.path += "." + index;
                         ll.add(index, object);
                     }
                 } catch (Exception e) {
@@ -106,45 +112,34 @@ public class RequestHandler {
             }
             else if (destination instanceof KasperMap m) {
                 if (m.get(key) == null) {
-                    PathParser parse = new PathParser();
-                    parse.addPath(key);
-                    m.put(key, object.setPath( object.path += ("." + parse.parsePath())));
                     m.put(key, object);
-                }
-                else
-                    throw new KasperObjectAlreadyExists("Reason:> The object '" + key + "' already exists in path: " + path.getTextContent() + ".");
+                } else throw new KasperObjectAlreadyExists("Reason:> The object '" + key + "' already exists in path: " + path + ".");
             } else {
                 throw new KasperException("Reason:> Cannot conduct operation [set/append] to a string reference. Only doable in: [map/list]-type.");
             }
         } catch (Exception e) {
-            response.raiseException(e);
-            pack.put(response.toString());
+            pack.put(TokenSender.raise(
+                    TokenSender.classifyException(e), e.getMessage())
+                    .toByteArray());
             return;
         }
-        response.sendOkResponse();
-        pack.put(response.toString());
-
-         */
+        pack.put(
+                TokenSender.responseOK()
+                        .toByteArray());
     }
 
 
-    public void getRequest(Document document) throws IOException {
-        var response  = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
-        Timer t = new Timer();
-        t.start();
+    public void getRequest(PacketOuterClass.Packet packet) throws IOException {
+        var path = packet.getArgsMap().get("path");
         try {
-            try {
-                var retrievedObject = KasperGlobalMap.findWithPath(document.getElementsByTagName("path").item(0).getTextContent());
-                var doc = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
-                doc.response(retrievedObject);
-                pack.put(doc.toString());
-            } catch (IOException e) {
-                throw new KasperIOException(e.getMessage());
-            }
+            var retrievedObject = KasperGlobalMap.findWithPath(path);
+            pack.put(
+                    TokenSender.sendObjectResponse(retrievedObject, path)
+                            .toByteArray());
         } catch (Exception e) {
-            t.stop();
-            response.raiseException(e);
-            pack.put(response.toString());
+            pack.put(
+                    TokenSender.raise(TokenSender.classifyException(e), e.getMessage())
+                            .toByteArray());
         }
     }
 

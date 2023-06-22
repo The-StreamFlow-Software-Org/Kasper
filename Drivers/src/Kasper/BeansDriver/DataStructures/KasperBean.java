@@ -23,6 +23,8 @@ public class KasperBean extends AbstractReference{
 
 
 
+
+
     public KasperBean(String host, String user, String password) throws KasperException {
         this(host, user, password, 53182);
     }
@@ -67,7 +69,8 @@ public class KasperBean extends AbstractReference{
             var packet = PacketOuterClass.Packet.parseFrom(bytes);
             TokenSender.resolveExceptions(packet);
         } catch (Exception e) {
-            throw new KasperIOException(e.toString());
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
         }
         return new NodeReference(name, this);
     }

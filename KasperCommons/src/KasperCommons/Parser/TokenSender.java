@@ -10,6 +10,14 @@ import KasperCommons.Exceptions.NotIterableException;
 
 public class TokenSender {
 
+
+    public static PacketOuterClass.Packet clear () {
+        PreparedPacket packet = new PreparedPacket();
+        packet.setHeader(16);
+        return packet.build();
+    }
+
+
     public static PacketOuterClass.Packet exist (String path) {
         PreparedPacket packet = new PreparedPacket();
         packet.setHeader(5);
@@ -56,10 +64,11 @@ public class TokenSender {
         return packet.build();
     }
 
-    public static PacketOuterClass.Packet sendObjectResponse (KasperObject object) {
+    public static PacketOuterClass.Packet sendObjectResponse (KasperObject object, String path) {
         PreparedPacket packet = new PreparedPacket();
         packet.setHeader(15);
         packet.setData(object);
+        packet.addArg("path", path);
         return packet.build();
     }
 

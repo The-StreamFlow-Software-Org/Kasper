@@ -30,10 +30,9 @@ public class NodeReference extends AbstractReference{
             var bytes = networkPackage.get();
             var packet = PacketOuterClass.Packet.parseFrom(bytes);
             TokenSender.resolveExceptions(packet);
-        } catch (IOException e) {
-            throw new KasperIOException(e.toString());
         } catch (Exception e) {
-            throw new KasperException(e.toString());
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
         }
         return new CollectionReference(referenceName, this);
     }
@@ -59,6 +58,7 @@ public class NodeReference extends AbstractReference{
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(networkPackage.get()));
             return useCollection(collectionName);
         } catch (Exception e) {
+            if (e instanceof KasperException) throw (KasperException)e;
             throw new KasperException(e.getMessage());
         }
     }

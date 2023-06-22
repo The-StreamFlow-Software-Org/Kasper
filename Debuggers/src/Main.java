@@ -2,6 +2,7 @@ import Kasper.BeansDriver.DataStructures.KasperBean;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.Authenticator.Meta;
 import KasperCommons.DataStructures.*;
+import KasperCommons.Exceptions.KasperObjectAlreadyExists;
 import KasperCommons.Network.Timer;
 import Server.Handler.PathCrawler;
 import Server.SuperClass.KasperGlobalMap;
@@ -14,28 +15,22 @@ import java.util.Scanner;
 
 public class Main {
     private static long startTime;
-    public static void main(String[] args) throws Exception {
-        Random random = new Random();
-        // InstantiatorService.start();
+    public static void main(String[] args) throws IOException {
+        KasperBean conn = new KasperBean("192.168.254.103", "", "");
+        var collection = conn.createNode("test2").createCollection("collection");
         KasperList list = new KasperList();
-        KasperBean bean = new KasperBean("", "" , "");
-        var ref = bean.generateRawReference("try.me");
-        System.out.println(JSONUtils.objectToJsonStream(ref));
-        var map = new KasperMap().put("top-level", list);
-
-        for (int i=0; i<100000; i++) {
-            var li = generateRandomSubjects(random);
-            list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
-        } map.put("final", "final");
+        System.out.println("Kasper results: ");
         Timer.getTimer().start();
-        var newObj = JSONUtils.parseJson(JSONUtils.objectToJsonStream(map));
-        System.out.println("Total JSON parse-unparse is: " + Timer.getTimer().stop());
-        var mapper = newObj.toMap().get("final");
+        for (int i=0; i<1000; i++) {
+            collection.setKey(Integer.toString(i), Integer.toString(i));
+        }
+        System.out.println("Set took: " + Timer.getTimer().stop());
         Timer.getTimer().start();
-        LocalPathCrawler.finalPathSetter(newObj, "pathparser");
-        LocalPathCrawler.crawlPaths(newObj);
-        System.out.println(mapper.getPath());
-        System.out.println("Serialization overhead with protocol buffers: "+ Timer.getTimer().stop() + "s" );
+        for (int i=0; i<1000; i++) {
+            collection.getKey(Integer.toString(i));
+        }
+        System.out.println("Get took: " + Timer.getTimer().stop());
+        collection.clear();
     }
 
     public static void benchmark() throws IOException {

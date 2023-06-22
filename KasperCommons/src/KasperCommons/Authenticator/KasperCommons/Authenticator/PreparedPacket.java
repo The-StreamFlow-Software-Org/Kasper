@@ -47,6 +47,7 @@ public class PreparedPacket{
      13 -> response-ok<br>
      14 -> response-error<br>
      15 -> response-ok-with-args<br>
+     16 -> clear<br>
      */
 
     public PreparedPacket setHeader (int header) {
@@ -55,10 +56,7 @@ public class PreparedPacket{
     }
 
     public PreparedPacket setData(KasperObject object) {
-        Timer t = new Timer();
-       t.start();
         var stringified = JSONUtils.objectToJsonStream(object);
-        System.out.println("GSON overhead is: " + t.stop());
         builder.setData(stringified);
         return this;
     }

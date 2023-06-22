@@ -2,10 +2,9 @@ package Kasper.BeansDriver.DataStructures;
 
 import KasperCommons.Annotations.RawKasperReferenceUsage;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.KasperReference;
+import KasperCommons.DataStructures.*;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
@@ -14,8 +13,11 @@ import KasperCommons.Network.NetworkPackage;
 import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
+import KasperCommons.Parser.TokenSender;
+import com.sun.source.tree.PackageTree;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class CollectionReference extends AbstractReference{
@@ -63,19 +65,7 @@ public class CollectionReference extends AbstractReference{
      * @throws NoSuchKasperObject when the key is not found in the database.
      */
     public KasperObject getKey(String keyName){
-        try {
-            PathParser parser = new PathParser();
-            parser.addPath(keyName);
-            parser.addPath(name);
-            parser.addPath(parent.name);
-            PreparedPacket packet = new PreparedPacket();
-            packet.setHeader(2);
-            packet.addArg("path", parser.parsePath());
-            networkPackage.put(packet.build().toByteArray());
-
-        } catch (IOException e) {
-            throw new KasperIOException(e.toString());
-        } return null;
+        return getKey(generateReference(keyName));
     }
 
     /**
@@ -86,13 +76,22 @@ public class CollectionReference extends AbstractReference{
      */
     public KasperObject getKey(KasperReference reference){
         try{
-            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
-            document.getRequest(reference.toStr());
-            networkPackage.put(document.toString());
-        //    return new KasperConstructor(KasperDocument.constructor(networkPackage.get())).constructObject();
-        } catch (IOException e) {
-            throw new KasperIOException(e.toString());
-        } return null;
+            PreparedPacket packet =  new PreparedPacket();
+            packet.setHeader(2);
+            packet.addArg("path", reference.toStr());
+            networkPackage.put(packet.build().toByteArray());
+            var resultant = PacketOuterClass.Packet.parseFrom(networkPackage.get());
+            TokenSender.resolveExceptions(resultant);
+            var data = JSONUtils.parseJson(resultant.getData());
+
+            // initialize path crawling
+            LocalPathCrawler.finalPathSetter(data, resultant.getArgsMap().get("path"));
+            LocalPathCrawler.crawlPaths(data);
+            return data;
+        } catch (Exception e) {
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
+        }
     }
 
     /**
@@ -105,13 +104,17 @@ public class CollectionReference extends AbstractReference{
     public void setKey(KasperReference referencePath, String key, KasperObject value) {
         try {
             if (key.charAt(0) == '$') throw new KasperException("Thrown by KasperDriver.\nReason:> Keys cannot start with reserved character '$'.");
-            var document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
-            document.setRequest(referencePath.toStr(), key, value);
-            networkPackage.put(document.toString());
-            var x = networkPackage.get();
-        //    KasperConstructor.checkForExceptions(x);
-        } catch (IOException e){
-            ExceptionHandler.attemptException(e.getClass().getName(), e.getMessage());
+            PreparedPacket packet = new PreparedPacket();
+            packet.setHeader(1);
+            packet.setData(value);
+            packet.addArg("path", referencePath.toStr());
+            packet.addArg("key", key);
+            networkPackage.put(packet.build().toByteArray());
+            TokenSender.resolveExceptions(
+                    PacketOuterClass.Packet
+                            .parseFrom(networkPackage.get()));
+        } catch (Exception e){
+            if (e instanceof KasperException) throw (KasperException)e;
             throw new KasperException(e.getMessage());
         }
     }
@@ -272,6 +275,19 @@ public class CollectionReference extends AbstractReference{
         }
 
 
+    }
+
+    /**
+     * @brief clears all the global data, including nodes.
+     */
+    public void clear () {
+        try {
+            networkPackage.put(TokenSender.clear().toByteArray());
+            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(networkPackage.get()));
+        }  catch (Exception e){
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
+        }
     }
 
 
