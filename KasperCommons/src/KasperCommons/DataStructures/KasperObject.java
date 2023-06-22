@@ -5,6 +5,7 @@ import KasperCommons.Exceptions.NotIterableException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -26,6 +27,8 @@ public class KasperObject implements Serializable {
 
     // holds the final path upon path construction
     protected String finalPath = "";
+
+    protected HashSet<KasperObject> referencedBy = null;
 
     public String getPath() {
         if (finalPath.equals("")) {

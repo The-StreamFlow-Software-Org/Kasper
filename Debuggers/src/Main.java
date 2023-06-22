@@ -23,15 +23,16 @@ public class Main {
         System.out.println(JSONUtils.objectToJsonStream(ref));
         var map = new KasperMap().put("top-level", list);
 
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<100000; i++) {
             var li = generateRandomSubjects(random);
             list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
-            list = li;
         } map.put("final", "final");
+        Timer.getTimer().start();
         var newObj = JSONUtils.parseJson(JSONUtils.objectToJsonStream(map));
+        System.out.println("Total JSON parse-unparse is: " + Timer.getTimer().stop());
         var mapper = newObj.toMap().get("final");
         Timer.getTimer().start();
-        LocalPathCrawler.finalPathSetter(newObj, "finalpath");
+        LocalPathCrawler.finalPathSetter(newObj, "pathparser");
         LocalPathCrawler.crawlPaths(newObj);
         System.out.println(mapper.getPath());
         System.out.println("Serialization overhead with protocol buffers: "+ Timer.getTimer().stop() + "s" );
@@ -46,13 +47,15 @@ public class Main {
         for (int i=0; i<1000000; i++) {
             var li = generateRandomSubjects(random);
             list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
-            list = li;
         } map.put("final", "final");
         var newObj = JSONUtils.parseJson(JSONUtils.objectToJsonStream(map));
+        LocalPathCrawler.crawlPaths(newObj);
+        LocalPathCrawler.finalPathSetter(newObj, "testpath");
         var mapper = newObj.toMap().get("final");
         Timer.getTimer().start();
         System.out.println(mapper.getPath());
         System.out.println("Serialization overhead with protocol buffers: "+ Timer.getTimer().stop() + "s" );
+        System.out.println(mapper);
         new Scanner(System.in).nextLine();
     }
 

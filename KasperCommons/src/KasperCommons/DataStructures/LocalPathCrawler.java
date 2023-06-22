@@ -24,19 +24,18 @@ public class LocalPathCrawler {
         Deque<KasperObject> stack = new ArrayDeque<>(); // Stack to hold objects to process
         stack.push(o);
 
-        int ctr = 0;
         while (!stack.isEmpty()) {
             KasperObject current = stack.pop();
 
 
             if (!(current instanceof KasperString)) {
-                ctr++;
                 if (current instanceof KasperMap) {
                     for (var x : current.toMap().entrySet()) {
                         if (!x.getValue().id.isEmpty()) return;
                         var val = x.getValue();
                         val.id = x.getKey();
                         if (val.inquirers!=null) {
+                            // interrupt all thread listeners
                             for (var thread : val.inquirers) {
                                 thread.interrupt();
                             }
@@ -57,7 +56,7 @@ public class LocalPathCrawler {
                         stack.push(x); // Add to stack for further processing
                     }
                 }
-            } else current.id = " ";
+            }
         }
     }
 
