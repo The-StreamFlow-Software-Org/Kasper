@@ -9,6 +9,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjdk/jol/jol-core/0.17/jol-core-0.17.jar" path-in-jar="/" />
       <element id="library" level="project" name="github.ben.manes.caffeine" />
       <element id="artifact" artifact-name="github_ben_manes_caffeine" />
+      <element id="library" level="project" name="protobuf-java-3.23.3" />
     </root>
   </artifact>
 </component>

@@ -14,7 +14,7 @@ public class KasperReference extends KasperObject{
 
     public KasperReference(String path) {
         super("reference");
-        data = path;
+        data = path.intern();
         parser = new PathParser();
     }
 

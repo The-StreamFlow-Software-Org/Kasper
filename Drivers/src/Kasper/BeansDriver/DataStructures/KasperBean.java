@@ -1,12 +1,13 @@
 package Kasper.BeansDriver.DataStructures;
 
+import Kasper.BeansDriver.Network.SocketHolder;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.KasperReference;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperIOException;
-import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Parser.PathParser;
 import KasperCommons.Parser.TokenSender;
 
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class KasperBean extends AbstractReference{
+
+    protected SocketHolder socketHolder;
 
 
 
@@ -37,7 +40,7 @@ public class KasperBean extends AbstractReference{
             this.user = user;
             this.password = password;
             this.name = this.host;
-            networkPackage = new NetworkPackage(new Socket(host, port));
+            kasperNitroWire = new KasperNitroWire(new Socket(host, port), true);
         } catch (IOException e) {
             throw new KasperIOException("thrown by KasperDriver:> Make sure that you are connected to the KasperEngine instance.");
         }
@@ -52,8 +55,8 @@ public class KasperBean extends AbstractReference{
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(3);
             packet.addArg("name", parser.parsePath());
-            networkPackage.put(packet.build().toByteArray());
-            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(networkPackage.get()));
+            kasperNitroWire.put(packet.build().toByteArray());
+            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
             return useNode(nodename);
         } catch (Exception e) {
            throw new KasperException(e.getMessage());
@@ -64,8 +67,8 @@ public class KasperBean extends AbstractReference{
         try {
             PathParser parser = new PathParser();
             parser.addPath(name);
-            networkPackage.put(TokenSender.exist(parser.parsePath()).toByteArray());
-            var bytes = networkPackage.get();
+            kasperNitroWire.put(TokenSender.exist(parser.parsePath()).toByteArray());
+            var bytes = kasperNitroWire.get();
             var packet = PacketOuterClass.Packet.parseFrom(bytes);
             TokenSender.resolveExceptions(packet);
         } catch (Exception e) {

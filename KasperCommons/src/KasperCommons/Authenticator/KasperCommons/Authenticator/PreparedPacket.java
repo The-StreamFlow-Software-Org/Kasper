@@ -32,6 +32,7 @@ public class PreparedPacket{
     }
 
     /**
+     0 -> auth<br>
      1 -> set<br>
      2 -> get<br>
      3 -> create-node<br>

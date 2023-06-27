@@ -1,9 +1,9 @@
 package Kasper.BeansDriver.DataStructures;
 
-import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Network.KasperNitroWire;
 
 public abstract class AbstractReference {
-    protected NetworkPackage networkPackage;
+    protected KasperNitroWire kasperNitroWire;
     protected String name;
     protected String type;
     protected String password;

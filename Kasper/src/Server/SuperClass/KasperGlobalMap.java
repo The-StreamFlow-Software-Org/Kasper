@@ -9,6 +9,7 @@ import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Parser.PathParser;
 import Persistence.Cache;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -31,6 +32,10 @@ public class KasperGlobalMap implements Serializable {
 
     public static ConcurrentHashMap<String, KasperNode> getNodes(){
         return instance.globalmap;
+    }
+
+    private static void init(){
+        KasperGlobalMap.globalmap = new ConcurrentHashMap<>();
     }
 
     private KasperGlobalMap () {

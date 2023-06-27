@@ -20,7 +20,7 @@ public abstract class KasperServerAbstracts extends KasperMap {
 
     protected KasperServerAbstracts(String type) {
         super(type);
-        data = new ConcurrentHashMap<>(100);
+        data = new ConcurrentHashMap<>();
     }
 
     protected String name;

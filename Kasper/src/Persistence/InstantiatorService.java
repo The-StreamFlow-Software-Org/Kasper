@@ -2,6 +2,7 @@ package Persistence;
 
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import KasperCommons.Authenticator.Meta;
 import KasperCommons.Concurrent.Pool;
 import KasperCommons.DataStructures.CacheNodes;
 import KasperCommons.Exceptions.InvalidPersistenceData;
@@ -12,27 +13,39 @@ import Server.Parser.AESUtils;
 import Server.Parser.DiskIO;
 import KasperCommons.Parser.KasperDocument;
 import Server.SuperClass.KasperGlobalMap;
+import Server.SuperClass.SocketHolders;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InstantiatorService {
 
+    protected static void initConcurrentSockets() throws IOException {
+        System.out.println("Kasper:> Instantiating concurrent sockets.");
+        SocketHolders.socket1 = new ServerSocket(Meta.concurrentSockets.get(0));
+        SocketHolders.socket2 = new ServerSocket(Meta.concurrentSockets.get(1));
+        SocketHolders.socket3 = new ServerSocket(Meta.concurrentSockets.get(2));
+        SocketHolders.socket4 = new ServerSocket(Meta.concurrentSockets.get(3));
+        SocketHolders.socket5 = new ServerSocket(Meta.concurrentSockets.get(4));
+    }
+
+    @SuppressWarnings("unchecked")
     public static void start() throws IOException {
         DiskIO.writeConfig();
         Cache.init();
         KasperGlobalMap.instantiate();
         new KasperAccessAuthenticator("kasper.util.key");
-        KasperGlobalMap.getNodes();
+        KasperGlobalMap.instantiate();
         try {
             var s = DiskIO.getSerialized();
             KasperGlobalMap.getNodes();
             var temp =  Serialize.constructFromBlob(ByteCompression.decompress(AESUtils.decrypt(s)));
             if (temp != null) KasperGlobalMap.globalmap = (ConcurrentHashMap<String, KasperNode>) temp;
         }
-        catch (IOException e){}
+        catch (IOException ignored){}
         catch (Exception e) {
             e.printStackTrace();
         }

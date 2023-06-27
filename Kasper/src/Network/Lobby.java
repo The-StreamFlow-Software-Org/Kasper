@@ -1,9 +1,12 @@
 package Network;
 
-import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Authenticator.Meta;
+import KasperCommons.Concurrent.Pool;
+import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.Timer;
 import Persistence.InstantiatorService;
-import KasperCommons.Authenticator.Meta;
+import Server.SuperClass.KasperGlobalMap;
+import org.openjdk.jol.info.GraphLayout;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
@@ -12,6 +15,7 @@ import java.net.ServerSocket;
 
 public class Lobby {
     private ServerSocket server;
+    private ServerSocket nitroServer;
     private static boolean ending = false;
 
     private static Lobby instance;
@@ -25,6 +29,7 @@ public class Lobby {
             while (!ending) {
                 try {
                     Thread.sleep(Meta.snapshotTimeout);
+                    System.gc();
                     System.out.println("Kasper:> Writing snapshot to disk" + "...");
                     InstantiatorService.writeBackup();
                 } catch (Exception e) {
@@ -33,7 +38,7 @@ public class Lobby {
             }
         });
 
-        t.start();
+        Pool.newThread(t);
 
 
         Signal.handle(new Signal("INT"), new SignalHandler() {
@@ -44,6 +49,7 @@ public class Lobby {
                     Timer.getTimer().start();
                     InstantiatorService.close();
                     System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
+                    System.out.println("Kasper says bye! :)");
                     System.exit(0);
                 } catch (Exception e) {
                     System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
@@ -54,7 +60,10 @@ public class Lobby {
         });
 
         while (true) {
-            new Room(new NetworkPackage(instance.server.accept()));
+            var initWire = (new KasperNitroWire(instance.server.accept()));
+            var nitroSocket = instance.nitroServer.accept();
+            initWire.setNitro(nitroSocket);
+            new Room(initWire);
         }
     }
     private static void init () throws IOException {
@@ -63,6 +72,18 @@ public class Lobby {
 
     private Lobby () throws IOException {
         server = new ServerSocket(Meta.port);
+        nitroServer = new ServerSocket(Meta.port+1);
+        String msg = "Kasper:> Current memory usage of all stored data: ";
         System.out.println("Kasper:> Now ready to accept connections in port: " + Meta.port + ".");
+        Pool.newThread(()->{
+            while (true) {
+                System.out.println(msg + GraphLayout.parseInstance(KasperGlobalMap.globalmap).totalSize() + " bytes.");
+                try {
+                    Thread.sleep(100000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 }

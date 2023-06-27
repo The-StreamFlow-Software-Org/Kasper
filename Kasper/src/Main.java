@@ -35,13 +35,6 @@ public class Main {
         Timer.getTimer().reset();
         Lobby.acceptConnections();
         Timer.getTimer().start();
-        //scanner.nextLine();
-        System.out.println("Kasper:> Terminating Kasper. Please wait while we 'bucketize' your data into snapshots.");
-        InstantiatorService.close();
-        System.out.println("Kasper:> Bucketizing has finished after " + Timer.getTimer().stop() + "s.");
-        System.out.println("Press any key to finish...");
-        //scanner.nextLine();
-        System.out.println("Kasper says bye!");
     }
 
 

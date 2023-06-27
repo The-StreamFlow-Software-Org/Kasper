@@ -1,16 +1,20 @@
 package KasperCommons.Authenticator;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Meta {
 
     public static boolean serverMode = false;
 
     public static int snapshotTimeout = 24000;
+
+    // holds the data for concurrent sockets
+    public static ArrayList<Integer> concurrentSockets = new ArrayList<>();
     public static String folder = "data/";
     public static String filename = "cluster.knf";
 
-    public static String version = "Alfalfa 0.1.0";
+    public static String version = "Alfalfa 0.3.2";
 
     public static BigInteger maxRecursionDepth = BigInteger.valueOf(100000);
 

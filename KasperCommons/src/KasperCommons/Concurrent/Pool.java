@@ -1,17 +1,16 @@
 package KasperCommons.Concurrent;
 
-import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.NetworkPackageRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class Pool {
     ThreadPoolExecutor executorService;
     private static int minThreads = 5;
-    private static int maxThreads = 15;
+    private static int maxThreads = 30;
     private static int keepAliveSeconds = 60;
     private BlockingQueue<Runnable> tickets;
     private Pool () {
@@ -34,8 +33,8 @@ public class Pool {
     }
 
     class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-        NetworkPackage network;
-        public CustomUncaughtExceptionHandler (NetworkPackage net){
+        KasperNitroWire network;
+        public CustomUncaughtExceptionHandler (KasperNitroWire net){
             this.network = net;
         }
         @Override

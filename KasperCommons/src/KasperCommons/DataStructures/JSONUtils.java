@@ -1,6 +1,8 @@
 package KasperCommons.DataStructures;
 
+import KasperCommons.Network.Timer;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -62,8 +64,10 @@ public class JSONUtils {
     }
 
     public static KasperObject parseJson(String jsonString) throws IOException {
+        Timer t= new Timer();
+        t.start();
         JsonReader reader = new JsonReader(new StringReader(jsonString));
-        return readElement(reader, null); // Set the initial parent as null
+        return readElement(reader, null);
     }
 
     private static KasperObject readElement(JsonReader reader, KasperObject parent) throws IOException {

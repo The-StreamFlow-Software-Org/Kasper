@@ -6,18 +6,14 @@ import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.*;
 import KasperCommons.Exceptions.KasperException;
-import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
-import KasperCommons.Handlers.ExceptionHandler;
-import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Parser.KasperDocument;
 import KasperCommons.Parser.KasperWriter;
 import KasperCommons.Parser.PathParser;
 import KasperCommons.Parser.TokenSender;
-import com.sun.source.tree.PackageTree;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Optional;
 
 public class CollectionReference extends AbstractReference{
@@ -32,7 +28,7 @@ public class CollectionReference extends AbstractReference{
         user = parent.host;
         nodeName = parent.name;
         this.name = name;
-        this.networkPackage = parent.networkPackage;
+        this.kasperNitroWire = parent.kasperNitroWire;
     }
 
     /**
@@ -79,8 +75,8 @@ public class CollectionReference extends AbstractReference{
             PreparedPacket packet =  new PreparedPacket();
             packet.setHeader(2);
             packet.addArg("path", reference.toStr());
-            networkPackage.put(packet.build().toByteArray());
-            var resultant = PacketOuterClass.Packet.parseFrom(networkPackage.get());
+            kasperNitroWire.put(packet.build().toByteArray());
+            var resultant = PacketOuterClass.Packet.parseFrom(kasperNitroWire.get());
             TokenSender.resolveExceptions(resultant);
             var data = JSONUtils.parseJson(resultant.getData());
 
@@ -103,16 +99,17 @@ public class CollectionReference extends AbstractReference{
      */
     public void setKey(KasperReference referencePath, String key, KasperObject value) {
         try {
+            key = key.intern();
             if (key.charAt(0) == '$') throw new KasperException("Thrown by KasperDriver.\nReason:> Keys cannot start with reserved character '$'.");
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(1);
             packet.setData(value);
             packet.addArg("path", referencePath.toStr());
             packet.addArg("key", key);
-            networkPackage.put(packet.build().toByteArray());
+            kasperNitroWire.put(packet.build().toByteArray());
             TokenSender.resolveExceptions(
                     PacketOuterClass.Packet
-                            .parseFrom(networkPackage.get()));
+                            .parseFrom(kasperNitroWire.get()));
         } catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
             throw new KasperException(e.getMessage());
@@ -202,7 +199,9 @@ public class CollectionReference extends AbstractReference{
         PathParser parser = new PathParser();
         parser.addPath(name);
         parser.addPath(parent.name);
-        return new KasperReference(parser.parsePath() +  "." + rawPath);
+        StringBuilder pathBuilder = new StringBuilder();
+        pathBuilder.append(parser.parsePath()).append(".").append(rawPath);
+        return new KasperReference(pathBuilder.toString());
     }
 
     /**
@@ -211,7 +210,7 @@ public class CollectionReference extends AbstractReference{
      * @return a KasperFindQuery that will finish the transaction.
      */
     public KasperFindQuery in (KasperReference path){
-        return new KasperFindQuery(path, networkPackage);
+        return new KasperFindQuery(path, kasperNitroWire);
     }
 
     /**
@@ -223,14 +222,14 @@ public class CollectionReference extends AbstractReference{
     public KasperFindQuery in (String path) {
         var ref = new KasperReference("");
      //   ref.getPath() = path;
-        return new KasperFindQuery(ref, networkPackage);
+        return new KasperFindQuery(ref, kasperNitroWire);
     }
 
     public class KasperFindQuery {
         protected KasperDocument document;
-        protected NetworkPackage pack;
+        protected KasperNitroWire pack;
         protected KasperReference path;
-        protected KasperFindQuery (KasperReference path, NetworkPackage pack) {
+        protected KasperFindQuery (KasperReference path, KasperNitroWire pack) {
             this.document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             this.pack = pack;
             this.path= path;
@@ -282,8 +281,8 @@ public class CollectionReference extends AbstractReference{
      */
     public void clear () {
         try {
-            networkPackage.put(TokenSender.clear().toByteArray());
-            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(networkPackage.get()));
+            kasperNitroWire.put(TokenSender.clear().toByteArray());
+            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
         }  catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
             throw new KasperException(e.getMessage());

@@ -93,7 +93,7 @@ public class KasperObject implements Serializable {
     Should only be accessed with extended classes.
      */
     protected KasperObject (String type) {
-        this.type = type;
+        this.type = type.intern();
     }
 
 
@@ -113,7 +113,7 @@ public class KasperObject implements Serializable {
      * @throws ClassCastException if the original type of this object is not a string.
      */
     public String toStr (){
-        return (String) data;
+        return (String)data;
     }
 
     @SuppressWarnings("unchecked")

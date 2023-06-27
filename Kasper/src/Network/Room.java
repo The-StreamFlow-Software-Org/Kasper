@@ -1,22 +1,35 @@
 package Network;
 
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
+import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
+import KasperCommons.Authenticator.Meta;
 import KasperCommons.Concurrent.Pool;
-import KasperCommons.Network.NetworkPackage;
+import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.NetworkPackageRunnable;
-import KasperCommons.Parser.KasperDocument;
 import Server.Handler.RequestHandler;
 
 import java.io.IOException;
 import java.net.SocketException;
 
 public class Room {
-    private NetworkPackage pack;
+    private KasperNitroWire pack;
 
 
-    public Room (NetworkPackage pack) {
+    public Room (KasperNitroWire pack)  {
         this.pack = pack;
         handleMethods();
+
+    }
+
+
+
+    public void initConcurrentSockets() throws IOException {
+        PreparedPacket packet =  new PreparedPacket();
+        packet.setHeader(0);
+        for (int i=0; i<5; i++){
+            packet.addArg(Integer.toString(i), Integer.toString(Meta.concurrentSockets.get(i)));
+        }   pack.put(packet.build().toByteArray());
+
     }
 
     public void handleMethods(){
@@ -30,11 +43,15 @@ public class Room {
                         var query = pack.get();
                         var packet = PacketOuterClass.Packet.parseFrom(query);
                         request.handleQuery(packet, pack);
-                    } catch (SocketException e) {
-                        var x = e;
-                        return;
                     }
                     catch (IOException e) {
+                        System.out.println("Kasper:> Closed connection to a client.");
+                        try {
+                            pack.close();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        } break;
+                    } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }

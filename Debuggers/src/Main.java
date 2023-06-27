@@ -1,12 +1,11 @@
 import Kasper.BeansDriver.DataStructures.KasperBean;
-import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.Authenticator.Meta;
-import KasperCommons.DataStructures.*;
-import KasperCommons.Exceptions.KasperObjectAlreadyExists;
+import KasperCommons.DataStructures.JSONUtils;
+import KasperCommons.DataStructures.KasperList;
+import KasperCommons.DataStructures.KasperMap;
+import KasperCommons.DataStructures.LocalPathCrawler;
 import KasperCommons.Network.Timer;
-import Server.Handler.PathCrawler;
 import Server.SuperClass.KasperGlobalMap;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Random;
@@ -14,22 +13,29 @@ import java.util.Scanner;
 
 
 public class Main {
+
+    protected static Random random = new Random();
     private static long startTime;
     public static void main(String[] args) throws IOException {
-        KasperBean conn = new KasperBean("192.168.254.103", "", "");
-        var collection = conn.createNode("test2").createCollection("collection");
+        System.out.println("Establishing a connection with KasperEngine...");
+        KasperBean conn = new KasperBean("localhost", "", "");
+        var collection = conn.createNode("test3").createCollection("collection");
         KasperList list = new KasperList();
         System.out.println("Kasper results: ");
-        Timer.getTimer().start();
-        for (int i=0; i<1000; i++) {
-            collection.setKey(Integer.toString(i), Integer.toString(i));
+        var listInt = new KasperList();
+        for (int i=0; i<1000000; i++) {
+            listInt.addToList("wash");
         }
+        Timer.getTimer().start();
+        collection.setKey("listInt", listInt);
         System.out.println("Set took: " + Timer.getTimer().stop());
         Timer.getTimer().start();
-        for (int i=0; i<1000; i++) {
-            collection.getKey(Integer.toString(i));
-        }
+        var res= collection.tryGetKey(conn.generateRawReference("test3.collection.listInt"));
         System.out.println("Get took: " + Timer.getTimer().stop());
+        new Scanner(System.in).nextLine();
+        System.out.println(res);
+        System.out.println(res.get().toList().size());
+       // System.out.println(res.get().toMap().get("listInt").toList().size());
         collection.clear();
     }
 
@@ -38,10 +44,9 @@ public class Main {
         // InstantiatorService.start();
         KasperList list = new KasperList();
         var map = new KasperMap().put("top-level", list);
-
-        for (int i=0; i<1000000; i++) {
-            var li = generateRandomSubjects(random);
-            list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
+        for (int i=0; i<100000; i++) {
+        //    var li = generateRandomSubjects(random);
+          //  list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
         } map.put("final", "final");
         var newObj = JSONUtils.parseJson(JSONUtils.objectToJsonStream(map));
         LocalPathCrawler.crawlPaths(newObj);
@@ -77,7 +82,7 @@ public class Main {
             // Add more names as needed
     };
 
-    public static String newName(Random random){
+    public static String newName(){
         StringBuilder build = new StringBuilder();
         build.append(NAMES[random.nextInt(0, NAMES.length-1)]);
         build.append(NAMES[random.nextInt(0, NAMES.length-1)]);
@@ -93,7 +98,7 @@ public class Main {
             // Add more subjects as needed
     };
 
-    private static KasperList generateRandomSubjects(Random random) {
+    private static KasperList generateRandomSubjects() {
         KasperList subjects = new KasperList();
 
         int numSubjects = random.nextInt(SUBJECTS.length) + 1; // Generate 1 to 4 subjects
