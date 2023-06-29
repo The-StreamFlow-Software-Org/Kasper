@@ -21,4 +21,5 @@ public class CommandAlias {
     public static final int RESPONSE_ERROR = 14;
     public static final int RESPONSE_ERROR_WITH_ARGS = 15;
     public static final int CLEAR = 16;
+    public static final int DEEP_DELETE = 17;
 }

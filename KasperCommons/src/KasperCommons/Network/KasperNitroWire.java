@@ -169,7 +169,7 @@ public class KasperNitroWire {
 
     protected int[] getChannels(int totalBytes) {
         int[] result = new int[3];
-        if (totalBytes < 500000) {
+        if (totalBytes < 5000) {
             result[0] = 1;
         } else {
             result[0] = 2; // change to enable

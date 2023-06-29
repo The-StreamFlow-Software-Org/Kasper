@@ -16,7 +16,7 @@ public class Cache {
 
     public static void init () {
         cache = Caffeine.newBuilder()
-                .expireAfterAccess(5, TimeUnit.MINUTES)
+                .expireAfterAccess(30, TimeUnit.SECONDS)
                 .maximumSize(100)
                 .build();
     }

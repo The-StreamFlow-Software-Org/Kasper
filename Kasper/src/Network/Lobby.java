@@ -45,6 +45,24 @@ public class Lobby {
             public void handle(Signal signal) {
                 try {
                     ending = true;
+                    System.out.println("Kasper says bye! :)");
+                    System.out.println("Kasper:> Saving data snapshots...");
+                    Timer.getTimer().start();
+                    InstantiatorService.close();
+                    System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
+                    System.exit(0);
+                } catch (Exception e) {
+                    System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
+                    System.exit(0);
+                }
+                System.exit(0);
+            }
+        });
+
+        Signal.handle(new Signal("TERM"), new SignalHandler() {
+            public void handle(Signal signal) {
+                try {
+                    ending = true;
                     System.out.println("Kasper:> Saving data snapshots...");
                     Timer.getTimer().start();
                     InstantiatorService.close();
@@ -75,15 +93,5 @@ public class Lobby {
         nitroServer = new ServerSocket(Meta.port+1);
         String msg = "Kasper:> Current memory usage of all stored data: ";
         System.out.println("Kasper:> Now ready to accept connections in port: " + Meta.port + ".");
-        Pool.newThread(()->{
-            while (true) {
-                System.out.println(msg + GraphLayout.parseInstance(KasperGlobalMap.globalmap).totalSize() + " bytes.");
-                try {
-                    Thread.sleep(100000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
     }
 }

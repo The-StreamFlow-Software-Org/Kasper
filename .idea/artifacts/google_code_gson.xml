@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="google_code_gson">
+    <output-path>$PROJECT_DIR$/out/artifacts/google_code_gson</output-path>
+    <root id="root">
+      <element id="library" level="project" name="google.code.gson" />
+    </root>
+  </artifact>
+</component>

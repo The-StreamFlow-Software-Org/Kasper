@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="jol-core-0_17_jar_">
+    <output-path>$PROJECT_DIR$/out/artifacts/jol_core_0_17_jar_</output-path>
+    <root id="root">
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjdk/jol/jol-core/0.17/jol-core-0.17.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

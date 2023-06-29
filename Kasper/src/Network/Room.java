@@ -45,7 +45,6 @@ public class Room {
                         request.handleQuery(packet, pack);
                     }
                     catch (IOException e) {
-                        System.out.println("Kasper:> Closed connection to a client.");
                         try {
                             pack.close();
                         } catch (IOException ex) {

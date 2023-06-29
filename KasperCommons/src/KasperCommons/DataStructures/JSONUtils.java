@@ -1,8 +1,8 @@
 package KasperCommons.DataStructures;
 
+import Boost.JSONCache;
 import KasperCommons.Network.Timer;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -15,6 +15,11 @@ public class JSONUtils {
 
     public static String objectToJsonStream(Object obj) {
         try {
+            var cached = JSONCache.get(obj);
+            if (cached != null) {
+                System.out.println("Cache hit!");
+                return cached;
+            }
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
 
@@ -67,6 +72,7 @@ public class JSONUtils {
         Timer t= new Timer();
         t.start();
         JsonReader reader = new JsonReader(new StringReader(jsonString));
+        jsonString = "";
         return readElement(reader, null);
     }
 

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="protobuf-java-3_23_3">
+    <output-path>$PROJECT_DIR$/out/artifacts/protobuf_java_3_23_3</output-path>
+    <root id="root">
+      <element id="library" level="project" name="protobuf-java-3.23.3" />
+    </root>
+  </artifact>
+</component>

@@ -1,10 +1,10 @@
 package Persistence;
 
+import Boost.JSONCache;
 import DataStructures.KasperNode;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.Meta;
 import KasperCommons.Concurrent.Pool;
-import KasperCommons.DataStructures.CacheNodes;
 import KasperCommons.Exceptions.InvalidPersistenceData;
 import KasperCommons.Network.NetworkPackageRunnable;
 import KasperCommons.Network.Operations;
@@ -17,7 +17,6 @@ import Server.SuperClass.SocketHolders;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,7 +37,7 @@ public class InstantiatorService {
         Cache.init();
         KasperGlobalMap.instantiate();
         new KasperAccessAuthenticator("kasper.util.key");
-        KasperGlobalMap.instantiate();
+        JSONCache.init();
         try {
             var s = DiskIO.getSerialized();
             KasperGlobalMap.getNodes();

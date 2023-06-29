@@ -6,10 +6,11 @@
       <element id="module-output" name="KasperCommons" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjdk/jol/jol-core/0.17/jol-core-0.17.jar" path-in-jar="/" />
       <element id="library" level="project" name="github.ben.manes.caffeine" />
       <element id="artifact" artifact-name="github_ben_manes_caffeine" />
-      <element id="library" level="project" name="protobuf-java-3.23.3" />
+      <element id="artifact" artifact-name="protobuf-java-3_23_3" />
+      <element id="artifact" artifact-name="jol-core-0_17_jar_" />
+      <element id="artifact" artifact-name="google_code_gson" />
     </root>
   </artifact>
 </component>

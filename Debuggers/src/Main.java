@@ -23,8 +23,8 @@ public class Main {
         KasperList list = new KasperList();
         System.out.println("Kasper results: ");
         var listInt = new KasperList();
-        for (int i=0; i<1000000; i++) {
-            listInt.addToList("wash");
+        for (int i=0; i<100000; i++) {
+            listInt.addToList(new KasperMap().put(newName(), generateRandomSubjects()));
         }
         Timer.getTimer().start();
         collection.setKey("listInt", listInt);
@@ -44,7 +44,7 @@ public class Main {
         // InstantiatorService.start();
         KasperList list = new KasperList();
         var map = new KasperMap().put("top-level", list);
-        for (int i=0; i<100000; i++) {
+        for (int i=0; i<10000; i++) {
         //    var li = generateRandomSubjects(random);
           //  list.addToList(new KasperMap().put("name", newName(random)).put("sub", li));
         } map.put("final", "final");

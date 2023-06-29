@@ -1,5 +1,6 @@
 package Kasper.BeansDriver.DataStructures;
 
+import Boost.JSONCache;
 import Kasper.BeansDriver.Network.SocketHolder;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
@@ -41,6 +42,7 @@ public class KasperBean extends AbstractReference{
             this.password = password;
             this.name = this.host;
             kasperNitroWire = new KasperNitroWire(new Socket(host, port), true);
+            JSONCache.init();
         } catch (IOException e) {
             throw new KasperIOException("thrown by KasperDriver:> Make sure that you are connected to the KasperEngine instance.");
         }
