@@ -34,6 +34,7 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
 
     public KasperMap put (String key, String value){
         toMap().put(key, new KasperString(value));
+
         return this;
     }
 
