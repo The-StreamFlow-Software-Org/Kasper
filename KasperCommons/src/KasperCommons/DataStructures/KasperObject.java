@@ -4,10 +4,7 @@ package KasperCommons.DataStructures;
 import KasperCommons.Exceptions.NotIterableException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The KasperObject class is a general class used to hold
@@ -28,7 +25,12 @@ public class KasperObject implements Serializable {
     // holds the final path upon path construction
     protected String finalPath = "";
 
-    protected HashSet<KasperObject> referencedBy = null;
+    protected HashMap<KasperObject, String> referencedBy = null;
+
+    protected void addReference(KasperObject parent, String as) {
+        if (referencedBy == null) referencedBy = new HashMap<>();
+        referencedBy.put(parent, as);
+    }
 
     public String getPath() {
         if (finalPath.equals("")) {

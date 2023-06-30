@@ -67,8 +67,7 @@ public class Lobby {
                     Timer.getTimer().start();
                     InstantiatorService.close();
                     System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
-                    System.out.println("Kasper says bye! :)");
-                    System.exit(0);
+                    System.out.println("Kasper:> Use 'ctrl + c' to invoke termination.");
                 } catch (Exception e) {
                     System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
                     System.exit(0);

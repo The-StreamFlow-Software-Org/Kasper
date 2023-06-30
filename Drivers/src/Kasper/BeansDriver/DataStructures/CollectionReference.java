@@ -1,5 +1,6 @@
 package Kasper.BeansDriver.DataStructures;
 
+import KasperCommons.Aliases.CommandAlias;
 import KasperCommons.Annotations.RawKasperReferenceUsage;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
@@ -15,6 +16,8 @@ import KasperCommons.Parser.TokenSender;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static KasperCommons.DataStructures.KasperObject.str;
 
 public class CollectionReference extends AbstractReference{
     protected NodeReference parent;
@@ -124,7 +127,7 @@ public class CollectionReference extends AbstractReference{
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object is inserted to a map where the key already exists.
      */
     public void setKey (KasperReference referencePath, String key, String value) throws KasperException{
-        setKey(referencePath, key, KasperObject.str(value));
+        setKey(referencePath, key, str(value));
     }
 
     /**
@@ -137,7 +140,7 @@ public class CollectionReference extends AbstractReference{
      */
     @RawKasperReferenceUsage
     public void setKey (String referencePath, String key, String value) throws KasperException{
-        setKey(generateReference(referencePath), key, KasperObject.str(value));
+        setKey(generateReference(referencePath), key, str(value));
     }
 
     /**
@@ -161,7 +164,7 @@ public class CollectionReference extends AbstractReference{
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object's key is already inside the database.
      */
     public void setKey (String key, String value) throws KasperException {
-        setKey(key, KasperObject.str(value));
+        setKey(key, str(value));
     }
 
     /**
@@ -289,6 +292,55 @@ public class CollectionReference extends AbstractReference{
         }
     }
 
+    /**
+     *
+     * @param reference Reference to the object to update.
+     * @param object Updated data.
+     * @warning references must be re-added.
+     */
+    public void updateKey(KasperReference reference, KasperObject object) {
+        try {
+            PreparedPacket packet = new PreparedPacket();
+            packet.setHeader(CommandAlias.UPDATE);
+            packet.setData(object);
+            packet.addArg("path", reference.toStr());
+            kasperNitroWire.put(packet.build().toByteArray());
+            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
+        } catch (Exception e){
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param reference Reference to the object to update.
+     * @param object Updated data.
+     * @warning references must be re-added.
+     */
+    public void updateKey(KasperReference reference, String object) {
+        updateKey(reference, str(object));
+    }
+
+    /**
+     *
+     * @param path Reference to the object to update.
+     * @param object Updated data.
+     * @warning references must be re-added.
+     */
+    public void updateKey(String path, KasperObject object) {
+        updateKey(generateReference(path), object);
+    }
+
+    /**
+     *
+     * @param path Reference to the object to update.
+     * @param object Updated data.
+     * @warning references must be re-added.
+     */
+    public void updateKey(String path, String object) {
+        updateKey(generateReference(path), str(object));
+    }
 
 
 

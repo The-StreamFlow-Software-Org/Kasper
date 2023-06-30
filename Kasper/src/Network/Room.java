@@ -9,7 +9,6 @@ import KasperCommons.Network.NetworkPackageRunnable;
 import Server.Handler.RequestHandler;
 
 import java.io.IOException;
-import java.net.SocketException;
 
 public class Room {
     private KasperNitroWire pack;

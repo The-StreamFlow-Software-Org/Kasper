@@ -2,13 +2,13 @@ package Server.Handler;
 
 import DataStructures.KasperCollection;
 import DataStructures.KasperNode;
+import DataStructures.KasperServerAbstracts;
 import KasperCommons.Aliases.CommandAlias;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
-import KasperCommons.DataStructures.JSONUtils;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
+import KasperCommons.DataStructures.*;
+import KasperCommons.Exceptions.InvalidUpdateQuery;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperObjectAlreadyExists;
 import KasperCommons.Exceptions.NoSuchKasperObject;
@@ -30,7 +30,6 @@ public class RequestHandler {
     public void handleQuery(PacketOuterClass.Packet packet, KasperNitroWire pack) throws IOException {
         this.pack = pack;
         PreparedPacket packet1 = new PreparedPacket();
-        // packet1.setHeader(1);
         switch (packet.getHeader()) {
             case CommandAlias.SET -> setRequest(packet);
             case CommandAlias.GET -> getRequest(packet);
@@ -38,23 +37,35 @@ public class RequestHandler {
             case CommandAlias.CREATE_COLLECTION-> createCollection(packet);
             case CommandAlias.EXISTS -> exists(packet);
             case CommandAlias.CLEAR -> clear();
+            case CommandAlias.UPDATE -> update(packet);
+
             default -> {
                 pack.put(TokenSender.raise(2, "KasperEngine:> Driver failure, unknown command sent.").toByteArray());
             }
         }
 
-        /*switch (purpose) {
-            case "set" -> setRequest(doc);
-            case "get" -> getRequest(doc);
-            case "create node" -> createNode(doc);
-            case "create collection" -> createCollection(doc);
-            case "has" -> has(doc);
-            case "contains" -> contains(doc);
-            default -> throw new NoSuchKasperObject("Reason:> Command '" + purpose + "' is not a recognized KasperDOM command.");
-
-        } */
+    }
 
 
+
+
+    private void update (PacketOuterClass.Packet packet) throws IOException {
+        try {
+            var path = packet.getArgsMap().get("path");
+            var updateThis = KasperGlobalMap.findWithPath(path);
+            if (updateThis instanceof KasperServerAbstracts) {
+                throw new InvalidUpdateQuery(path);
+            }
+            var newObj = JSONUtils.parseJson(packet.getData());
+            ProtectedUtils.updateTo(updateThis, newObj, path);
+            System.out.println("Setting the new object to the cache!");
+            Cache.set(path, newObj);
+            pack.put(TokenSender.responseOK().toByteArray());
+        } catch (Exception e) {
+            pack.put(TokenSender.raise(
+                            TokenSender.classifyException(e), e.getMessage())
+                    .toByteArray());
+        }
     }
 
     private void clear() throws IOException {
@@ -87,6 +98,7 @@ public class RequestHandler {
             var object = JSONUtils.parseJson(packet.getData());
             var key = packet.getArgsMap().get("key");
             var destination = KasperGlobalMap.findWithPath(path);
+            ProtectedUtils.setParent(object, destination);
             if (destination instanceof KasperCollection c) {
                 try {
                     c.getValue(key);
