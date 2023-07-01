@@ -4,9 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -22,7 +20,7 @@ public class KasperList extends KasperObject implements Iterable{
 
     public KasperList() {
         super("list");
-        data = new LinkedList<>();
+        data = new LockedLL<>();
     }
 
     /**

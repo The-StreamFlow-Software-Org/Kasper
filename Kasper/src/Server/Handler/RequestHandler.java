@@ -21,7 +21,6 @@ import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
-import java.util.LinkedList;
 
 
 public class RequestHandler {
@@ -114,7 +113,7 @@ public class RequestHandler {
                         l.toList().add(object);
                     } else {
                         int index = Integer.parseInt(key);
-                        var ll = (LinkedList) l.toList();
+                        var ll = (LockedLL) l.toList();
                         ll.add(index, object);
                     }
                 } catch (Exception e) {

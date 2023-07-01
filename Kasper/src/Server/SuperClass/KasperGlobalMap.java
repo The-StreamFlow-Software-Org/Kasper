@@ -5,15 +5,14 @@ import DataStructures.KasperNode;
 import KasperCommons.DataStructures.KasperList;
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.DataStructures.LockedLL;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Parser.PathParser;
 import Persistence.Cache;
-import org.checkerframework.checker.units.qual.C;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -87,7 +86,7 @@ public class KasperGlobalMap implements Serializable {
                                 currobject = l.toList().getLast();
                             } else {
                                 int index = Integer.parseInt(key);
-                                var ll = (LinkedList) l.toList();
+                                var ll = (LockedLL) l.toList();
                                 currobject = (KasperObject) ll.get(index);
                             }
                         } catch (Exception e) {

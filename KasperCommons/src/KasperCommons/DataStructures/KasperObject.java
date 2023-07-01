@@ -105,8 +105,8 @@ public class KasperObject implements Serializable {
      * @return the data of this object as a list.
      * @throws ClassCastException if the original type of this object is not a list.
      */
-    public LinkedList<KasperObject> toList (){
-        return (LinkedList<KasperObject>) data;
+    public LockedLL<KasperObject> toList (){
+        return (LockedLL<KasperObject>) data;
     }
 
     /**

@@ -8,7 +8,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class JSONUtils {
@@ -60,7 +59,7 @@ public class JSONUtils {
         jsonWriter.endObject();
     }
 
-    private static void writeArray(LinkedList<KasperObject> array, JsonWriter jsonWriter) throws Exception {
+    private static void writeArray(LockedLL<KasperObject> array, JsonWriter jsonWriter) throws Exception {
         jsonWriter.beginArray();
         for (Object item : array) {
             writeJson(item, jsonWriter);
