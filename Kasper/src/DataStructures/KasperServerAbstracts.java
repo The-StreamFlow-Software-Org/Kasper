@@ -2,7 +2,7 @@ package DataStructures;
 
 import KasperCommons.DataStructures.KasperMap;
 import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.KasperReference;
+import KasperCommons.DataStructures.KasperPathReference;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import org.w3c.dom.Node;
 
@@ -41,7 +41,7 @@ public abstract class KasperServerAbstracts extends KasperMap {
     }
 
 
-    public KasperReference generateRawReference(String path) {
-        return new KasperReference(path);
+    public KasperPathReference generaterawPathReference(String path) {
+        return new KasperPathReference(path);
     }
 }

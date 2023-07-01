@@ -62,12 +62,12 @@ public class KasperGlobalMap implements Serializable {
             PathParser parser = new PathParser();
             var list = parser.unparsePath(path);
             if (list.size() == 1) {
-                return getNode(list.get(0)).setId(path);
+                return getNode(list.get(0));
             } else if (list.size() == 2) {
-                return getNode(list.get(0)).get(list.get(1)).setId(path);
+                return getNode(list.get(0)).get(list.get(1));
             } else if (list.size() == 3) {
                 var currnode = getNode(list.get(0));
-                return currnode.useCollection(list.get(1)).getValue(list.get(2)).setId(path);
+                return currnode.useCollection(list.get(1)).getValue(list.get(2));
             } else {
                 var currnode = getNode(list.get(0));
                 var object = currnode.useCollection(list.get(1)).getValue(list.get(2));
@@ -92,7 +92,7 @@ public class KasperGlobalMap implements Serializable {
                         } catch (Exception e) {
                             if (e instanceof NoSuchElementException)
                                 throw new KasperException("Reason:> The list is empty. Unable to use nested queries on this object.");
-                            if (e instanceof ArrayIndexOutOfBoundsException)
+                            if (e instanceof IndexOutOfBoundsException)
                                 throw new KasperException("Reason:> Your index is invalid, array index out of bounds.");
                             throw new KasperException("Reason:> Invalid list index was found. Use values [head/tail] to add an element to the head or tail respectively. Else, use a numeric string to specify the index.");
                         }

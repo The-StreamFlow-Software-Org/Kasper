@@ -1,5 +1,6 @@
 package KasperCommons.DataStructures;
 
+import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Parser.PathParser;
 
 import java.util.HashMap;
@@ -8,6 +9,10 @@ import java.util.Set;
 
 public class ProtectedUtils {
 
+    // add reference adds a marker that 'parent' has a reference to 'setInside'.
+    // the 'as' parameter can differ. in lists, this is the index as a string.
+    // in maps, this is the key. this is for easy access from the parent.
+    // in KasperRelationships, the 'as' key is also held as to easily remove it.
     public static void addReference (KasperObject setInside, KasperObject parent, String as) {
         setInside.addReference(parent, as);
     }
@@ -21,10 +26,10 @@ public class ProtectedUtils {
         return object.referencedBy.entrySet();
     }
 
-    public static void updateTo (KasperObject old, KasperObject newObj, String path) {
+    // Here, you pass in the unparsed path
+    public static void updateTo (KasperObject old, KasperObject newObj) {
         if (old.parent == null) return;
-        var unparsed = PathParser.unparsePath(path);
-        var signature = unparsed.get(unparsed.size()-1);
+        var signature = getID(old);
         var parent = old.parent;
         setParentsToNewChild(newObj, parent, signature);
         var iterables = getReferenceIterable(old);
@@ -51,6 +56,29 @@ public class ProtectedUtils {
 
     public static void setParent (KasperObject child, KasperObject parent) {
         child.parent = parent;
+    }
+
+    public static String getID (KasperObject o) {
+        if (o.id != null && !o.id.isEmpty()) return o.id;
+        if (o.parent instanceof KasperMap) {
+            for (var x : o.parent().toMap().entrySet()) {
+                if (x.getValue() == o) {
+                    o.id = x.getKey();
+                    break;
+                }
+            }
+        } else if (o.parent instanceof KasperList) {
+            int index = 0;
+            for (var x : o.parent().toList()) {
+                if (x == o) {
+                    o.id = Integer.toString(index);
+                    break;
+                } index++;
+            }
+        } else {
+            throw new KasperException("Please contact the KasperTeam. There seems to be an error in the method 'getID' in ProtectedUtils.");
+        }
+        return o.id;
     }
 
 

@@ -2,7 +2,7 @@ package Kasper.BeansDriver.DataStructures;
 
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
-import KasperCommons.DataStructures.KasperReference;
+import KasperCommons.DataStructures.KasperPathReference;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Parser.PathParser;
 import KasperCommons.Parser.TokenSender;
@@ -34,13 +34,13 @@ public class NodeReference extends AbstractReference{
         return new CollectionReference(referenceName, this);
     }
 
-    public KasperReference generateReference (String ... path) {
+    public KasperPathReference generatePathReference(String ... path) {
         PathParser parser = new PathParser();
         for (var x : path) {
             parser.addPathConventionally(x);
         }
         parser.addPath(name);
-        return new KasperReference(parser.parsePath());
+        return new KasperPathReference(parser.parsePath());
     }
 
     public CollectionReference createCollection (String collectionName) {

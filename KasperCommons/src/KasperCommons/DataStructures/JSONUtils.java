@@ -42,7 +42,7 @@ public class JSONUtils {
             jsonWriter.value(str.toStr());
         } else if (obj instanceof KasperList list) {
             writeArray(list.toList(), jsonWriter);
-        } else if (obj instanceof KasperReference ref) {
+        } else if (obj instanceof KasperPathReference ref) {
             jsonWriter.beginObject();
             jsonWriter.name("$reference");
             jsonWriter.value(ref.data.toString());

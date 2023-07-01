@@ -5,7 +5,7 @@ import Kasper.BeansDriver.Network.SocketHolder;
 import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
-import KasperCommons.DataStructures.KasperReference;
+import KasperCommons.DataStructures.KasperPathReference;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.KasperIOException;
 import KasperCommons.Network.KasperNitroWire;
@@ -21,8 +21,8 @@ public class KasperBean extends AbstractReference{
 
 
 
-    public KasperReference generateRawReference (String ref){
-        return new KasperReference(ref);
+    public KasperPathReference generaterawPathReference (String ref){
+        return new KasperPathReference(ref);
     }
 
 

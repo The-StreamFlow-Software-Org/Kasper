@@ -40,7 +40,7 @@ public class CollectionReference extends AbstractReference{
      * @return a KasperObject wrapped in the Optional class.
      */
     public Optional<KasperObject> tryGetKey(String keyName){
-        return tryGetKey(generateReference(keyName));
+        return tryGetKey(generatePathReference(keyName));
     }
 
     /**
@@ -49,7 +49,7 @@ public class CollectionReference extends AbstractReference{
      * @param keyName the path of the object to retrieve.
      * @return a KasperObject wrapped in the Optional class.
      */
-    public Optional<KasperObject> tryGetKey(KasperReference keyName){
+    public Optional<KasperObject> tryGetKey(KasperPathReference keyName){
         Optional<KasperObject> optional = Optional.empty();
         try {
             optional = Optional.of(getKey(keyName));
@@ -64,20 +64,20 @@ public class CollectionReference extends AbstractReference{
      * @throws NoSuchKasperObject when the key is not found in the database.
      */
     public KasperObject getKey(String keyName){
-        return getKey(generateReference(keyName));
+        return getKey(generatePathReference(keyName));
     }
 
     /**
      * @brief Retrieves an object from the collection.
-     * @param reference the path of the object to retrieve.
+     * @param path the path of the object to retrieve.
      * @return a KasperObject wrapped in the Optional class.
      * @throws NoSuchKasperObject when the key is not found in the database.
      */
-    public KasperObject getKey(KasperReference reference){
+    public KasperObject getKey(KasperPathReference path){
         try{
             PreparedPacket packet =  new PreparedPacket();
             packet.setHeader(2);
-            packet.addArg("path", reference.toStr());
+            packet.addArg("path", path.toStr());
             kasperNitroWire.put(packet.build().toByteArray());
             var resultant = PacketOuterClass.Packet.parseFrom(kasperNitroWire.get());
             TokenSender.resolveExceptions(resultant);
@@ -95,19 +95,19 @@ public class CollectionReference extends AbstractReference{
 
     /**
      * @brief Inserts an object to the collection.
-     * @param referencePath the path to where the object is inserted. (Path of the object's parent)
+     * @param path the path to where the object is inserted. (Path of the object's parent)
      * @param key [map] for objects inserted to maps, this specifies the key of the object upon insertion. <br>[list] for objects inserted to lists, this specifies the index of the object upon insertion. Can be 'head' or 'tail' to insert the object as the first or last object respectively. Or can be numeric to specify the index. <br>[string] this parameter is ignored for strings.
      * @param value is the object to be inserted
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object is inserted to a map where the key already exists.
      */
-    public void setKey(KasperReference referencePath, String key, KasperObject value) {
+    public void setKey(KasperPathReference path, String key, KasperObject value) {
         try {
             key = key.intern();
             if (key.charAt(0) == '$') throw new KasperException("Thrown by KasperDriver.\nReason:> Keys cannot start with reserved character '$'.");
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(1);
             packet.setData(value);
-            packet.addArg("path", referencePath.toStr());
+            packet.addArg("path", path.toStr());
             packet.addArg("key", key);
             kasperNitroWire.put(packet.build().toByteArray());
             TokenSender.resolveExceptions(
@@ -121,39 +121,39 @@ public class CollectionReference extends AbstractReference{
 
     /**
      * @brief Inserts an object to the collection.
-     * @param referencePath the path to where the object is inserted. (Path of the object's parent)
+     * @param path the path to where the object is inserted. (Path of the object's parent)
      * @param key [map] for objects inserted to maps, this specifies the key of the object upon insertion. <br>[list] for objects inserted to lists, this specifies the index of the object upon insertion. Can be 'head' or 'tail' to insert the object as the first or last object respectively. Or can be numeric to specify the index. <br>[string] this parameter is ignored for strings.
      * @param value the string to be inserted
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object is inserted to a map where the key already exists.
      */
-    public void setKey (KasperReference referencePath, String key, String value) throws KasperException{
-        setKey(referencePath, key, str(value));
+    public void setKey (KasperPathReference path, String key, String value) throws KasperException{
+        setKey(path, key, str(value));
     }
 
     /**
      *
      * @brief Inserts an object to the collection.
-     * @param referencePath the raw path to where the object is inserted. (Path of the object's parent)
+     * @param path the raw path to where the object is inserted. (Path of the object's parent)
      * @param key [map] for objects inserted to maps, this specifies the key of the object upon insertion. <br>[list] for objects inserted to lists, this specifies the index of the object upon insertion. Can be 'head' or 'tail' to insert the object as the first or last object respectively. Or can be numeric to specify the index. <br>[string] this parameter is ignored for strings.
      * @param value is the object to be inserted
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object is inserted to a map where the key already exists.
      */
     @RawKasperReferenceUsage
-    public void setKey (String referencePath, String key, String value) throws KasperException{
-        setKey(generateReference(referencePath), key, str(value));
+    public void setKey (String path, String key, String value) throws KasperException{
+        setKey(generatePathReference(path), key, str(value));
     }
 
     /**
      *
      * @brief Inserts an object to the collection.
-     * @param referencePath the raw path to where the object is inserted. (Path of the object's parent)
+     * @param path the raw path to where the object is inserted. (Path of the object's parent)
      * @param key [map] for objects inserted to maps, this specifies the key of the object upon insertion. <br>[list] for objects inserted to lists, this specifies the index of the object upon insertion. Can be 'head' or 'tail' to insert the object as the first or last object respectively. Or can be numeric to specify the index. <br>[string] this parameter is ignored for strings.
      * @param value is the object to be inserted
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object is inserted to a map where the key already exists.
      */
     @RawKasperReferenceUsage
-    public void setKey (String referencePath, String key, KasperObject value) throws KasperException{
-        setKey(generateReference(referencePath), key, value);
+    public void setKey (String path, String key, KasperObject value) throws KasperException{
+        setKey(generatePathReference(path), key, value);
     }
 
 
@@ -174,37 +174,37 @@ public class CollectionReference extends AbstractReference{
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object's key is already inside the database.
      */
     public void setKey(String key, KasperObject value) {
-        setKey(generateReference(), key, value);
+        setKey(generatePathReference(), key, value);
     }
 
     /**
-     * @brief generates safe KasperReference with this collection as a base. The args will be appended to the current collection's path. <br>(i.e., args ["this", "path"] output reference: ["node.collection.this.path"]
-     * @param path the path specifying the reference. Leftmost argument is the highest in the object hierarchy.
-     * @return a KasperReference with parsed references
+     * @brief generates safe KasperReference with this collection as a base. The args will be appended to the current collection's path. <br>(i.e., args ["this", "path"] output path: ["node.collection.this.path"]
+     * @param path the path specifying the path. Leftmost argument is the highest in the object hierarchy.
+     * @return a KasperReference with parsed paths
      */
-    public KasperReference generateReference (String ... path) {
+    public KasperPathReference generatePathReference (String ... path) {
         PathParser parser = new PathParser();
         for (var x : path) {
             parser.addPathConventionally(x);
         }
         parser.addPath(name);
         parser.addPath(parent.name);
-        return new KasperReference(parser.parsePath());
+        return new KasperPathReference(parser.parsePath());
     }
 
     /**
-     * @brief generates an unsafe raw reference to a path.
+     * @brief generates an unsafe raw path to a path.
      * @param rawPath the path, delimited by '.' per key.
      * @return a new KasperReference with the raw path inside.
      */
     @RawKasperReferenceUsage
-    public KasperReference rawReference (String rawPath) {
+    public KasperPathReference rawPathReference (String rawPath) {
         PathParser parser = new PathParser();
         parser.addPath(name);
         parser.addPath(parent.name);
         StringBuilder pathBuilder = new StringBuilder();
         pathBuilder.append(parser.parsePath()).append(".").append(rawPath);
-        return new KasperReference(pathBuilder.toString());
+        return new KasperPathReference(pathBuilder.toString());
     }
 
     /**
@@ -212,7 +212,7 @@ public class CollectionReference extends AbstractReference{
      * @param path contains the path to search.
      * @return a KasperFindQuery that will finish the transaction.
      */
-    public KasperFindQuery in (KasperReference path){
+    public KasperFindQuery in (KasperPathReference path){
         return new KasperFindQuery(path, kasperNitroWire);
     }
 
@@ -223,7 +223,7 @@ public class CollectionReference extends AbstractReference{
      */
     @RawKasperReferenceUsage
     public KasperFindQuery in (String path) {
-        var ref = new KasperReference("");
+        var ref = new KasperPathReference("");
      //   ref.getPath() = path;
         return new KasperFindQuery(ref, kasperNitroWire);
     }
@@ -231,8 +231,8 @@ public class CollectionReference extends AbstractReference{
     public class KasperFindQuery {
         protected KasperDocument document;
         protected KasperNitroWire pack;
-        protected KasperReference path;
-        protected KasperFindQuery (KasperReference path, KasperNitroWire pack) {
+        protected KasperPathReference path;
+        protected KasperFindQuery (KasperPathReference path, KasperNitroWire pack) {
             this.document = KasperWriter.newDocument(KasperAccessAuthenticator.getKey());
             this.pack = pack;
             this.path= path;
@@ -294,16 +294,16 @@ public class CollectionReference extends AbstractReference{
 
     /**
      *
-     * @param reference Reference to the object to update.
+     * @param path Reference to the object to update.
      * @param object Updated data.
-     * @warning references must be re-added.
+     * @warning paths must be re-added.
      */
-    public void updateKey(KasperReference reference, KasperObject object) {
+    public void updateKey(KasperPathReference path, KasperObject object) {
         try {
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(CommandAlias.UPDATE);
             packet.setData(object);
-            packet.addArg("path", reference.toStr());
+            packet.addArg("path", path.toStr());
             kasperNitroWire.put(packet.build().toByteArray());
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
         } catch (Exception e){
@@ -314,32 +314,56 @@ public class CollectionReference extends AbstractReference{
 
     /**
      *
-     * @param reference Reference to the object to update.
+     * @param path Reference to the object to update.
      * @param object Updated data.
-     * @warning references must be re-added.
+     * @warning paths must be re-added.
      */
-    public void updateKey(KasperReference reference, String object) {
-        updateKey(reference, str(object));
+    public void updateKey(KasperPathReference path, String object) {
+        updateKey(path, str(object));
     }
 
     /**
      *
      * @param path Reference to the object to update.
      * @param object Updated data.
-     * @warning references must be re-added.
+     * @warning paths must be re-added.
      */
     public void updateKey(String path, KasperObject object) {
-        updateKey(generateReference(path), object);
+        updateKey(generatePathReference(path), object);
     }
 
     /**
      *
      * @param path Reference to the object to update.
      * @param object Updated data.
-     * @warning references must be re-added.
+     * @warning paths must be re-added.
      */
     public void updateKey(String path, String object) {
-        updateKey(generateReference(path), str(object));
+        updateKey(generatePathReference(path), str(object));
+    }
+
+
+    /**
+     * @param path the path reference of the object to be deleted.
+     */
+    public void deleteKey (KasperPathReference path) {
+        try {
+        PreparedPacket packet = new PreparedPacket();
+        packet.setHeader(CommandAlias.DELETE);
+        packet.addArg("path", path.toStr());
+        kasperNitroWire.put(packet.build().toByteArray());
+        TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
+        } catch (Exception e){
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
+        }
+    }
+
+    /**
+     * @param key the key of the object to be deleted.
+     */
+    public void deleteKey (String key) {
+        deleteKey(generatePathReference(key));
     }
 
 

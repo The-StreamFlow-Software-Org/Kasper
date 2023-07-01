@@ -1,5 +1,6 @@
 package Server.Handler;
 
+import Computations.DeleteResolver;
 import DataStructures.KasperCollection;
 import DataStructures.KasperNode;
 import DataStructures.KasperServerAbstracts;
@@ -37,6 +38,7 @@ public class RequestHandler {
             case CommandAlias.EXISTS -> exists(packet);
             case CommandAlias.CLEAR -> clear();
             case CommandAlias.UPDATE -> update(packet);
+            case CommandAlias.DELETE -> delete(packet);
 
             default -> {
                 pack.put(TokenSender.raise(2, "KasperEngine:> Driver failure, unknown command sent.").toByteArray());
@@ -47,6 +49,19 @@ public class RequestHandler {
 
 
 
+    private void delete (PacketOuterClass.Packet packet) throws IOException {
+        try {
+            var objToDel = KasperGlobalMap.findWithPath(packet.getArgsMap().get("path"));
+            DeleteResolver.delete(objToDel);
+            Cache.invalidateObject(objToDel);
+            pack.put(TokenSender.responseOK().toByteArray());
+        } catch (Exception e) {
+            pack.put(TokenSender.raise(
+                            TokenSender.classifyException(e), e.getMessage())
+                    .toByteArray());
+        }
+    }
+
 
     private void update (PacketOuterClass.Packet packet) throws IOException {
         try {
@@ -56,8 +71,7 @@ public class RequestHandler {
                 throw new InvalidUpdateQuery(path);
             }
             var newObj = JSONUtils.parseJson(packet.getData());
-            ProtectedUtils.updateTo(updateThis, newObj, path);
-            System.out.println("Setting the new object to the cache!");
+            ProtectedUtils.updateTo(updateThis, newObj);
             Cache.set(path, newObj);
             pack.put(TokenSender.responseOK().toByteArray());
         } catch (Exception e) {
