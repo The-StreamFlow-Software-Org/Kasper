@@ -30,7 +30,7 @@
 - [x]  Automatic snapshot support.
 - [x]  Persistence support.
 - [x]  Protocol buffer adaptation.
-- [ ]  Delete operations.
+- [x]  Delete operations.
 - [ ]  Documentation finish.
 - [ ]  Query [find all with] and [find all that has] operations.
 
