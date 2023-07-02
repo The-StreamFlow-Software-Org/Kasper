@@ -34,6 +34,8 @@ public class CollectionReference extends AbstractReference{
         this.kasperNitroWire = parent.kasperNitroWire;
     }
 
+
+
     /**
      * @brief Attempts to retrieve an object from the collection.
      * @param keyName the key to retrieve.
@@ -342,6 +344,24 @@ public class CollectionReference extends AbstractReference{
         updateKey(generatePathReference(path), str(object));
     }
 
+    /**
+     * Deletes this collection.
+     */
+    public void deleteThis () {
+        try {
+            PreparedPacket packet = new PreparedPacket();
+            packet.setHeader(CommandAlias.DELETE);
+            PathParser path = new PathParser();
+            path.addPath(parent.name);
+            path.addPathConventionally(name);
+            packet.addArg("path", path.parsePath());
+            kasperNitroWire.put(packet.build().toByteArray());
+            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
+        } catch (Exception e){
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
+        }
+    }
 
     /**
      * @param path the path reference of the object to be deleted.

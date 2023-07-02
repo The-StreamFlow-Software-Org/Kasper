@@ -1,5 +1,6 @@
 package Kasper.BeansDriver.DataStructures;
 
+import KasperCommons.Aliases.CommandAlias;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.KasperPathReference;
@@ -18,10 +19,15 @@ public class NodeReference extends AbstractReference{
         this.kasperNitroWire = serverInstance.kasperNitroWire;
     }
 
-    public CollectionReference useCollection (String referenceName) {
+    /**
+     *
+     * @param collectionName the name of the collection to generate a reference
+     * @return an instance of the collection
+     */
+    public CollectionReference useCollection (String collectionName) {
         try {
             PathParser parser = new PathParser();
-            parser.addPath(referenceName);
+            parser.addPath(collectionName);
             parser.addPath(name);
             kasperNitroWire.put(TokenSender.exist(parser.parsePath()).toByteArray());
             var bytes = kasperNitroWire.get();
@@ -31,9 +37,14 @@ public class NodeReference extends AbstractReference{
             if (e instanceof KasperException) throw (KasperException)e;
             throw new KasperException(e.getMessage());
         }
-        return new CollectionReference(referenceName, this);
+        return new CollectionReference(collectionName, this);
     }
 
+    /**
+     *
+     * @param path generate a reference with this node as a base. (i.e., nodeName.[args])
+     * @return a KasperPathReference to the specified reference.
+     */
     public KasperPathReference generatePathReference(String ... path) {
         PathParser parser = new PathParser();
         for (var x : path) {
@@ -43,6 +54,11 @@ public class NodeReference extends AbstractReference{
         return new KasperPathReference(parser.parsePath());
     }
 
+    /**
+     *
+     * @param collectionName of the collection to create
+     * @return an instance of the created collection
+     */
     public CollectionReference createCollection (String collectionName) {
         try {
             PathParser parser = new PathParser();
@@ -55,6 +71,22 @@ public class NodeReference extends AbstractReference{
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
             return useCollection(collectionName);
         } catch (Exception e) {
+            if (e instanceof KasperException) throw (KasperException)e;
+            throw new KasperException(e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes this node.
+     */
+    public void deleteThis () {
+        try {
+            PreparedPacket packet = new PreparedPacket();
+            packet.setHeader(CommandAlias.DELETE);
+            packet.addArg("path", generatePathReference(name).toStr());
+            kasperNitroWire.put(packet.build().toByteArray());
+            TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
+        } catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
             throw new KasperException(e.getMessage());
         }

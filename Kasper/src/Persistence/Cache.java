@@ -3,22 +3,23 @@ package Persistence;
 import KasperCommons.DataStructures.KasperObject;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Cache {
     private static com.github.benmanes.caffeine.cache.Cache<String, KasperObject> cache;
-    private static com.github.benmanes.caffeine.cache.Cache<KasperObject, String> cacheAsPath;
 
     public static com.github.benmanes.caffeine.cache.Cache<String, KasperObject> cache() {
         return cache;
     }
+    private static com.github.benmanes.caffeine.cache.Cache<KasperObject, ArrayList<String>> objectSet;
 
     public static void init () {
         cache = Caffeine.newBuilder()
                 .expireAfterAccess(30, TimeUnit.SECONDS)
                 .maximumSize(100)
                 .build();
-        cacheAsPath = Caffeine.newBuilder()
+        objectSet = Caffeine.newBuilder()
                 .expireAfterAccess(30, TimeUnit.SECONDS)
                 .maximumSize(100)
                 .build();
@@ -26,14 +27,21 @@ public class Cache {
 
     public static void set (String path, KasperObject value) {
         cache.put(path, value);
-        cacheAsPath.put(value, path);
+        var list = objectSet.getIfPresent(value);
+        if (list!=null) list.add(path);
+        else {
+            var arrayList = new ArrayList<String>();
+            arrayList.add(path);
+            objectSet.put(value, arrayList);
+        }
     }
 
     public static void invalidateObject (KasperObject object) {
-        var cached = cacheAsPath.getIfPresent(object);
-        if (cached == null) return;
-        cacheAsPath.invalidate(object);
-        cache.invalidate(cached);
+        var pathList = objectSet.getIfPresent(object);
+        if (pathList == null) return;
+        for (var x : pathList) {
+            cache.invalidate(x);
+        } objectSet.invalidate(object);
     }
 
     public static KasperObject get (String path) {
