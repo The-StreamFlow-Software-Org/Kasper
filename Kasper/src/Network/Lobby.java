@@ -5,8 +5,6 @@ import KasperCommons.Concurrent.Pool;
 import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.Timer;
 import Persistence.InstantiatorService;
-import Server.SuperClass.KasperGlobalMap;
-import org.openjdk.jol.info.GraphLayout;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
@@ -16,7 +14,7 @@ import java.net.ServerSocket;
 public class Lobby {
     private ServerSocket server;
     private ServerSocket nitroServer;
-    private static boolean ending = false;
+    public static boolean ending = false;
 
     private static Lobby instance;
 
@@ -46,8 +44,6 @@ public class Lobby {
                 try {
                     ending = true;
                     System.out.println("Kasper says bye! :)");
-                    System.out.println("Kasper:> Saving data snapshots...");
-                    Timer.getTimer().start();
                     InstantiatorService.close();
                     System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
                     System.exit(0);
@@ -63,7 +59,6 @@ public class Lobby {
             public void handle(Signal signal) {
                 try {
                     ending = true;
-                    System.out.println("Kasper:> Saving data snapshots...");
                     Timer.getTimer().start();
                     InstantiatorService.close();
                     System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");

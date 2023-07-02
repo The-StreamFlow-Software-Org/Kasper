@@ -16,13 +16,9 @@ public class Main {
     public static void main(String[] args) throws Exception {
         new KasperAccessAuthenticator("kasper.util.key");
         init(args);
-
-
-
-
-
     }
 
+    // instantiates the KasperEngine with the appropriate global variables.
     public static void init(String[] args) throws Exception {
         favicon();
         Timer.getTimer().start();

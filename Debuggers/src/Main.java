@@ -14,7 +14,7 @@ public class Main {
         else collection = conn.useNode("test3").useCollection("collection");
         collection.updateKey("adv", new KasperMap().put("hello", "world").put("0", "not an index"));
         collection.deleteThis();
-        System.out.println(collection.getKey(conn.generaterawPathReference("test3.collection")));
+        System.out.println(collection.getKey(conn.generateRawPathReference("test3.collection")));
 
     }
 

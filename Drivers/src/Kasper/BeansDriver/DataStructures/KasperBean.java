@@ -21,7 +21,7 @@ public class KasperBean extends AbstractReference{
 
 
 
-    public KasperPathReference generaterawPathReference (String ref){
+    public KasperPathReference generateRawPathReference(String ref){
         return new KasperPathReference(ref);
     }
 

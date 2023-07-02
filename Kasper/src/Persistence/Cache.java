@@ -4,6 +4,7 @@ import KasperCommons.DataStructures.KasperObject;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 public class Cache {
@@ -12,7 +13,7 @@ public class Cache {
     public static com.github.benmanes.caffeine.cache.Cache<String, KasperObject> cache() {
         return cache;
     }
-    private static com.github.benmanes.caffeine.cache.Cache<KasperObject, ArrayList<String>> objectSet;
+    private static com.github.benmanes.caffeine.cache.Cache<KasperObject, ConcurrentLinkedDeque<String>> objectSet;
 
     public static void init () {
         cache = Caffeine.newBuilder()
@@ -30,7 +31,7 @@ public class Cache {
         var list = objectSet.getIfPresent(value);
         if (list!=null) list.add(path);
         else {
-            var arrayList = new ArrayList<String>();
+            var arrayList = new ConcurrentLinkedDeque<String>();
             arrayList.add(path);
             objectSet.put(value, arrayList);
         }

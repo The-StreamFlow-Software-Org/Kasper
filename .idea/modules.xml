@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/Kasper/Kasper.iml" filepath="$PROJECT_DIR$/Kasper/Kasper.iml" />
       <module fileurl="file://$PROJECT_DIR$/KasperCommons/KasperCommons.iml" filepath="$PROJECT_DIR$/KasperCommons/KasperCommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/KasperMono.iml" filepath="$PROJECT_DIR$/KasperMono.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KasperREPL/KasperREPL.iml" filepath="$PROJECT_DIR$/KasperREPL/KasperREPL.iml" />
     </modules>
   </component>
 </project>

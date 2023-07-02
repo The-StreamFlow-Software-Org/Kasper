@@ -9,6 +9,7 @@ import KasperCommons.Network.NetworkPackageRunnable;
 import Server.Handler.RequestHandler;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 public class Room {
     private KasperNitroWire pack;
@@ -17,7 +18,6 @@ public class Room {
     public Room (KasperNitroWire pack)  {
         this.pack = pack;
         handleMethods();
-
     }
 
 
@@ -31,13 +31,17 @@ public class Room {
 
     }
 
+    public static boolean ending = false;
+    public static CountDownLatch latch = new CountDownLatch(1);
+    private static int ongoingProcesses = 0;
     public void handleMethods(){
         RequestHandler request = new RequestHandler();
         Pool.newThread(new NetworkPackageRunnable() {
             @Override
             public void run() {
                 this.net = pack;
-                while (true) {
+                ongoingProcesses ++;
+                while (!ending) {
                     try {
                         var query = pack.get();
                         var packet = PacketOuterClass.Packet.parseFrom(query);
@@ -53,8 +57,29 @@ public class Room {
                         throw new RuntimeException(e);
                     }
                 }
+                decrementProcesses();
+                try {
+                    pack.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         });
     }
+
+    private static void decrementProcesses(){
+        ongoingProcesses--;
+        if (!requestClose) return;
+        if (ongoingProcesses == 0) latch.countDown();
+    }
+
+
+    public static void requestClose (){
+        requestClose = true;
+        if (ongoingProcesses == 0) latch.countDown();
+    }
+    private static boolean requestClose = false;
+
 
 }
