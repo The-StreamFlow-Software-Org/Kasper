@@ -1,6 +1,6 @@
 package Persistence;
 
-import KasperCommons.DataStructures.KasperObject;
+import KasperCommons.DataStructures.*;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import java.util.ArrayList;
@@ -38,11 +38,35 @@ public class Cache {
     }
 
     public static void invalidateObject (KasperObject object) {
-        var pathList = objectSet.getIfPresent(object);
-        if (pathList == null) return;
-        for (var x : pathList) {
-            cache.invalidate(x);
-        } objectSet.invalidate(object);
+        cache().invalidateAll();
+        objectSet.invalidateAll();
+        //TODO: fix cache invalidation algorithm.
+        // For now, let's settle with invalidateAll()
+        if (false) {
+            var pathList = objectSet.getIfPresent(object);
+            if (pathList != null) {
+                for (var x : pathList) {
+                    cache.invalidate(x);
+                }
+                objectSet.invalidate(object);
+            }
+            invalidateChildren(object);
+        }
+    }
+
+    protected static void invalidateChildren (KasperObject o) {
+        System.out.println("Invalidating children...");
+        if (o instanceof KasperMap) {
+            for (var x : o.toMap().entrySet()) {
+                invalidateObject(x.getValue());
+            }
+            o.toMap().clear();
+        } else if (o instanceof KasperList) {
+            int index = 0;
+            for (var x : o.toList()) {
+                invalidateObject(x);
+            } o.toList().clear();
+        }
     }
 
     public static KasperObject get (String path) {

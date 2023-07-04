@@ -12,6 +12,9 @@ import java.util.*;
  * design structures.
  */
 public class KasperObject implements Serializable {
+
+    // for disabling and enabling EXPERIMENTAL_MODE
+    protected static boolean EXPERIMENTAL_MODE = false;
     protected KasperObject parent;
 
     // listening threads asking for path

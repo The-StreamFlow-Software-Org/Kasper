@@ -9,6 +9,7 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 public class Lobby {
@@ -82,10 +83,11 @@ public class Lobby {
     if (instance == null) instance = new Lobby();
     }
 
-    private Lobby () throws IOException {
+     private Lobby () throws IOException {
         server = new ServerSocket(Meta.port);
         nitroServer = new ServerSocket(Meta.port+1);
         String msg = "Kasper:> Current memory usage of all stored data: ";
         System.out.println("Kasper:> Now ready to accept connections in port: " + Meta.port + ".");
+        System.out.println("Kasper:> Device host: " + InetAddress.getLocalHost().getHostAddress());
     }
 }

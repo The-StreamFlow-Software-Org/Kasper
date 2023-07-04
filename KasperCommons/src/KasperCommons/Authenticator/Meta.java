@@ -14,7 +14,7 @@ public class Meta {
     public static String folder = "data/";
     public static String filename = "cluster.knf";
 
-    public static String version = "Basalt 0.5.0";
+    public static String version = "Basalt 0.6.0";
 
     public static BigInteger maxRecursionDepth = BigInteger.valueOf(100000);
 

@@ -6,6 +6,7 @@ import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.*;
+import KasperCommons.Exceptions.ExperimentalFeatureException;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Exceptions.NoSuchKasperObject;
 import KasperCommons.Network.KasperNitroWire;
@@ -348,6 +349,7 @@ public class CollectionReference extends AbstractReference{
      * Deletes this collection.
      */
     public void deleteThis () {
+        if (!EXPERIMENTAL_MODE) throw new ExperimentalFeatureException("deleteThis");
         try {
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(CommandAlias.DELETE);

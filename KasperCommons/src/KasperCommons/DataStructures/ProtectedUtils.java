@@ -81,6 +81,16 @@ public class ProtectedUtils {
         return o.id;
     }
 
+    // set any data of any KasperObject
+    // unsafe
+    public static void setData (KasperObject o, KasperObject nullable) {
+        o.data = nullable;
+    }
+
+    public static void setInteralObjectToNull (KasperObject o) {
+
+    }
+
 
 
 

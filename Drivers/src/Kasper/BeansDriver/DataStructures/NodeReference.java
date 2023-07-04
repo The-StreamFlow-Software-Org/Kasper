@@ -4,6 +4,7 @@ import KasperCommons.Aliases.CommandAlias;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.KasperPathReference;
+import KasperCommons.Exceptions.ExperimentalFeatureException;
 import KasperCommons.Exceptions.KasperException;
 import KasperCommons.Parser.PathParser;
 import KasperCommons.Parser.TokenSender;
@@ -80,6 +81,7 @@ public class NodeReference extends AbstractReference{
      * Deletes this node.
      */
     public void deleteThis () {
+        if (!EXPERIMENTAL_MODE) throw new ExperimentalFeatureException("deleteThis");
         try {
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(CommandAlias.DELETE);

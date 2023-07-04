@@ -1,9 +1,6 @@
 package Computations;
 
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.ProtectedUtils;
+import KasperCommons.DataStructures.*;
 
 public class DeleteResolver {
 
@@ -13,6 +10,37 @@ public class DeleteResolver {
         object.parent().toList().remove(Integer.parseInt(id));
         else if (object.parent() instanceof KasperMap) object.parent().toMap().remove(id);
         removeFromReferences(object);
+        removeAllChildren(object);
+    }
+
+    protected static void removeAllChildren(KasperObject o){
+        if (o instanceof KasperMap) {
+            for (var x : o.toMap().entrySet()) {
+                dissolveParentChildRelationship(x.getValue().parent(), x.getKey());
+                removeAllChildren(x.getValue());
+            }
+            o.toMap().clear();
+        } else if (o instanceof KasperList) {
+            int index = 0;
+            for (var x : o.toList()) {
+                dissolveParentChildRelationship(x.parent(), index++);
+                removeAllChildren(x);
+            } o.toList().clear();
+        } else if (o instanceof KasperString) {
+            removeFromReferences(o);
+            ProtectedUtils.setData(o, null);
+        }
+    }
+
+
+    // dissolves the reference (pointer) link from Parent -> Child, not necessarily
+    // Child -> Parent.
+    protected static void dissolveParentChildRelationship(KasperObject parent, Object key) {
+        if (parent instanceof KasperMap) {
+            parent.toMap().remove((String)key);
+        } else if (parent instanceof KasperList) {
+            parent.toList().remove((int)key);
+        }
     }
 
 

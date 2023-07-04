@@ -2,14 +2,9 @@ package Persistence;
 
 import Boost.JSONCache;
 import DataStructures.KasperNode;
-import KasperCommons.Authenticator.KasperAccessAuthenticator;
 import KasperCommons.Concurrent.Pool;
-import KasperCommons.Exceptions.InvalidPersistenceData;
-import KasperCommons.Network.NetworkPackageRunnable;
-import KasperCommons.Network.Operations;
 import KasperCommons.Network.Timer;
 import KasperCommons.Parser.ByteCompression;
-import KasperCommons.Parser.KasperDocument;
 import Network.Lobby;
 import Network.Room;
 import Server.Parser.AESUtils;
@@ -17,7 +12,6 @@ import Server.Parser.DiskIO;
 import Server.SuperClass.KasperGlobalMap;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 

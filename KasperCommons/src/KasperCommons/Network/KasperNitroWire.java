@@ -41,6 +41,7 @@ public class KasperNitroWire {
         nitroOut = new BufferedOutputStream(nitroSocket.getOutputStream());
     }
 
+    // initalizes the default stream
     public KasperNitroWire(Socket socket) throws IOException {
         this.socket = socket;
         socket.setTcpNoDelay(true);
@@ -50,13 +51,11 @@ public class KasperNitroWire {
         inputStream = new BufferedInputStream(in);
     }
 
+    // initializes the streams for Nitro
     public void setNitro(Socket socket) throws IOException {
         nitroIn = new BufferedInputStream(socket.getInputStream());
         nitroOut = new BufferedOutputStream(socket.getOutputStream());
     }
-
-
-
 
 
 
