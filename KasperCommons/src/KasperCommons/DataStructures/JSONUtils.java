@@ -61,8 +61,8 @@ public class JSONUtils {
 
     private static void writeArray(LockedLL<KasperObject> array, JsonWriter jsonWriter) throws Exception {
         jsonWriter.beginArray();
-        for (Object item : array) {
-            writeJson(item, jsonWriter);
+        for (var x : array) {
+            writeJson(x, jsonWriter);
         }
         jsonWriter.endArray();
     }

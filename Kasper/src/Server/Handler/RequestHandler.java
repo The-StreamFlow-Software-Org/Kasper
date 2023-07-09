@@ -126,9 +126,7 @@ public class RequestHandler {
                     } else if (key.equals("tail")) {
                         l.toList().add(object);
                     } else {
-                        int index = Integer.parseInt(key);
-                        var ll = (LockedLL) l.toList();
-                        ll.add(index, object);
+                        throw new KasperException("Invalid position specified. Only 'head' and 'tail' access is allowed.");
                     }
                 } catch (Exception e) {
                     throw new KasperException("Reason:> Invalid list index was found. Use values [head/tail] to add an element to the head or tail respectively. Else, use a numeric string to specify the index.");

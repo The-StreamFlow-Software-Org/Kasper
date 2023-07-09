@@ -49,8 +49,8 @@ public class InstantiatorService {
         Room.requestClose(); // signals for all the processes to gracefully close
         Room.ending = true; // stops asking for new requests
         System.out.println("Kasper:> Termination request received. Now gracefully shutting down all connections, threads, and processes.");
-        Pool.shutdown();
         Room.latch.await();
+        Pool.shutdown();
         System.out.println("Kasper:> All processes have gracefully shut down.");
         System.out.println("Kasper:> Now saving data snapshots.");
         Timer.getTimer().start();

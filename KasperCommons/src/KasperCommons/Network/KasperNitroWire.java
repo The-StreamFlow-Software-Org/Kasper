@@ -1,6 +1,7 @@
 package KasperCommons.Network;
 
 import KasperCommons.Concurrent.Pool;
+import KasperCommons.Exceptions.KasperException;
 
 import java.io.*;
 import java.net.Socket;
@@ -125,11 +126,16 @@ public class KasperNitroWire {
 
 
     private byte[] intToByteArray (int int32) {
+        if (int32 < 0) throw new KasperException("Bug found:> Size cannot be negative.\n");
         return ByteBuffer.allocate(4).putInt(int32).array();
     }
 
     private int byteArraytoInt (byte[] byteArray) {
-       return ByteBuffer.wrap(byteArray).getInt();
+        for (var x : byteArray) {
+            if (x!=-1) {
+                return ByteBuffer.wrap(byteArray).getInt();
+            }
+        } throw new KasperException("Bug found:> Size cannot be negative.\n");
     }
 
     public void put (byte[] stream) throws IOException {

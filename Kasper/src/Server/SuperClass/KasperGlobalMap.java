@@ -85,9 +85,7 @@ public class KasperGlobalMap implements Serializable {
                             } else if (key.equals("tail")) {
                                 currobject = l.toList().getLast();
                             } else {
-                                int index = Integer.parseInt(key);
-                                var ll = (LockedLL) l.toList();
-                                currobject = (KasperObject) ll.get(index);
+
                             }
                         } catch (Exception e) {
                             if (e instanceof NoSuchElementException)

@@ -77,9 +77,10 @@ public class CollectionReference extends AbstractReference{
      * @throws NoSuchKasperObject when the key is not found in the database.
      */
     public KasperObject getKey(KasperPathReference path){
+        verifyConcurrency();
         try{
             PreparedPacket packet =  new PreparedPacket();
-            packet.setHeader(2);
+            packet.setHeader(CommandAlias.GET);
             packet.addArg("path", path.toStr());
             kasperNitroWire.put(packet.build().toByteArray());
             var resultant = PacketOuterClass.Packet.parseFrom(kasperNitroWire.get());
@@ -104,11 +105,12 @@ public class CollectionReference extends AbstractReference{
      * @throws KasperCommons.Exceptions.KasperObjectAlreadyExists when the object is inserted to a map where the key already exists.
      */
     public void setKey(KasperPathReference path, String key, KasperObject value) {
+        verifyConcurrency();
         try {
             key = key.intern();
             if (key.charAt(0) == '$') throw new KasperException("Thrown by KasperDriver.\nReason:> Keys cannot start with reserved character '$'.");
             PreparedPacket packet = new PreparedPacket();
-            packet.setHeader(1);
+            packet.setHeader(CommandAlias.SET);
             packet.setData(value);
             packet.addArg("path", path.toStr());
             packet.addArg("key", key);
@@ -186,6 +188,7 @@ public class CollectionReference extends AbstractReference{
      * @return a KasperReference with parsed paths
      */
     public KasperPathReference generatePathReference (String ... path) {
+        verifyConcurrency();
         PathParser parser = new PathParser();
         for (var x : path) {
             parser.addPathConventionally(x);
@@ -202,6 +205,7 @@ public class CollectionReference extends AbstractReference{
      */
     @RawKasperReferenceUsage
     public KasperPathReference rawPathReference (String rawPath) {
+        verifyConcurrency();
         PathParser parser = new PathParser();
         parser.addPath(name);
         parser.addPath(parent.name);
@@ -226,6 +230,7 @@ public class CollectionReference extends AbstractReference{
      */
     @RawKasperReferenceUsage
     public KasperFindQuery in (String path) {
+        verifyConcurrency();
         var ref = new KasperPathReference("");
      //   ref.getPath() = path;
         return new KasperFindQuery(ref, kasperNitroWire);
@@ -248,6 +253,7 @@ public class CollectionReference extends AbstractReference{
          */
         @RawKasperReferenceUsage
         public KasperList hasRawProperties (String properties){
+            verifyConcurrency();
             try {
                 var basePath = this.path.toStr();
                 StringBuilder build = new StringBuilder();
@@ -266,6 +272,7 @@ public class CollectionReference extends AbstractReference{
          * @return a KasperList containing all the matching objects.
          */
         public KasperList hasProperties (String ... properties)  {
+            verifyConcurrency();
             try {
                 var basePath = this.path.toStr();
                 for (var x : properties) {
@@ -286,6 +293,7 @@ public class CollectionReference extends AbstractReference{
      * @brief clears all the global data, including nodes.
      */
     public void clear () {
+        verifyConcurrency();
         try {
             kasperNitroWire.put(TokenSender.clear().toByteArray());
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
@@ -302,6 +310,7 @@ public class CollectionReference extends AbstractReference{
      * @warning paths must be re-added.
      */
     public void updateKey(KasperPathReference path, KasperObject object) {
+        verifyConcurrency();
         try {
             PreparedPacket packet = new PreparedPacket();
             packet.setHeader(CommandAlias.UPDATE);
@@ -349,6 +358,7 @@ public class CollectionReference extends AbstractReference{
      * Deletes this collection.
      */
     public void deleteThis () {
+        verifyConcurrency();
         if (!EXPERIMENTAL_MODE) throw new ExperimentalFeatureException("deleteThis");
         try {
             PreparedPacket packet = new PreparedPacket();
@@ -369,6 +379,7 @@ public class CollectionReference extends AbstractReference{
      * @param path the path reference of the object to be deleted.
      */
     public void deleteKey (KasperPathReference path) {
+        verifyConcurrency();
         try {
         PreparedPacket packet = new PreparedPacket();
         packet.setHeader(CommandAlias.DELETE);

@@ -26,6 +26,7 @@ public class NodeReference extends AbstractReference{
      * @return an instance of the collection
      */
     public CollectionReference useCollection (String collectionName) {
+        verifyConcurrency();
         try {
             PathParser parser = new PathParser();
             parser.addPath(collectionName);
@@ -47,6 +48,7 @@ public class NodeReference extends AbstractReference{
      * @return a KasperPathReference to the specified reference.
      */
     public KasperPathReference generatePathReference(String ... path) {
+        verifyConcurrency();
         PathParser parser = new PathParser();
         for (var x : path) {
             parser.addPathConventionally(x);
@@ -61,6 +63,7 @@ public class NodeReference extends AbstractReference{
      * @return an instance of the created collection
      */
     public CollectionReference createCollection (String collectionName) {
+        verifyConcurrency();
         try {
             PathParser parser = new PathParser();
             parser.addPathConventionally(collectionName);
@@ -81,6 +84,7 @@ public class NodeReference extends AbstractReference{
      * Deletes this node.
      */
     public void deleteThis () {
+        verifyConcurrency();
         if (!EXPERIMENTAL_MODE) throw new ExperimentalFeatureException("deleteThis");
         try {
             PreparedPacket packet = new PreparedPacket();

@@ -48,9 +48,9 @@ public class ProtectedUtils {
         if (key instanceof KasperMap map) {
             map.put(value, newObj);
         } else if (key instanceof KasperList list) {
-            if (value.equals("head")) list.toList().set(0, newObj);
-            else if (value.equals("tail")) list.toList().set(list.toList().size()-1, newObj);
-            else list.toList().set(Integer.parseInt(value), newObj);
+            if (value.equals("head")) list.toList().addFirst(newObj);
+            else if (value.equals("tail")) list.toList().addLast(newObj);
+            else throw new KasperException("Invalid position specified. Only 'head' and 'tail' access is allowed.");
         }
     }
 

@@ -39,31 +39,34 @@ public class Room {
         Pool.newThread(new NetworkPackageRunnable() {
             @Override
             public void run() {
-                this.net = pack;
-                ongoingProcesses ++;
-                while (!ending) {
-                    try {
-                        var query = pack.get();
-                        var packet = PacketOuterClass.Packet.parseFrom(query);
-                        request.handleQuery(packet, pack);
-                    }
-                    catch (IOException e) {
+                try {
+                    this.net = pack;
+                    ongoingProcesses++;
+                    while (!ending) {
                         try {
-                            pack.close();
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        } break;
-                    } catch (InterruptedException e) {
+                            var query = pack.get();
+                            var packet = PacketOuterClass.Packet.parseFrom(query);
+                            request.handleQuery(packet, pack);
+                        } catch (IOException e) {
+                            try {
+                                pack.close();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    try {
+                        pack.close();
+                    } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                }
-                decrementProcesses();
-                try {
-                    pack.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
 
+                } finally {
+                    decrementProcesses();
+                }
             }
         });
     }
@@ -80,6 +83,7 @@ public class Room {
         if (ongoingProcesses == 0) latch.countDown();
     }
     private static boolean requestClose = false;
+
 
 
 }

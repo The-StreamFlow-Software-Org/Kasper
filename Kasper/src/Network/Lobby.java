@@ -13,11 +13,17 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 
 public class Lobby {
-    private ServerSocket server;
-    private ServerSocket nitroServer;
+    private final ServerSocket server;
+    private final ServerSocket nitroServer;
     public static boolean ending = false;
 
     private static Lobby instance;
+
+    public static void close () throws IOException {
+        instance.server.close();
+        instance.nitroServer.close();
+
+    }
 
     public static void acceptConnections() throws Exception {
         init();
@@ -47,6 +53,7 @@ public class Lobby {
                     System.out.println("Kasper says bye! :)");
                     InstantiatorService.close();
                     System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
+
                     System.exit(0);
                 } catch (Exception e) {
                     System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");

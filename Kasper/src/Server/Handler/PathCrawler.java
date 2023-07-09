@@ -49,14 +49,7 @@ public class PathCrawler {
             var list = currObject.toList();
             if (hasInstance.equals("head")) return list.getFirst();
             if (hasInstance.equals("tail")) return list.getLast();
-            try {
-                var index = Integer.parseInt(hasInstance);
-                return list.get(index);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new NoSuchKasperObject("Reason:> The index provided is invalid, ArrayIndexOutOfBounds was thrown.");
-            } catch (Exception e) {
-                throw new KasperException("Reason:> Invalid list index was found. Use values [head/tail] to add an element to the head or tail respectively. Else, use a numeric string to specify the index.");
-            }
+            else throw new KasperException("Invalid position specified. Only 'head' and 'tail' access is allowed.");
         }
     }
 }

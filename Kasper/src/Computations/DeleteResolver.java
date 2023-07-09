@@ -20,12 +20,13 @@ public class DeleteResolver {
                 removeAllChildren(x.getValue());
             }
             o.toMap().clear();
-        } else if (o instanceof KasperList) {
-            int index = 0;
-            for (var x : o.toList()) {
-                dissolveParentChildRelationship(x.parent(), index++);
+            var list = o.toList();
+            int i = 0;
+            for (var x : list) {
+                dissolveParentChildRelationship(x.parent(), i++);
                 removeAllChildren(x);
-            } o.toList().clear();
+            }
+            list.clear();
         } else if (o instanceof KasperString) {
             removeFromReferences(o);
             ProtectedUtils.setData(o, null);

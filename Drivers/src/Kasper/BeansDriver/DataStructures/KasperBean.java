@@ -35,6 +35,7 @@ public class KasperBean extends AbstractReference{
 
     public KasperBean(String host, String user, String password, int port) throws KasperException {
         super("server");
+        threadID = Thread.currentThread().threadId();
         new KasperAccessAuthenticator("kasper.util.key");
         try {
             this.host = host;
@@ -51,6 +52,7 @@ public class KasperBean extends AbstractReference{
 
 
     public NodeReference createNode(String nodename) {
+        verifyConcurrency();
         try {
             PathParser parser = new PathParser();
             parser.addPathConventionally(nodename);
@@ -66,6 +68,7 @@ public class KasperBean extends AbstractReference{
     }
 
     public NodeReference useNode(String name){
+        verifyConcurrency();
         try {
             PathParser parser = new PathParser();
             parser.addPath(name);
