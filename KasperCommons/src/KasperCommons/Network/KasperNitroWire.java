@@ -18,21 +18,37 @@ public class KasperNitroWire {
     public BufferedInputStream nitroIn;
     public BufferedOutputStream nitroOut;
 
-    public void close () throws IOException {
-        if (nitroSocket != null) nitroSocket.close();
-        if (outputStream != null) outputStream.close();
-        if (inputStream != null) inputStream.close();
-        if (in != null) in.close();
-        if (out != null) out.close();
-        if (nitroIn != null) nitroIn.close();
-        if (nitroOut != null) nitroOut.close();
-        if (socket != null) socket.close();
+    public void close ()  {
+        try {
+            if (nitroSocket != null) nitroSocket.close();
+        } catch (IOException ex){}
+        try{
+            if (outputStream != null) outputStream.close();
+        } catch (IOException ex){}
+        try{
+            if (inputStream != null) inputStream.close();
+        } catch (IOException ex){}
+        try{
+            if (in != null) in.close();
+        } catch (IOException ex){}
+        try{
+            if (out != null) out.close();
+        } catch (IOException ex){}
+        try{
+            if (nitroIn != null) nitroIn.close();
+        } catch (IOException ex){}
+        try{
+            if (nitroOut != null) nitroOut.close();
+        } catch (IOException ex){}
+        try{
+            if (socket != null) socket.close();
+        } catch (IOException ex){}
+
     }
 
 
     public KasperNitroWire(Socket socket, Boolean flag) throws IOException {
         this.socket = socket;
-        socket.setTcpNoDelay(true);
         out = socket.getOutputStream();
         in = socket.getInputStream();
         outputStream = new BufferedOutputStream(out);
@@ -42,7 +58,7 @@ public class KasperNitroWire {
         nitroOut = new BufferedOutputStream(nitroSocket.getOutputStream());
     }
 
-    // initalizes the default stream
+    // initializes the default stream
     public KasperNitroWire(Socket socket) throws IOException {
         this.socket = socket;
         socket.setTcpNoDelay(true);
@@ -56,13 +72,15 @@ public class KasperNitroWire {
     public void setNitro(Socket socket) throws IOException {
         nitroIn = new BufferedInputStream(socket.getInputStream());
         nitroOut = new BufferedOutputStream(socket.getOutputStream());
+
     }
 
 
 
 
     public byte[] get() throws IOException, InterruptedException {
-        int numSock = inputStream.read();
+        int numSock =inputStream.read();
+
         if (numSock == 1) {
             byte[] lengthBytes = new byte[4];
 
@@ -79,6 +97,7 @@ public class KasperNitroWire {
                 stream[i] = (byte) inputStream.read();
             }
 
+            System.out.println("GET COMPLETE IN THREAD: " + Thread.currentThread().getId());
             return stream;
         }
 
@@ -126,8 +145,13 @@ public class KasperNitroWire {
 
 
     private byte[] intToByteArray (int int32) {
-        if (int32 < 0) throw new KasperException("Bug found:> Size cannot be negative.\n");
-        return ByteBuffer.allocate(4).putInt(int32).array();
+        var debug =  ByteBuffer.allocate(4).putInt(int32).array();
+        for (var x : debug) {
+            if (x!=-1) {
+                return debug;
+            }
+        }
+        throw new KasperException("Bug found:> Size cannot be negative.\n");
     }
 
     private int byteArraytoInt (byte[] byteArray) {
@@ -135,16 +159,19 @@ public class KasperNitroWire {
             if (x!=-1) {
                 return ByteBuffer.wrap(byteArray).getInt();
             }
-        } throw new KasperException("Bug found:> Size cannot be negative.\n");
+        }
+        throw new KasperException("Bug found:> Size cannot be negative.\n");
     }
 
     public void put (byte[] stream) throws IOException {
+        System.out.println("PUT ATTEMPT IN THREAD " + Thread.currentThread());
         var instructor = getChannels(stream.length);
         if (instructor[0] == 1) {
             outputStream.write(instructor[0]);
             outputStream.write(intToByteArray(stream.length));
             outputStream.write(stream);
             outputStream.flush();
+            System.out.println("PUT COMPLETE IN THREAD: " + Thread.currentThread().getId());
             return;
         }
         outputStream.write(instructor[0]);
@@ -193,7 +220,6 @@ public class KasperNitroWire {
             if (x != 255) build.append((char)x);
             else break;
         }
-        System.out.println("Finished getting over network " + (build.length()/1000.0) + " megabytes in " + t.stop() + "s.");
         return build.toString();
     }
 

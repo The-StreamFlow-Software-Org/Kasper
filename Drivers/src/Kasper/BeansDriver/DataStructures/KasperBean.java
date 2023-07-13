@@ -17,7 +17,6 @@ import java.net.Socket;
 
 public class KasperBean extends AbstractReference{
 
-    protected SocketHolder socketHolder;
 
 
 
@@ -35,8 +34,7 @@ public class KasperBean extends AbstractReference{
 
     public KasperBean(String host, String user, String password, int port) throws KasperException {
         super("server");
-        threadID = Thread.currentThread().threadId();
-        new KasperAccessAuthenticator("kasper.util.key");
+        threadID = Thread.currentThread().getId();
         try {
             this.host = host;
             this.user = user;

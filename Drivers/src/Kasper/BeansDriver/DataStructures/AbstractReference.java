@@ -3,6 +3,8 @@ package Kasper.BeansDriver.DataStructures;
 import KasperCommons.Exceptions.BeanConcurrencyException;
 import KasperCommons.Network.KasperNitroWire;
 
+import java.io.IOException;
+
 public abstract class AbstractReference {
     protected static boolean EXPERIMENTAL_MODE = false;
     protected KasperNitroWire kasperNitroWire;
@@ -18,7 +20,7 @@ public abstract class AbstractReference {
     protected long threadID;
 
     protected void verifyConcurrency() {
-        if (Thread.currentThread().threadId() != threadID)
+        if (Thread.currentThread().getId() != threadID)
             throw new BeanConcurrencyException();
     }
     protected void inheritThreadFromParent(AbstractReference parent) {
@@ -27,6 +29,10 @@ public abstract class AbstractReference {
 
     public String getName() {
         return name;
+    }
+
+    public void close () throws IOException {
+        kasperNitroWire.close();
     }
 
 

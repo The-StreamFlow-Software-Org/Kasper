@@ -33,6 +33,7 @@ public class CollectionReference extends AbstractReference{
         nodeName = parent.name;
         this.name = name;
         this.kasperNitroWire = parent.kasperNitroWire;
+        this.threadID = parent.threadID;
     }
 
 

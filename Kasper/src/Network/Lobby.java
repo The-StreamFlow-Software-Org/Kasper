@@ -78,7 +78,6 @@ public class Lobby {
                 System.exit(0);
             }
         });
-
         while (true) {
             var initWire = (new KasperNitroWire(instance.server.accept()));
             var nitroSocket = instance.nitroServer.accept();

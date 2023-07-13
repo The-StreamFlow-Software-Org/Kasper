@@ -1,5 +1,6 @@
 package KasperCommons.Parser;
 
+import KasperCommons.Aliases.CommandAlias;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.DataStructures.KasperObject;
@@ -20,14 +21,14 @@ public class TokenSender {
 
     public static PacketOuterClass.Packet exist (String path) {
         PreparedPacket packet = new PreparedPacket();
-        packet.setHeader(5);
+        packet.setHeader(CommandAlias.EXISTS);
         packet.addArg("path", path);
         return packet.build();
     }
 
     public static PacketOuterClass.Packet get (String path) {
         PreparedPacket packet = new PreparedPacket();
-        packet.setHeader(2);
+        packet.setHeader(CommandAlias.GET);
         packet.addArg("path", path);
         return packet.build();
     }

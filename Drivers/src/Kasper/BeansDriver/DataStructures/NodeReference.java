@@ -18,6 +18,7 @@ public class NodeReference extends AbstractReference{
         this.password = serverInstance.password;
         this.name = nodeName;
         this.kasperNitroWire = serverInstance.kasperNitroWire;
+        this.threadID = serverInstance.threadID;
     }
 
     /**

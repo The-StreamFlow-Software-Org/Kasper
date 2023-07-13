@@ -6,9 +6,12 @@ import KasperCommons.Authenticator.Meta;
 import KasperCommons.Concurrent.Pool;
 import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.NetworkPackageRunnable;
+import KasperCommons.Parser.ExceptionAlias;
+import KasperCommons.Parser.TokenSender;
 import Server.Handler.RequestHandler;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 
 public class Room {
@@ -48,21 +51,20 @@ public class Room {
                             var packet = PacketOuterClass.Packet.parseFrom(query);
                             request.handleQuery(packet, pack);
                         } catch (IOException e) {
+                            pack.close();
+                            decrementProcesses();
+                            break;
+                        } catch (Exception e) {
+                            var except = TokenSender.raise(ExceptionAlias.KASPER_EXCEPTION, "Thrown by KasperEngine: Reason:> Invalid Nitro Wire exception. See engine logs for details.\n");
                             try {
-                                pack.close();
+                                pack.put(except.toByteArray());
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            break;
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeException(e.getMessage());
                         }
                     }
-                    try {
-                        pack.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    pack.close();
 
                 } finally {
                     decrementProcesses();
@@ -74,13 +76,13 @@ public class Room {
     private static void decrementProcesses(){
         ongoingProcesses--;
         if (!requestClose) return;
-        if (ongoingProcesses == 0) latch.countDown();
+        if (ongoingProcesses <= 0) latch.countDown();
     }
 
 
     public static void requestClose (){
         requestClose = true;
-        if (ongoingProcesses == 0) latch.countDown();
+        if (ongoingProcesses <= 0) latch.countDown();
     }
     private static boolean requestClose = false;
 

@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 public class Pool {
     ThreadPoolExecutor executorService;
     private static int minThreads = 5;
-    private static int maxThreads = 30;
+    private static int maxThreads = 1000000;
     private static int keepAliveSeconds = 60;
     private BlockingQueue<Runnable> tickets;
     private Pool () {
