@@ -15,4 +15,8 @@ public class Throw {
     public static SyntaxError raw (String sequence) {
         return new SyntaxError(sequence);
     }
+
+    public static SyntaxError notEscaped (String literal, char delimiter) {
+        return new SyntaxError("The string literal " + literal + " was not escaped with the specified delimiter: '" + delimiter + "'.");
+    }
 }

@@ -23,5 +23,13 @@ public class OneOf extends Token{
         return new OneOf(TokenType.FUNCTION_CALL);
     }
 
+    public static OneOf newComma () {return new OneOf(TokenType.COMMA);}
+
+    public static OneOf newEqual () {return new OneOf(TokenType.EQUAL);}
+
+    public static OneOf newAlias() {return new OneOf(TokenType.ALIAS);}
+
+    public static OneOf newInvalid () {return new OneOf(TokenType.INVALID);}
+
 
 }

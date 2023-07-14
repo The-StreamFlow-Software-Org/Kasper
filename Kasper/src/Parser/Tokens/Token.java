@@ -18,4 +18,6 @@ public class Token {
     public PathToken toPath () {
         return (PathToken) this;
     }
+
+    public StringLiteral toStringLiteral () {return (StringLiteral) this; }
 }

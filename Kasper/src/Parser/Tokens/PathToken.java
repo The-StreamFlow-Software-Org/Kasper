@@ -1,6 +1,7 @@
 package Parser.Tokens;
 
 import Parser.ParserExceptions.Throw;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ public class PathToken extends Token {
     public ArrayList<String> path;
 
     protected PathToken (String pathToken) {
+        path = new ArrayList<>();
         this.tokenType = TokenType.PATH;
         StringBuilder currentPath = new StringBuilder();
         for (int i=0; i<pathToken.length(); i++) {

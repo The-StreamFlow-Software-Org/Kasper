@@ -6,7 +6,7 @@ public class Statement extends Token {
     public StatementType type;
     public String name;
 
-    public static Statement consumeStatement (String statement, String context) {
+    public static Statement consumeStatement (String statement) {
         try {
             var type = StatementType.identify(statement);
             return new Statement(statement, type);
