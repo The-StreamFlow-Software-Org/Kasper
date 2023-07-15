@@ -9,11 +9,16 @@ public class ObjectToken extends Token{
 
     public static ObjectToken newObject (String str) {
         var thisToken = new ObjectToken();
+        thisToken.name = str;
         thisToken.tokenType = TokenType.OBJECT;
         try {
             thisToken.internalObject = JSONUtils.parseJson(str);
         } catch (Exception e) {
-            throw Throw.raw("Invalid object format in query, flagged with the exception '" + e.getMessage() + "'.");
+            throw Throw.raw("The object '" + str + "' cannot be parsed. The format is invalid.");
         } return thisToken;
+    }
+
+    public KasperObject getInternalObject () {
+        return internalObject;
     }
 }

@@ -3,7 +3,6 @@ package Network;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PacketOuterClass;
 import KasperCommons.Authenticator.KasperCommons.Authenticator.PreparedPacket;
 import KasperCommons.Authenticator.Meta;
-import KasperCommons.Concurrent.Pool;
 import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.NetworkPackageRunnable;
 import KasperCommons.Parser.ExceptionAlias;
@@ -11,7 +10,6 @@ import KasperCommons.Parser.TokenSender;
 import Server.Handler.RequestHandler;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 
 public class Room {
@@ -61,6 +59,7 @@ public class Room {
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
+                            e.printStackTrace();
                             throw new RuntimeException(e.getMessage());
                         }
                     }

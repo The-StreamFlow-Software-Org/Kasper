@@ -2,7 +2,7 @@ package Persistence;
 
 import Boost.JSONCache;
 import DataStructures.KasperNode;
-import KasperCommons.Concurrent.Pool;
+import Network.Pool;
 import KasperCommons.Network.Timer;
 import KasperCommons.Parser.ByteCompression;
 import Network.Lobby;

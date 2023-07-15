@@ -1,9 +1,8 @@
 package Parser.Tokens;
 
 public class StringLiteral extends Token{
-    public String string;
     protected StringLiteral (String string) {
-        this.string = string;
+        this.name = string;
         this.tokenType = TokenType.STRING;
     }
 
@@ -12,6 +11,6 @@ public class StringLiteral extends Token{
     }
 
     public PathToken toPath () {
-        return PathToken.newPath(string);
+        return PathToken.newPath(name);
     }
 }

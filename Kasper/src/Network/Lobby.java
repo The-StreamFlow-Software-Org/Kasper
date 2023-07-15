@@ -1,7 +1,6 @@
 package Network;
 
 import KasperCommons.Authenticator.Meta;
-import KasperCommons.Concurrent.Pool;
 import KasperCommons.Network.KasperNitroWire;
 import KasperCommons.Network.Timer;
 import Persistence.InstantiatorService;
@@ -80,8 +79,6 @@ public class Lobby {
         });
         while (true) {
             var initWire = (new KasperNitroWire(instance.server.accept()));
-            var nitroSocket = instance.nitroServer.accept();
-            initWire.setNitro(nitroSocket);
             new Room(initWire);
         }
     }

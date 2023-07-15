@@ -1,6 +1,5 @@
 package KasperCommons.Network;
 
-import KasperCommons.Concurrent.Pool;
 import KasperCommons.Exceptions.KasperException;
 
 import java.io.*;
@@ -76,9 +75,43 @@ public class KasperNitroWire {
     }
 
 
+    public static byte[] encodeIntToBytes(int value) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (value >> 24);
+        bytes[1] = (byte) (value >> 16);
+        bytes[2] = (byte) (value >> 8);
+        bytes[3] = (byte) value;
+        return bytes;
+    }
+
+    public static int decodeBytesToInt(byte[] bytes) {
+        int value = 0;
+        value |= (bytes[0] & 0xFF) << 24;
+        value |= (bytes[1] & 0xFF) << 16;
+        value |= (bytes[2] & 0xFF) << 8;
+        value |= bytes[3] & 0xFF;
+        return value;
+    }
+
 
 
     public byte[] get() throws IOException, InterruptedException {
+
+        // DEBUG
+        if (true) {
+            byte[] sizeBytes = new byte[4];
+            for (int i=0; i<4; i++) {
+                sizeBytes[i] = (byte)inputStream.read();
+            } int size = decodeBytesToInt(sizeBytes);
+            byte[] buffer = new byte[size];
+            for (int i=0; i<size; i++) {
+                buffer[i] = (byte)inputStream.read();
+            } return buffer;
+        }
+
+
+
+
         int numSock =inputStream.read();
 
         if (numSock == 1) {
@@ -97,7 +130,6 @@ public class KasperNitroWire {
                 stream[i] = (byte) inputStream.read();
             }
 
-            System.out.println("GET COMPLETE IN THREAD: " + Thread.currentThread().getId());
             return stream;
         }
 
@@ -164,14 +196,27 @@ public class KasperNitroWire {
     }
 
     public void put (byte[] stream) throws IOException {
-        System.out.println("PUT ATTEMPT IN THREAD " + Thread.currentThread());
+
+        if (true) {
+            var header = encodeIntToBytes(stream.length);
+            System.out.println("PUT: " + stream.length + " decoded: " + decodeBytesToInt(header));
+            for (int i =0; i<4; i++){
+                outputStream.write(header[i]);
+            } for (var x : stream) {
+                outputStream.write(x);
+            } return;
+
+        }
+
+
+
+
         var instructor = getChannels(stream.length);
         if (instructor[0] == 1) {
             outputStream.write(instructor[0]);
             outputStream.write(intToByteArray(stream.length));
             outputStream.write(stream);
             outputStream.flush();
-            System.out.println("PUT COMPLETE IN THREAD: " + Thread.currentThread().getId());
             return;
         }
         outputStream.write(instructor[0]);
@@ -204,7 +249,7 @@ public class KasperNitroWire {
         if (totalBytes < 5000) {
             result[0] = 1;
         } else {
-            result[0] = 2; // change to enable
+            result[0] = 1; // change to enable
             result[1] = totalBytes/2;
             result[2] = totalBytes - result[1];
         }

@@ -40,7 +40,7 @@ public class KasperBean extends AbstractReference{
             this.user = user;
             this.password = password;
             this.name = this.host;
-            kasperNitroWire = new KasperNitroWire(new Socket(host, port), true);
+            kasperNitroWire = new KasperNitroWire(new Socket(host, port));
             JSONCache.init();
         } catch (IOException e) {
             throw new KasperIOException("thrown by KasperDriver:> Make sure that you are connected to the KasperEngine instance.");

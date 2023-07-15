@@ -1,6 +1,8 @@
 package Parser.Tokens;
 
 public class Token {
+
+    public String name;
     public TokenType tokenType;
 
     public Statement toStatement () {
@@ -20,4 +22,9 @@ public class Token {
     }
 
     public StringLiteral toStringLiteral () {return (StringLiteral) this; }
+
+    public String getName () {
+        if (this instanceof Statement s) return s.type.toString();
+        return name;
+    }
 }
