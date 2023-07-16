@@ -1,12 +1,12 @@
 package Persistence;
 
-import Boost.JSONCache;
-import DataStructures.KasperNode;
-import Network.Pool;
-import KasperCommons.Network.Timer;
-import KasperCommons.Parser.ByteCompression;
-import Network.Lobby;
-import Network.Room;
+import com.kasper.Boost.JSONCache;
+import datastructures.KasperNode;
+import network.Pool;
+import com.kasper.commons.Network.Timer;
+import com.kasper.commons.Parser.ByteCompression;
+import network.Lobby;
+import network.Room;
 import Server.Parser.AESUtils;
 import Server.Parser.DiskIO;
 import Server.SuperClass.KasperGlobalMap;

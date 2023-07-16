@@ -1,7 +1,6 @@
 package Server.SuperClass;
 
-import KasperCommons.Network.Timer;
-import Server.Handler.RequestHandler;
+import com.kasper.commons.Network.Timer;
 import Server.Netty.MainLobby;
 
 public class GlobalHolders {

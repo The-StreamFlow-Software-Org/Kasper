@@ -1,14 +1,13 @@
 package Server.SuperClass;
 
-import DataStructures.KasperCollection;
-import DataStructures.KasperNode;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.LockedLL;
-import KasperCommons.Exceptions.KasperException;
-import KasperCommons.Exceptions.NoSuchKasperObject;
-import KasperCommons.Parser.PathParser;
+import datastructures.KasperCollection;
+import datastructures.KasperNode;
+import com.kasper.commons.datastructures.KasperList;
+import com.kasper.commons.datastructures.KasperMap;
+import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.exceptions.KasperException;
+import com.kasper.commons.exceptions.NoSuchKasperObject;
+import com.kasper.commons.Parser.PathParser;
 import Persistence.Cache;
 
 import java.io.Serial;

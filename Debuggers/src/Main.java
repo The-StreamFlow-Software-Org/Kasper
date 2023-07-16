@@ -3,11 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 
-import Kasper.BeansDriver.DataStructures.CollectionReference;
-import Kasper.BeansDriver.DataStructures.KasperBean;
-import Parser.ParseProcessor;
+import com.kasper.beans.datastructures.CollectionReference;
+import com.kasper.beans.datastructures.KasperBean;
+import parser.ParseProcessor;
+import parser.executor.DatabaseOperations;
+import parser.executor.ExecutionQueue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +21,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ParseProcessor.consumeString("INSERT ([]) IN 'hallo.world' AS ([])");
+        ParseProcessor.consumeString("INSERT (\"Hello, World\") IN 'hello.world' AS 'fighter';");
     }
 
 

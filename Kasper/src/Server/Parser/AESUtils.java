@@ -1,6 +1,6 @@
 package Server.Parser;
 
-import KasperCommons.Authenticator.KasperAccessAuthenticator;
+import com.kasper.commons.authenticator.KasperAccessAuthenticator;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;

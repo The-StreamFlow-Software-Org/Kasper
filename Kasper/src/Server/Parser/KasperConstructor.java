@@ -1,11 +1,11 @@
 package Server.Parser;
 
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.DataStructures.KasperString;
-import KasperCommons.Network.Timer;
-import KasperCommons.Parser.KasperDocument;
+import com.kasper.commons.datastructures.KasperList;
+import com.kasper.commons.datastructures.KasperMap;
+import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.datastructures.KasperString;
+import com.kasper.commons.Network.Timer;
+import com.kasper.commons.Parser.KasperDocument;
 import Server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

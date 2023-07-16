@@ -1,10 +1,10 @@
-import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import KasperCommons.Authenticator.Meta;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.DataStructures.KasperMap;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.Network.Timer;
-import Network.Lobby;
+import com.kasper.commons.authenticator.KasperAccessAuthenticator;
+import com.kasper.commons.authenticator.Meta;
+import com.kasper.commons.datastructures.KasperList;
+import com.kasper.commons.datastructures.KasperMap;
+import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.Network.Timer;
+import network.Lobby;
 import Persistence.InstantiatorService;
 import Server.SuperClass.KasperGlobalMap;
 

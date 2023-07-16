@@ -1,11 +1,11 @@
 package Persistence;
 
-import DataStructures.KasperCollection;
-import DataStructures.KasperNode;
-import KasperCommons.Authenticator.KasperAccessAuthenticator;
-import KasperCommons.DataStructures.KasperObject;
-import KasperCommons.Parser.KasperDocument;
-import KasperCommons.Parser.KasperWriter;
+import datastructures.KasperCollection;
+import datastructures.KasperNode;
+import com.kasper.commons.authenticator.KasperAccessAuthenticator;
+import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.Parser.KasperDocument;
+import com.kasper.commons.Parser.KasperWriter;
 import Server.Parser.DiskIO;
 import org.w3c.dom.Node;
 

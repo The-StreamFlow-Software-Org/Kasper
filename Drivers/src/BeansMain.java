@@ -1,6 +1,6 @@
-import Kasper.BeansDriver.DataStructures.KasperBean;
-import KasperCommons.DataStructures.KasperList;
-import KasperCommons.Network.Timer;
+import com.kasper.beans.datastructures.KasperBean;
+import com.kasper.commons.datastructures.KasperList;
+import com.kasper.commons.Network.Timer;
 
 import java.util.Scanner;
 
