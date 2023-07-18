@@ -5,11 +5,13 @@
 
 import com.kasper.beans.datastructures.CollectionReference;
 import com.kasper.beans.datastructures.KasperBean;
+import com.kasper.commons.datastructures.LockedLL;
 import parser.ParseProcessor;
 import parser.executor.DatabaseOperations;
 import parser.executor.ExecutionQueue;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -21,7 +23,33 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ParseProcessor.consumeString("INSERT (\"Hello, World\") IN 'hello.world' AS 'fighter';");
+        ParseProcessor processor = new ParseProcessor();
+        processor.consumeString("get 'this.path';");
+    }
+
+
+    public static void threadTest(){
+        LockedLL<Integer> list = new LockedLL<>();
+        LinkedList<Thread> threadList = new LinkedList<>();
+        for (int i=0; i<10; i++) {
+            final int index = i;
+            threadList.add(new Thread(
+                    ()->{
+                     //   System.out.println("Thread execute..." + index);
+                        list.add(index);
+                        list.add(index);
+                        list.remove(0);
+                        System.out.println(list);
+                       // System.out.println("Thead finish..."  +index);
+                    }
+            ));
+
+        }
+
+        for (var x:threadList) {
+            x.start();
+        }
+
     }
 
 

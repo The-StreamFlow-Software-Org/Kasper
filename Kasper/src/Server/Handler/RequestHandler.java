@@ -125,7 +125,7 @@ public class RequestHandler {
             } else if (destination instanceof KasperList l) {
                 try {
                     if (key.equals("head")) {
-                        l.toList().push(object);
+                        l.toList().addFirst(object);
                     } else if (key.equals("tail")) {
                         l.toList().add(object);
                     } else {

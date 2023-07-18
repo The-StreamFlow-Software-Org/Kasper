@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class ParseProcessor {
 
-    public static void consumeString(String string) {
+    public void consumeString(String string) {
         try {
             var tokens = tokenize(string);
             parseSyntax(tokens); // verifies the correctness of the syntax
@@ -19,7 +19,7 @@ public class ParseProcessor {
         }
     }
 
-    public static void parseSyntax (TokenCursor tokens) {
+    public void parseSyntax (TokenCursor tokens) {
         TaskParser processor = new TaskParser();
         Boolean mustFinish = false; // the query must end, unless a delimiter was given.
         Boolean begin = true; // this is a new query. Is false upon token read. Turned true with delimiters.
@@ -48,6 +48,8 @@ public class ParseProcessor {
                             mustFinish = processor.create(tokens);
                         } case INSERT -> {
                             mustFinish = processor.insert(tokens);
+                        } case GET -> {
+                            mustFinish = processor.get(tokens);
                         }
                     }
                 }
@@ -55,12 +57,19 @@ public class ParseProcessor {
         }
     }
 
-    public static TokenCursor tokenize (String longString) {
-        ArrayList<Token> tokens = new ArrayList<>();
+    StringBuilder statement;
+    ArrayList<Token> tokens;
+    public void statementPusher() {
+        if (!statement.isEmpty()) {
+            tokens.add(Statement.consumeStatement(statement.toString()));
+            statement.setLength(0);
+        }
+    }
+
+    public TokenCursor tokenize (String longString) {
+        tokens = new ArrayList<>();
+        statement = new StringBuilder();
         for (int i = 0; i<longString.length(); i++){
-            Token lastToken = null;
-            if (i == 0) lastToken = OneOf.newInvalid();
-            else lastToken = tokens.get(tokens.size()-1);
             char current = longString.charAt(i);
 
             // String literal handler
@@ -70,6 +79,7 @@ public class ParseProcessor {
                 case '"':
                 case '(':
                 {
+                    statementPusher();
                     if (i == longString.length()-1) throw Throw.notEscaped(longString, current);
                     var pair = parseLiteral(longString.substring(i+1), current);
                     i = 0;
@@ -82,41 +92,41 @@ public class ParseProcessor {
                 }
 
                 case ',': {
+                    statementPusher();
                     tokens.add(OneOf.newComma());
                     break;
                 }
 
                 case '@': {
+                    statementPusher();
                     tokens.add(OneOf.newFunctionCall());
                     break;
                 }
 
                 case ';': {
+                    statementPusher();
                     tokens.add(OneOf.newDelimiter());
                     break;
                 }
                 case '=':  {
+                    statementPusher();
                     tokens.add(OneOf.newEqual());
                     break;
                 }
 
                 case '*' : {
+                    statementPusher();
                     tokens.add(OneOf.newAlias());
                     break;
                 }
                 case '\n':
                 case '\t':
-                case ' ': break;
+                case ' ': {
+                    statementPusher();
+                    break;
+                }
                 default: {
-                    StringBuilder statement = new StringBuilder();
-                    current = longString.charAt(i);
-                    do {
-                        statement.append(current);
-                        if (++i >= longString.length()) break;
-                        current = longString.charAt(i);
-                    }
-                    while (current != ' ');
-                    tokens.add(Statement.consumeStatement(statement.toString()));
+                    statement.append(current);
                 }
 
             }

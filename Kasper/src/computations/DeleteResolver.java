@@ -56,6 +56,7 @@ public class DeleteResolver {
                 map.toMap().remove(x.getValue());
             } else {
                 int index = Integer.parseInt(x.getValue());
+                // this does not work anymore
                 key.toList().remove(index);
             }
         }

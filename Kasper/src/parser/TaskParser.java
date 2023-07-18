@@ -6,6 +6,8 @@ import parser.tokens.PathToken;
 import parser.tokens.StatementType;
 import parser.tokens.TokenType;
 
+import java.util.ArrayList;
+
 public class TaskParser {
     ExecutionQueue processes;
 
@@ -77,7 +79,11 @@ public class TaskParser {
         return true;
     }
 
-    public static Boolean get (TokenCursor tokens) {
-        return false;
+    public Boolean get (TokenCursor tokens) {
+        var pathToken = tokens.nextToken();
+        Throw.syntaxAssert("GET " + pathToken.getName(), TokenType.STRING, pathToken.tokenType);
+        return true;
     }
+
+
 }

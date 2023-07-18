@@ -18,7 +18,7 @@ public class KasperObject implements Serializable {
     protected KasperObject parent;
 
     // listening threads asking for path
-    protected ArrayList<Thread> inquirers;
+    protected List<Thread> inquirers;
 
     protected void setParent (KasperObject parent) {
         this.parent = parent;
@@ -37,7 +37,7 @@ public class KasperObject implements Serializable {
 
     public String getPath() {
         if (finalPath.equals("")) {
-            if (inquirers == null) inquirers = new ArrayList<>(1);
+            if (inquirers == null) inquirers = new LinkedList<>();
             if (id.equals("")) {
                 inquirers.add(Thread.currentThread());
                 try {
@@ -58,7 +58,6 @@ public class KasperObject implements Serializable {
             return;
         }
         resolvePath(current.parent);
-
     }
 
     private static final long serialVersionUID = -7689140920033408553L;
@@ -89,6 +88,7 @@ public class KasperObject implements Serializable {
     /**
      *
      * @return a string representation of its type. Can be 'map', 'string', or 'list'.
+     * @note: relationships are considered as maps, while the references inherit their referenced type.
      */
     public String getType (){
         return type;

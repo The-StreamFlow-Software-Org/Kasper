@@ -67,9 +67,7 @@ public class KasperList extends KasperObject implements Iterable{
      */
     public ArrayList<KasperObject> toArray (){
         var x = toList();
-        ArrayList<KasperObject> list = new ArrayList<>(x.size());
-        list.addAll(x);
-        return list;
+        return x.getInternalArray();
     }
 
 
