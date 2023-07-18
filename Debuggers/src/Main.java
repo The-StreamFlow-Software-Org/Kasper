@@ -7,8 +7,6 @@ import com.kasper.beans.datastructures.CollectionReference;
 import com.kasper.beans.datastructures.KasperBean;
 import com.kasper.commons.datastructures.LockedLL;
 import parser.ParseProcessor;
-import parser.executor.DatabaseOperations;
-import parser.executor.ExecutionQueue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,7 +22,12 @@ public class Main {
      */
     public static void main(String[] args) {
         ParseProcessor processor = new ParseProcessor();
-        processor.consumeString("get 'this.path';");
+        processor.consumeString("DELETE COLLECTION IN 'db' named 'users';" +
+                "CREATE COLLECTION 'pathpath' IN 'db';" +
+                "CREATE NODE 'db';" +
+                "CREATE RELATIONSHIP 'friends' in 'db.path.keypath';" +
+                "CREATE RELATIONSHIP 'friends' in 'db.nize';" +
+                "INSERT ([]) IN 'friends' as 'rph';");
     }
 
 

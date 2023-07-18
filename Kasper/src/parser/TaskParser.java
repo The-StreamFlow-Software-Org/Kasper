@@ -4,9 +4,8 @@ import parser.exceptions.Throw;
 import parser.executor.ExecutionQueue;
 import parser.tokens.PathToken;
 import parser.tokens.StatementType;
+import parser.tokens.Token;
 import parser.tokens.TokenType;
-
-import java.util.ArrayList;
 
 public class TaskParser {
     ExecutionQueue processes;
@@ -17,8 +16,8 @@ public class TaskParser {
     }
 
     public Boolean create (TokenCursor tokens) {
-        // CREATE statements here
         var entity = tokens.nextToken();
+        var initialEntity = entity;
         var initialType = entity.toStatement().type;
         switch (initialType) {
             case RELATIONSHIP:
@@ -27,27 +26,24 @@ public class TaskParser {
                 String collectionName = null;
                 PathToken path = null;
                 entity = tokens.nextToken();
-                // verify that collection name exists
-                parsedSoFar.append("CREATE COLLECTION ").append(entity.getName());
+                // verify if the entity name exists
+                parsedSoFar.append("CREATE ").append(initialEntity.getName()).append(" ").append(entity.getName()).append(" ");
                 Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
-                collectionName = entity.name;
+                // verify the IN keyword
                 entity = tokens.nextToken();
-                parsedSoFar.append(" ").append(entity.name);
-                // verify that IN exists
-                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STATEMENT, entity.tokenType);
-                Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, entity.toStatement().type);
-                // verify that node name is provided
+                parsedSoFar.append(entity.getName()).append(" ");
+                Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, entity);
                 entity = tokens.nextToken();
-                parsedSoFar.append(" IN ").append(entity.name);
+                // get the path name here
+                parsedSoFar.append(entity.getName());
                 Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
-                path = PathToken.newPath(entity.name);
                 return true;
             }
             case NODE: {
                 String nodeName = null;
                 entity = tokens.nextToken();
                 // verify that collection name exists
-                Throw.syntaxAssert("CREATE COLLECTION " + entity.name, TokenType.STRING, entity.tokenType);
+                Throw.syntaxAssert("CREATE NODE " + entity.name, TokenType.STRING, entity.tokenType);
                 nodeName = entity.name;
                 return true;
             }
@@ -65,7 +61,7 @@ public class TaskParser {
         // asserting IN
         parsedSoFar.append(tokens.peekNext().toString()).append(" ");
         Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STATEMENT, tokens.peekNext());
-        Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, tokens.nextToken().toStatement().type);
+        Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, tokens.nextToken());
         // asserting path
         var pathToken = tokens.nextToken();
         parsedSoFar.append(pathToken.getName()).append(" ");
@@ -83,6 +79,65 @@ public class TaskParser {
         var pathToken = tokens.nextToken();
         Throw.syntaxAssert("GET " + pathToken.getName(), TokenType.STRING, pathToken.tokenType);
         return true;
+    }
+
+    public Boolean delete (TokenCursor tokens){
+        var entity = tokens.nextToken();
+        var initialEntity = entity;
+        var initialType = entity.toStatement().type;
+        switch (initialType) {
+            case COLLECTION:
+            case RELATIONSHIP: {
+                StringBuilder parsedSoFar = new StringBuilder();
+                String pathName = null;
+                // verify in keyword
+                entity = tokens.nextToken();
+                parsedSoFar.append("DELETE ").append(initialEntity.getName()).append(" ").append(entity.getName()).append(" ");
+                Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, entity);
+                // verify that collection name exists
+                entity = tokens.nextToken();
+                parsedSoFar.append(entity.getName());
+                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
+                pathName = entity.name;
+                //verify NAMED token
+                entity = tokens.nextToken();
+                parsedSoFar.append(" ").append(entity.getName());
+                Throw.statementAssert(parsedSoFar.toString(), StatementType.NAMED, entity);
+                // get relationship id
+                entity = tokens.nextToken();
+                parsedSoFar.append(" ").append(entity.getName());
+                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
+                Token relationshipName = entity;
+                return true;
+            }
+            case ENTITY: {
+                StringBuilder parsedSoFar = new StringBuilder();
+                String collectionName = null;
+                PathToken path = null;
+                entity = tokens.nextToken();
+                // verify the path keyword
+                parsedSoFar.append("DELETE ").append(initialEntity.getName()).append(" ").append(entity.getName()).append(" ");
+                Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, entity);
+                // verify that collection name exists
+                entity = tokens.nextToken();
+                parsedSoFar.append(entity.getName());
+                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
+                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
+                collectionName = entity.name;
+                return true;
+            }
+            case NODE: {
+                String nodeName = null;
+                entity = tokens.nextToken();
+                // verify that collection name exists
+                Throw.syntaxAssert("DELETE NODE " + entity.name, TokenType.STRING, entity.tokenType);
+                nodeName = entity.name;
+                return true;
+            }
+            default: {
+                throw Throw.invalidStatement("CREATE", initialType);
+            }
+        }
     }
 
 

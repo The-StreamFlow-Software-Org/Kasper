@@ -41,18 +41,11 @@ public class ParseProcessor {
                 }
                 else throw Throw.raw("Unknown start of query / symbol: '" + current.getName()  + "'.");
             }
-            switch (type) {
-                case STATEMENT -> {
-                    switch (current.toStatement().type) {
-                        case CREATE -> {
-                            mustFinish = processor.create(tokens);
-                        } case INSERT -> {
-                            mustFinish = processor.insert(tokens);
-                        } case GET -> {
-                            mustFinish = processor.get(tokens);
-                        }
-                    }
-                }
+            switch (current.toStatement().type) {
+                case CREATE -> mustFinish = processor.create(tokens);
+                case INSERT -> mustFinish = processor.insert(tokens);
+                case GET -> mustFinish = processor.get(tokens);
+                case DELETE -> mustFinish = processor.delete(tokens);
             }
         }
     }

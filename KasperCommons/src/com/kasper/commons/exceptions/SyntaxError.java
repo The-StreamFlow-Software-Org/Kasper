@@ -6,7 +6,7 @@ public class SyntaxError extends KasperException{
         super (message);
     }
     public SyntaxError(String message) {
-        super("Syntax Error thrown by the Kasper Engine.\nReason: " + message  + " Check the Kasper manual for details.");
+        super("Syntax Error thrown by the Kasper Engine.\nReason:\n\t" + message  + " Check the Kasper manual for details.");
     }
 
     public SyntaxError() {

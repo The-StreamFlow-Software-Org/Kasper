@@ -25,16 +25,20 @@ public class Throw {
 
     public static void syntaxAssert (String sequence, TokenType expected, TokenType received) {
         if (expected != received)
-        throw raw("Syntax assertion failed. The sequence:\n\t\"" + sequence + "\"\n\tThe engine expected '" + expected + "', but instead, received '" + received + "'. ");
+        throw raw("Syntax assertion failed during the parsing of the last token of the sequence:\n\t\t\"" + sequence + "\"\n\tThe engine expected '" + expected + "', but instead, received '" + received + "'. ");
     }
 
-    public static void statementAssert (String sequence, StatementType expected, StatementType received) {
+    private static void statementAssert (String sequence, StatementType expected, StatementType received) {
         if (expected != received)
             throw raw("Statement assertion failed.\n\tSequence '" + sequence + "' is incorrect.\n\tDetails: expected statement '" + expected + "' received '" + received + "'.");
     }
 
     public static void statementAssert (String sequence, StatementType expected, Token received) {
-        syntaxAssert(sequence, TokenType.STATEMENT, received.tokenType);
+        try {
+            syntaxAssert(sequence, TokenType.STATEMENT, received.tokenType);
+        } catch (SyntaxError e) {
+            throw raw("Syntax assertion failed during the parsing of the last token of the sequence:\n\t\t\"" + sequence + "\"\n\tThe engine expected '" + expected.toString() + "', but instead, received '" + received.getName() + "'. ");
+        }
         statementAssert(sequence, expected, received.toStatement().type);
     }
 
