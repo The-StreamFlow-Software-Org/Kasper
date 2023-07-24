@@ -1,4 +1,4 @@
-package Server.Handler;
+package server.Handler;
 
 import computations.DeleteResolver;
 import datastructures.KasperCollection;
@@ -21,7 +21,7 @@ import com.kasper.commons.Parser.KasperWriter;
 import com.kasper.commons.Parser.PathParser;
 import com.kasper.commons.Parser.TokenSender;
 import Persistence.Cache;
-import Server.SuperClass.KasperGlobalMap;
+import server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
 
 import java.io.IOException;

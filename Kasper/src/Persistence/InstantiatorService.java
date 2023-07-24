@@ -1,16 +1,21 @@
 package Persistence;
 
+import server.Parser.AESUtils;
+import server.Parser.DiskIO;
+import server.SuperClass.KasperGlobalMap;
 import com.kasper.Boost.JSONCache;
-import datastructures.KasperNode;
-import network.Pool;
 import com.kasper.commons.Network.Timer;
 import com.kasper.commons.Parser.ByteCompression;
+import com.kasper.commons.exceptions.KasperException;
+import datastructures.KasperNode;
 import network.Lobby;
+import server.locals.LocalServer;
+import network.Pool;
 import network.Room;
-import Server.Parser.AESUtils;
-import Server.Parser.DiskIO;
-import Server.SuperClass.KasperGlobalMap;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,11 +25,41 @@ import java.util.concurrent.ConcurrentHashMap;
 // serializing and deserializing, as well as security checks.
 public class InstantiatorService {
 
+    public static boolean lockedByThis = false;
+    public static String mutexLocation = System.getProperty("user.home")+ "/kasper.mutex";
+
+    public static void lockThisServer() {
+        System.out.println("Kasper:> Checking IO mutex lock.");
+        File file = new File(mutexLocation);
+            if (file.exists()) {
+                System.err.println("Kasper:> IO Mutex lock failed. Cannot run double instances of the Kasper Engine. Please terminate the other instance first.");
+                if (InstantiatorService.lockedByThis) InstantiatorService.unlockThisServer();
+                System.exit(0);
+            }
+        try (BufferedWriter write = new BufferedWriter(new FileWriter(mutexLocation))){
+            write.write(LocalServer.timestampNow());
+            lockedByThis = true;
+        } catch (IOException e) {
+            System.out.println(mutexLocation);
+            e.printStackTrace();
+            throw new KasperException("Kasper:> Cannot use the mutex lock to lock this Kasper Engine instance.");
+        }
+        System.out.println("Kasper:> Successfully locked this instance. Mutexes instantiated.");
+    }
+
+    public static void unlockThisServer() {
+       File file = new File(mutexLocation);
+       if (!file.delete())
+            throw new KasperException("Cannot use the mutex lock to unlock this Kasper Engine instance.");
+        System.out.println("Kasper:> Successfully unlocked this instance. Mutexes destroyed.");
+    }
+
 
     // Instantiates all global variables.
     @SuppressWarnings("unchecked")
     public static void start() throws IOException {
         DiskIO.writeConfig();
+        lockThisServer(); // locks the IO mutex
         Cache.init();
         KasperGlobalMap.instantiate();
         JSONCache.init();
@@ -48,6 +83,7 @@ public class InstantiatorService {
         Lobby.ending = true; // stops asking for new connections
         Room.requestClose(); // signals for all the processes to gracefully close
         Room.ending = true; // stops asking for new requests
+        unlockThisServer(); // unlocks the IO mutex
         System.out.println("Kasper:> Termination request received. Now gracefully shutting down all connections, threads, and processes.");
         Room.latch.await();
         Pool.shutdown();

@@ -1,4 +1,4 @@
-package Server.Parser;
+package server.Parser;
 
 import com.kasper.commons.authenticator.KasperAccessAuthenticator;
 

@@ -7,7 +7,7 @@ import com.kasper.commons.Network.KasperNitroWire;
 import com.kasper.commons.Network.NetworkPackageRunnable;
 import com.kasper.commons.Parser.ExceptionAlias;
 import com.kasper.commons.Parser.TokenSender;
-import Server.Handler.RequestHandler;
+import server.Handler.RequestHandler;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;

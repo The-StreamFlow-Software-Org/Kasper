@@ -6,7 +6,8 @@ import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.Network.Timer;
 import network.Lobby;
 import Persistence.InstantiatorService;
-import Server.SuperClass.KasperGlobalMap;
+import server.SuperClass.KasperGlobalMap;
+import server.locals.LogWriter;
 
 import java.util.Scanner;
 
@@ -14,8 +15,13 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
-        new KasperAccessAuthenticator("kasper.util.key");
-        init(args);
+        try {
+            new KasperAccessAuthenticator("kasper.util.key");
+            init(args);
+        } catch (Exception e) {
+            System.out.println("CRITICAL ERROR:> Kasper Engine failed to continue serving. Please check the logs for more details.");
+            LogWriter.writeLog(e);
+        }
     }
 
     // instantiates the KasperEngine with the appropriate global variables.

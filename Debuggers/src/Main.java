@@ -7,12 +7,11 @@ import com.kasper.beans.datastructures.CollectionReference;
 import com.kasper.beans.datastructures.KasperBean;
 import com.kasper.beans.streamflow.Connection;
 import com.kasper.beans.streamflow.Statement;
-import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.LockedLL;
+import com.kasper.commons.debug.Debug;
 import parser.ParseProcessor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -25,17 +24,18 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
+        stressTest();
         ParseProcessor process = new ParseProcessor();
         // TODO: buggy handling with quotes in parenthesis
        // process.consumeString("match @correct(?)");
         Connection connection = new Connection();
         Statement statement = connection.prepareStatement("INSERT (?) IN ? AS ?");
         KasperMap map = new KasperMap().put("Hello", "World").put("This is", "me!");
-        statement.setObject(1,map);
+        statement.setObject(1, map);
         statement.setPath(2, "nodeDB", "helloWorld");
         statement.setString(3, "hello");
-        System.out.println(statement.peekQuery());
+        Debug.TRUE = true;
         process.consumeString(statement.peekQuery());
 
 

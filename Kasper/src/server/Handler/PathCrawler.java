@@ -1,11 +1,11 @@
-package Server.Handler;
+package server.Handler;
 
 import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.Parser.PathParser;
-import Server.SuperClass.KasperGlobalMap;
+import server.SuperClass.KasperGlobalMap;
 
 import java.util.Map;
 

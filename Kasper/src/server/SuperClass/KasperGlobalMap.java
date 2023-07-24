@@ -1,4 +1,4 @@
-package Server.SuperClass;
+package server.SuperClass;
 
 import datastructures.KasperCollection;
 import datastructures.KasperNode;

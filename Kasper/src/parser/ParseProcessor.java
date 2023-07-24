@@ -3,6 +3,7 @@ package parser;
 import com.kasper.Boost.Pair;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperList;
+import com.kasper.commons.debug.Debug;
 import com.kasper.commons.exceptions.SyntaxError;
 import parser.exceptions.Throw;
 import parser.tokens.*;
@@ -17,14 +18,14 @@ public class ParseProcessor {
         try {
             var tokens = tokenize(string);
             parseSyntax(tokens); // verifies the correctness of the syntax
+            if (Debug.TRUE) System.out.println("Syntax verified: " + string);
         } catch (SyntaxError error) {
-            error.printStackTrace();
+            if (Debug.TRUE)error.printStackTrace();
             throw new SyntaxError(true, error.getMessage() + "\nFound in query: '" + string + "'.");
         }
     }
 
     public void parseSyntax (TokenCursor tokens) {
-        System.out.println(tokens);
         TaskParser processor = new TaskParser();
         Boolean mustFinish = false; // the query must end, unless a delimiter was given.
         Boolean begin = true; // this is a new query. Is false upon token read. Turned true with delimiters.

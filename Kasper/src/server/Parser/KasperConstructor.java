@@ -1,9 +1,9 @@
-package Server.Parser;
+package server.Parser;
 
 import com.kasper.commons.datastructures.*;
 import com.kasper.commons.Network.Timer;
 import com.kasper.commons.Parser.KasperDocument;
-import Server.SuperClass.KasperGlobalMap;
+import server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

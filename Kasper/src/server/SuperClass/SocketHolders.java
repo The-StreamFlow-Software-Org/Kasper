@@ -1,6 +1,5 @@
-package Server.SuperClass;
+package server.SuperClass;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 
 public class SocketHolders {

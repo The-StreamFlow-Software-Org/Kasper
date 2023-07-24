@@ -3,7 +3,7 @@ package datastructures;
 import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.Parser.KasperConstructor;
 import com.kasper.commons.Parser.PathParser;
-import Server.SuperClass.KasperGlobalMap;
+import server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Node;
 
 import java.io.Serial;

@@ -1,7 +1,7 @@
-package Server.SuperClass;
+package server.SuperClass;
 
 import com.kasper.commons.Network.Timer;
-import Server.Netty.MainLobby;
+import server.Netty.MainLobby;
 
 public class GlobalHolders {
     public static MainLobby mainLobby = new MainLobby();
