@@ -27,7 +27,7 @@ public class LocalPathCrawler {
             KasperObject current = stack.pop();
 
 
-            if (!(current instanceof KasperString)) {
+            if (!(current instanceof KasperPrimitive)) {
                 if (current instanceof KasperMap) {
                     for (var x : current.toMap().entrySet()) {
                         if (!x.getValue().id.isEmpty()) return;

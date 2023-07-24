@@ -32,11 +32,32 @@ package parser;
     CREATE RELATIONSHIP "friends" IN "dbUsers.entity.Anna";
     ---------------
 
-    B. SET
-    1. Setting a value
+    B. Setting a value
 
     ---------------
     SET {"list":["one","two","three"], "string":"string type} IN "dbUsers.entity" AS
     "sample"
     ---------------
+
+    Ca. GETTING a value
+
+    ---------------
+    GET "dbUsers.entity";
+    ---------------
+
+    Cb. GETTING a value, including the relationships
+
+    ---------------
+    GET "dbusers.entity" @INCLUDE("friends")
+
+    or you can even query nested relationships with:
+
+    GET "dbusers.entity" @INCLUDE("matches");
+    ---------------
+
+    Cc. GETTING a value, including the relationships of their relationships.
+
+    ---------------
+    Get "dbusers.entity"
+
  */

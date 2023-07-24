@@ -81,6 +81,8 @@ public class TokenCursor {
                 toString.append(": ").append(x.toStringLiteral().name);
             } else if (x.tokenType==TokenType.OBJECT){
                 toString.append(": ").append(x.toObject().getInternalObject());
+            } else if (x.tokenType==TokenType.FUNCTION) {
+                toString.append(": ").append(x);
             }
             toString.append('\n');
         }

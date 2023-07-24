@@ -261,7 +261,7 @@ public class CollectionReference extends AbstractReference{
                 StringBuilder build = new StringBuilder();
                 build.append(basePath).append(".").append(properties);
                 document.containsRequest(basePath, build.toString());
-                pack.put(document.toString());
+                pack.put(document.toString().getBytes());
               //  return new KasperConstructor(Objects.requireNonNull(KasperDocument.constructor(pack.get()))).constructObject().castToList();
             } catch (IOException e) {
                 throw new KasperException(e.getMessage());
@@ -281,7 +281,7 @@ public class CollectionReference extends AbstractReference{
                     this.path.addPathConventionally(x);
                 }
                 document.containsRequest(basePath, this.path.toStr());
-                pack.put(document.toString());
+                pack.put(document.toString().getBytes());
           //      return new KasperConstructor(Objects.requireNonNull(KasperDocument.constructor(pack.get()))).constructObject().castToList();
             } catch (IOException e) {
                 throw new KasperException(e.getMessage());

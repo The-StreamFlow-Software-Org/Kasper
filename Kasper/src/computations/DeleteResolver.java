@@ -27,7 +27,7 @@ public class DeleteResolver {
                 removeAllChildren(x);
             }
             list.clear();
-        } else if (o instanceof KasperString) {
+        } else if (o instanceof KasperPrimitive) {
             removeFromReferences(o);
             ProtectedUtils.setData(o, null);
         }

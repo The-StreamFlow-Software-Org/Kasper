@@ -4,6 +4,7 @@ import com.kasper.commons.Network.KasperNitroWire;
 import com.kasper.commons.Network.NetworkPackageRunnable;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
@@ -40,7 +41,7 @@ public class Pool {
         @Override
         public void uncaughtException(Thread thread, Throwable throwable) {
             try {
-                network.put("Thrown by KasperEngine: Reason:> An internal exception occurred in the KasperEngine. Please contact your vendor for fixes.\nReason:> " + throwable.getMessage());
+                network.put(("Thrown by KasperEngine: Reason:> An internal exception occurred in the KasperEngine. Please contact your vendor for fixes.\nReason:> " + throwable.getMessage() + "".getBytes(StandardCharsets.UTF_8)).getBytes());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

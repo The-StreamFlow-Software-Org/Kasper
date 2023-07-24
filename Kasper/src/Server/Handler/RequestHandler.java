@@ -99,10 +99,10 @@ public class RequestHandler {
             var matchWith = args.getChildNodes().item(0).getTextContent();
             var list = PathCrawler.getAllThatHasPath(base_path, matchWith);
             response.response(list);
-            pack.put(response.toString());
+            pack.put(response.toString().getBytes());
         } catch (Exception e) {
             response.raiseException(e);
-            pack.put(response.toString());
+            pack.put(response.toString().getBytes());
         }
 
     }

@@ -1,9 +1,6 @@
 package Server.Parser;
 
-import com.kasper.commons.datastructures.KasperList;
-import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.datastructures.KasperObject;
-import com.kasper.commons.datastructures.KasperString;
+import com.kasper.commons.datastructures.*;
 import com.kasper.commons.Network.Timer;
 import com.kasper.commons.Parser.KasperDocument;
 import Server.SuperClass.KasperGlobalMap;

@@ -131,7 +131,7 @@ public class KasperObject implements Serializable {
         return (Map) data;
     }
 
-    public static KasperString str (String str) {
+    public static KasperPrimitive str (String str) {
         return new KasperString(str);
     }
 
@@ -139,8 +139,8 @@ public class KasperObject implements Serializable {
         return (KasperList) this;
     }
 
-    public KasperString castToString(){
-        return (KasperString) this;
+    public KasperPrimitive castToString(){
+        return (KasperPrimitive) this;
     }
 
     public KasperMap castToMap(){
@@ -153,7 +153,7 @@ public class KasperObject implements Serializable {
             return m.toMap().toString();
         } else if (this instanceof KasperList l){
             return l.toList().toString();
-        } else if (this instanceof KasperString s){
+        } else if (this instanceof KasperPrimitive s){
             return s.toString();
         }
         return super.toString();

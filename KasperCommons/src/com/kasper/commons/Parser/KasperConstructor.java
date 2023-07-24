@@ -1,9 +1,6 @@
 package com.kasper.commons.Parser;
 
-import com.kasper.commons.datastructures.KasperList;
-import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.datastructures.KasperObject;
-import com.kasper.commons.datastructures.KasperString;
+import com.kasper.commons.datastructures.*;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.Handlers.ExceptionHandler;
 import com.kasper.commons.Network.Timer;

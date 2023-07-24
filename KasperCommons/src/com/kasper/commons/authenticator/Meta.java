@@ -28,7 +28,7 @@ public class Meta {
     public static String backup = "backups/";
     public static String backupCounter(){
         if (module > 5) module = 0;
-        return backup + "loginfo" + module++;
+        return backup + "kasper_backup_unit[" + module++ + "].knf";
     }
 
     private static int module = 0;

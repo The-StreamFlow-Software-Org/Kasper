@@ -84,7 +84,12 @@ public class TaskParser {
     public Boolean delete (TokenCursor tokens){
         var entity = tokens.nextToken();
         var initialEntity = entity;
-        var initialType = entity.toStatement().type;
+        StatementType initialType = null;
+        try {
+             initialType = entity.toStatement().type;
+        } catch (ClassCastException e) {
+            Throw.syntaxAssert("DELETE " + entity.getName() , TokenType.STATEMENT, entity.tokenType);
+        }
         switch (initialType) {
             case COLLECTION:
             case RELATIONSHIP: {

@@ -27,4 +27,8 @@ public class Token {
         if (this instanceof Statement s) return s.type.toString();
         return name;
     }
+
+    public Object toFunction() {
+        return (FunctionToken) this;
+    }
 }

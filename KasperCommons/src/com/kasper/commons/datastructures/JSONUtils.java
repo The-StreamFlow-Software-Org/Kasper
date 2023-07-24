@@ -1,9 +1,8 @@
 package com.kasper.commons.datastructures;
 
-import com.kasper.Boost.JSONCache;
-import com.kasper.commons.Network.Timer;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.kasper.commons.Network.Timer;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -14,11 +13,6 @@ public class JSONUtils {
 
     public static String objectToJsonStream(Object obj) {
         try {
-            var cached = JSONCache.get(obj);
-            if (cached != null) {
-                System.out.println("Cache hit!");
-                return cached;
-            }
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
 
@@ -38,7 +32,7 @@ public class JSONUtils {
     private static void writeJson(Object obj, JsonWriter jsonWriter) throws Exception {
         if (obj instanceof KasperMap map) {
             writeMap(map.toMap(), jsonWriter);
-        } else if (obj instanceof KasperString str) {
+        } else if (obj instanceof KasperPrimitive str) {
             jsonWriter.value(str.toStr());
         } else if (obj instanceof KasperList list) {
             writeArray(list.toList(), jsonWriter);
@@ -91,6 +85,20 @@ public class JSONUtils {
                 element = new KasperString(value);
                 element.setParent(parent); // Set the parent reference before object creation
                 break;
+
+            case NUMBER:
+                try {
+                    int valueInt = reader.nextInt();
+                    element = new KasperInteger(valueInt);
+                    element.setParent(parent);
+                    break;
+                } catch (NumberFormatException e) {
+                    double doubleValue = reader.nextDouble();
+                    element = new KasperDecimal(doubleValue);
+                    element.setParent(parent);
+                    break;
+                }
+
 
             // Handle other cases like NUMBER, BOOLEAN, NULL
 

@@ -17,6 +17,34 @@ public class KasperNitroWire {
     public BufferedInputStream nitroIn;
     public BufferedOutputStream nitroOut;
 
+
+
+
+    public void put (byte[] stream) throws IOException {
+        System.out.println(stream.length);
+        outputStream.write(stream, 0, stream.length);
+        outputStream.write(-127);
+    }
+
+    public byte[] get () throws IOException {
+       NitroByteBuf buffer = new NitroByteBuf();
+        while (true) {
+            var b = inputStream.read();
+            if (b == -127) break;
+            buffer.add((byte)b);
+        } return buffer.getBuf();
+    }
+
+
+
+
+
+
+
+
+
+
+
     public void close ()  {
         try {
             if (nitroSocket != null) nitroSocket.close();
@@ -95,7 +123,7 @@ public class KasperNitroWire {
 
 
 
-    public byte[] get() throws IOException, InterruptedException {
+    public byte[] oldGet() throws IOException, InterruptedException {
 
         // DEBUG
         if (true) {
@@ -195,7 +223,7 @@ public class KasperNitroWire {
         throw new KasperException("Bug found:> Size cannot be negative.\n");
     }
 
-    public void put (byte[] stream) throws IOException {
+    public void oldPut (byte[] stream) throws IOException {
 
         if (true) {
             var header = encodeIntToBytes(stream.length);
@@ -268,10 +296,10 @@ public class KasperNitroWire {
         return build.toString();
     }
 
-    public void put (String str) throws IOException {
-        outputStream.write(str.getBytes());
-        outputStream.write(255);
-        outputStream.flush();
-        // @debug
-    }
+
+
+
+
+
+
 }

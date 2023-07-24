@@ -44,22 +44,25 @@ public class Lobby {
 
         Pool.newThread(t);
 
+        final boolean[] doubleSIGINT = {false};
 
-        Signal.handle(new Signal("INT"), new SignalHandler() {
-            public void handle(Signal signal) {
+
+        Signal.handle(new Signal("INT"), (Signal sig)-> {
                 try {
+                    if (doubleSIGINT[0]) {
+                        System.exit(0);
+                    } doubleSIGINT[0] = true;
                     ending = true;
-                    System.out.println("Kasper says bye! :)");
+                    System.out.println("Kasper:> Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
                     InstantiatorService.close();
                     System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
-
+                    System.out.println("Kasper says bye! :)");
                     System.exit(0);
                 } catch (Exception e) {
                     System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
                     System.exit(0);
                 }
                 System.exit(0);
-            }
         });
 
         Signal.handle(new Signal("TERM"), new SignalHandler() {
