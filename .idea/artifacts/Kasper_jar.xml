@@ -11,6 +11,7 @@
       <element id="artifact" artifact-name="protobuf-java-3_23_3" />
       <element id="artifact" artifact-name="jol-core-0_17_jar_" />
       <element id="artifact" artifact-name="google_code_gson" />
+      <element id="artifact" artifact-name="io_netty_all" />
     </root>
   </artifact>
 </component>

@@ -32,9 +32,27 @@ public class Meta {
     }
 
     private static int module = 0;
+    private static double requestTimeout = 5000;
+
+    public static int maxConnections = 1026;
 
 
     public static void changePath (String path) {
         filename = path + ".knf";
+    }
+    public static int maxOperations = 400;
+    private static int operationCounter = 0;
+    public static void enqueueOperation() {
+        operationCounter++;
+        if (operationCounter > maxOperations)  {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ignored){}
+        }
+
+    }
+
+    public static void dequeueOperation(){
+        operationCounter--;
     }
 }

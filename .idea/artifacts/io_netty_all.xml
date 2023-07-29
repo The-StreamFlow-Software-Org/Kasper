@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="io_netty_all">
+    <output-path>$PROJECT_DIR$/out/artifacts/io_netty_all</output-path>
+    <root id="root">
+      <element id="library" level="project" name="io.netty.all" />
+    </root>
+  </artifact>
+</component>

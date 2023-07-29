@@ -1,7 +1,10 @@
 package Persistence;
 
+import com.kasper.commons.authenticator.Meta;
+import parser.ParseProcessor;
 import server.Parser.AESUtils;
 import server.Parser.DiskIO;
+import server.SuperClass.GlobalHolders;
 import server.SuperClass.KasperGlobalMap;
 import com.kasper.Boost.JSONCache;
 import com.kasper.commons.Network.Timer;
@@ -9,14 +12,15 @@ import com.kasper.commons.Parser.ByteCompression;
 import com.kasper.commons.exceptions.KasperException;
 import datastructures.KasperNode;
 import network.Lobby;
-import server.locals.LocalServer;
 import network.Pool;
 import network.Room;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -25,32 +29,42 @@ import java.util.concurrent.ConcurrentHashMap;
 // serializing and deserializing, as well as security checks.
 public class InstantiatorService {
 
+    public static FileLock lock = null;
+    public static FileChannel channel = null;
     public static boolean lockedByThis = false;
     public static String mutexLocation = System.getProperty("user.home")+ "/kasper.mutex";
 
     public static void lockThisServer() {
         System.out.println("Kasper:> Checking IO mutex lock.");
-        File file = new File(mutexLocation);
-            if (file.exists()) {
+        try {
+            channel = new RandomAccessFile(mutexLocation, "rw").getChannel();
+            lock = channel.tryLock();
+            if (lock == null) {
                 System.err.println("Kasper:> IO Mutex lock failed. Cannot run double instances of the Kasper Engine. Please terminate the other instance first.");
-                if (InstantiatorService.lockedByThis) InstantiatorService.unlockThisServer();
                 System.exit(0);
             }
-        try (BufferedWriter write = new BufferedWriter(new FileWriter(mutexLocation))){
-            write.write(LocalServer.timestampNow());
-            lockedByThis = true;
         } catch (IOException e) {
             System.out.println(mutexLocation);
             e.printStackTrace();
             throw new KasperException("Kasper:> Cannot use the mutex lock to lock this Kasper Engine instance.");
         }
+        lockedByThis = true;
         System.out.println("Kasper:> Successfully locked this instance. Mutexes instantiated.");
     }
 
     public static void unlockThisServer() {
-       File file = new File(mutexLocation);
-       if (!file.delete())
+        try {
+            if (lock != null) {
+                lock.release();
+                lock = null;
+            }
+            if (channel != null) {
+                channel.close();
+                channel = null;
+            }
+        } catch (IOException e) {
             throw new KasperException("Cannot use the mutex lock to unlock this Kasper Engine instance.");
+        }
         System.out.println("Kasper:> Successfully unlocked this instance. Mutexes destroyed.");
     }
 
@@ -74,7 +88,40 @@ public class InstantiatorService {
             e.printStackTrace();
         }
         System.gc();
+        if (GlobalHolders.args.length > 0) {
+            // CHECK FOR REPL
+            if (GlobalHolders.args[0].equals("-repl")) {
+                System.out.println("Instantiating Kasper REPL");
+                REPL();
+            }
+        }
+    }
 
+    public static void REPL () {
+        try {
+            ParseProcessor processor = new ParseProcessor();
+            String base = "kasper:" + InetAddress.getLocalHost().getHostAddress() + "://" + Meta.port + "> ";
+            Scanner scan = new Scanner(System.in);
+            while (true) {
+                System.out.print(base);
+                var evaluate = scan.nextLine();
+                if (evaluate.isEmpty()) continue;
+                try {
+                    processor.consumeString(evaluate);
+                    System.out.println("Query Ok!");
+                } catch (Exception e) {
+                    System.out.println("\n-------------------");
+                    System.out.println("Error Message");
+                    System.out.println("-------------------");
+                    System.out.println("\n");
+                    System.err.println(e.getMessage());
+                    System.out.println("\n");
+                    System.out.println("-------------------\n");
+                }
+            }
+        } catch (UnknownHostException e) {
+            throw new KasperException(e.getMessage());
+        }
     }
 
     // closes this instance, including saving the most recent snapshots.

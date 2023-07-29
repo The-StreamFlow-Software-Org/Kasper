@@ -42,7 +42,7 @@ public class Room {
             public void run() {
                 try {
                     this.net = pack;
-                    ongoingProcesses++;
+                    incrementProcess();
                     while (!ending) {
                         try {
                             var query = pack.get();
@@ -72,8 +72,14 @@ public class Room {
         });
     }
 
+    public static void incrementProcess(){
+        Meta.enqueueOperation();
+        ongoingProcesses++;
+    }
+
     private static void decrementProcesses(){
         ongoingProcesses--;
+        Meta.dequeueOperation();
         if (!requestClose) return;
         if (ongoingProcesses <= 0) latch.countDown();
     }

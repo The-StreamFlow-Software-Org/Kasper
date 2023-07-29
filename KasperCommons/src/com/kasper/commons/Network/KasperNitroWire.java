@@ -1,5 +1,7 @@
 package com.kasper.commons.Network;
 
+import com.kasper.commons.aliases.Method;
+import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.exceptions.KasperException;
 
 import java.io.*;
@@ -16,29 +18,13 @@ public class KasperNitroWire {
     public OutputStream out;
     public BufferedInputStream nitroIn;
     public BufferedOutputStream nitroOut;
-
-
-
-
-    public void put (byte[] stream) throws IOException {
-        System.out.println(stream.length);
-        outputStream.write(stream, 0, stream.length);
-        outputStream.write(-127);
-    }
-
-    public byte[] get () throws IOException {
-       NitroByteBuf buffer = new NitroByteBuf();
-        while (true) {
-            var b = inputStream.read();
-            if (b == -127) break;
-            buffer.add((byte)b);
-        } return buffer.getBuf();
-    }
+    private NitroPacket packet;
 
 
 
 
 
+    public static int operations = 0;
 
 
 
@@ -47,34 +33,50 @@ public class KasperNitroWire {
 
     public void close ()  {
         try {
-            if (nitroSocket != null) nitroSocket.close();
-        } catch (IOException ex){}
-        try{
-            if (outputStream != null) outputStream.close();
-        } catch (IOException ex){}
-        try{
-            if (inputStream != null) inputStream.close();
-        } catch (IOException ex){}
-        try{
-            if (in != null) in.close();
-        } catch (IOException ex){}
-        try{
-            if (out != null) out.close();
-        } catch (IOException ex){}
-        try{
-            if (nitroIn != null) nitroIn.close();
-        } catch (IOException ex){}
-        try{
-            if (nitroOut != null) nitroOut.close();
-        } catch (IOException ex){}
-        try{
-            if (socket != null) socket.close();
-        } catch (IOException ex){}
+            try {
+                if (nitroSocket != null) nitroSocket.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (outputStream != null) outputStream.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (inputStream != null) inputStream.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (in != null) in.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (out != null) out.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (nitroIn != null) nitroIn.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (nitroOut != null) nitroOut.close();
+            } catch (IOException ex) {
+            }
+            try {
+                if (socket != null) socket.close();
+            } catch (IOException ex) {
+            }
+        } finally {
+            --operations;
+        }
 
     }
 
 
     public KasperNitroWire(Socket socket, Boolean flag) throws IOException {
+        if (operations >= Meta.maxConnections) {
+            throw new KasperException("Kasper:> Maximum connections reached.");
+        }
+        operations++;
         this.socket = socket;
         out = socket.getOutputStream();
         in = socket.getInputStream();
@@ -83,16 +85,19 @@ public class KasperNitroWire {
         nitroSocket = new Socket(socket.getInetAddress(), socket.getPort()+1);
         nitroIn = new BufferedInputStream(nitroSocket.getInputStream());
         nitroOut = new BufferedOutputStream(nitroSocket.getOutputStream());
+        packet = new NitroPacket(socket);
     }
 
     // initializes the default stream
     public KasperNitroWire(Socket socket) throws IOException {
+        operations++;
         this.socket = socket;
         socket.setTcpNoDelay(true);
         out = socket.getOutputStream();
         in = socket.getInputStream();
         outputStream = new BufferedOutputStream(out);
         inputStream = new BufferedInputStream(in);
+        packet = new NitroPacket(socket);
     }
 
     // initializes the streams for Nitro
@@ -123,18 +128,10 @@ public class KasperNitroWire {
 
 
 
-    public byte[] oldGet() throws IOException, InterruptedException {
+    public byte[] get() throws IOException, InterruptedException {
 
-        // DEBUG
         if (true) {
-            byte[] sizeBytes = new byte[4];
-            for (int i=0; i<4; i++) {
-                sizeBytes[i] = (byte)inputStream.read();
-            } int size = decodeBytesToInt(sizeBytes);
-            byte[] buffer = new byte[size];
-            for (int i=0; i<size; i++) {
-                buffer[i] = (byte)inputStream.read();
-            } return buffer;
+            return packet.read();
         }
 
 
@@ -223,17 +220,11 @@ public class KasperNitroWire {
         throw new KasperException("Bug found:> Size cannot be negative.\n");
     }
 
-    public void oldPut (byte[] stream) throws IOException {
+    public void put (byte[] stream) throws IOException {
 
         if (true) {
-            var header = encodeIntToBytes(stream.length);
-            System.out.println("PUT: " + stream.length + " decoded: " + decodeBytesToInt(header));
-            for (int i =0; i<4; i++){
-                outputStream.write(header[i]);
-            } for (var x : stream) {
-                outputStream.write(x);
-            } return;
-
+            packet.write(stream, Method.QUERY);
+            return;
         }
 
 

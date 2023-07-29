@@ -5,14 +5,22 @@
 
 import com.kasper.beans.datastructures.CollectionReference;
 import com.kasper.beans.datastructures.KasperBean;
-import com.kasper.beans.streamflow.Connection;
-import com.kasper.beans.streamflow.Statement;
+import com.kasper.commons.Parser.ByteUtils;
+import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.LockedLL;
-import com.kasper.commons.debug.Debug;
-import parser.ParseProcessor;
+import network.Pool;
+import nio.kasper.NioPacketEncoder;
+import org.checkerframework.checker.units.qual.A;
+import trynetwork.SocketEventLoop;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -24,21 +32,24 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args)  {
-        stressTest();
-        ParseProcessor process = new ParseProcessor();
-        // TODO: buggy handling with quotes in parenthesis
-       // process.consumeString("match @correct(?)");
-        Connection connection = new Connection();
-        Statement statement = connection.prepareStatement("INSERT (?) IN ? AS ?");
-        KasperMap map = new KasperMap().put("Hello", "World").put("This is", "me!");
-        statement.setObject(1, map);
-        statement.setPath(2, "nodeDB", "helloWorld");
-        statement.setString(3, "hello");
-        Debug.TRUE = true;
-        process.consumeString(statement.peekQuery());
+    public static void main(String[] args) throws IOException {
+        Socket socket= new Socket("localhost", Meta.port);
+        var bytes = "Hello World!";
+        System.out.println("Writeable bytes: " + bytes.getBytes(StandardCharsets.UTF_16).length);
+        var writeable = ByteUtils.intToBytes(bytes.length());
+        System.out.println("ArrayBytes: " + Arrays.toString(writeable));
+        socket.getOutputStream().write(writeable);
+        socket.getOutputStream().write(bytes.getBytes(StandardCharsets.UTF_16));
+        socket.close();
 
+    }
 
+    public static void simpleThreadTest(){
+        KasperBean bean = new KasperBean("", "", "");
+        for (int i=0; i<1000; i++){
+            bean.useNode("me");
+        }
+        System.out.println("DONE!");
     }
 
 
@@ -66,10 +77,26 @@ public class Main {
 
     }
 
+    public static void singleThread(){
+        var bean = new KasperBean("localhost", "helloWorld", "hello");
+        boolean createMode = true;
+        CollectionReference conn = null;
+        if (createMode) {
+            conn = bean.createNode("node").createCollection("conn");
+        } else {
+            conn = bean.useNode("node").useCollection("conn");
+        }
+        conn.setKey("map", new KasperMap());
+        for (int i=0; i<100000; i++) {
+            conn.setKey(conn.generatePathReference("map"), Integer.toString(i), "inside u");
+        }
+        System.out.println(conn.getKey("map"));
+    }
+
 
     public static void stressTest() {
         ArrayList<Thread> threads = new ArrayList<>();
-        for (int x = 0; x < 10; x++) {
+        for (int x = 0; x < 1; x++) {
             threads.add(new Thread(() -> {
                 var head = new KasperBean("", "", "");
                 var createMode = true
@@ -82,16 +109,19 @@ public class Main {
                     conn = head.useNode("strong").useCollection("man");
                     conn.updateKey("hello", "world");
                 }
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 10; i++) {
                     System.out.println("load");
                     var temp = new KasperBean("", "", "");
                     System.out.println("strong");
                     var strong = head.useNode("strong");
                     System.out.println("man");
                     var collection = strong.useCollection("man");
-                    conn.updateKey("hello", Integer.toString(i));
-                    collection.getKey("hello");
-                    System.out.println(conn.getKey("hello"));
+                    try {
+                        collection.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    //  conn.updateKey("hello", Integer.toString(i));
                 }
 
             }));
@@ -99,8 +129,8 @@ public class Main {
 
         for (var x : threads) {
             x.start();
-
         }
+        Pool.shutdown();
 
      //   System.exit(0);
     }

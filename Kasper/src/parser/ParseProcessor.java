@@ -14,6 +14,11 @@ import java.util.Stack;
 
 public class ParseProcessor {
 
+    public void executeQuery(String str) {
+        // TODO: implement this
+        System.out.println("Execute query: " + str);
+    }
+
     public void consumeString(String string) {
         try {
             var tokens = tokenize(string);
@@ -21,7 +26,7 @@ public class ParseProcessor {
             if (Debug.TRUE) System.out.println("Syntax verified: " + string);
         } catch (SyntaxError error) {
             if (Debug.TRUE)error.printStackTrace();
-            throw new SyntaxError(true, error.getMessage() + "\nFound in query: '" + string + "'.");
+            throw new SyntaxError(true, error.getMessage() + "\n\tFound in query: '" + string + "'.");
         }
     }
 
@@ -56,6 +61,7 @@ public class ParseProcessor {
                 case INSERT -> mustFinish = processor.insert(tokens);
                 case GET -> mustFinish = processor.get(tokens);
                 case DELETE -> mustFinish = processor.delete(tokens);
+                default -> throw Throw.raw("Unknown start of query / symbol: '" + current.getName()  + "'.");
             }
         }
     }
@@ -105,7 +111,6 @@ public class ParseProcessor {
                     } catch (IndexOutOfBoundsException e ) {
                         throw Throw.raw("Unexpected '(' found in query. Expected a function call or a literal.");
                     } catch (Exception e) {
-                        e.printStackTrace();
                         throw Throw.raw("Invalid argument list for function call '" + prev.getName() + "'.");
                     } finally {
                         break;

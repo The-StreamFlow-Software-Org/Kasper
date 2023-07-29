@@ -25,9 +25,15 @@ public class Lobby {
     }
 
     public static void acceptConnections() throws Exception {
-        init();
         System.out.println("Kasper:> Ready to accept connections.");
-
+        Lobby lobby1 = new Lobby();
+        Lobby lobby2 = new Lobby(lobby1.server, lobby1.nitroServer);
+        Lobby lobby3 = new Lobby(lobby1.server, lobby1.nitroServer);
+        Lobby lobby4 = new Lobby(lobby1.server, lobby1.nitroServer);
+        Pool.newThread(lobby1::enqueueClients);
+        Pool.newThread(lobby2::enqueueClients);
+        Pool.newThread(lobby3::enqueueClients);
+        Pool.newThread(lobby4::enqueueClients);
 
         Thread t = new Thread(()->{
             while (!ending) {
@@ -80,20 +86,32 @@ public class Lobby {
                 System.exit(0);
             }
         });
-        while (true) {
-            var initWire = (new KasperNitroWire(instance.server.accept()));
-            new Room(initWire);
-        }
-    }
-    private static void init () throws IOException {
-    if (instance == null) instance = new Lobby();
+
     }
 
-     private Lobby () throws IOException {
+
+    public void enqueueClients()  {
+        try {
+            while (true) {
+                var initWire = (new KasperNitroWire(server.accept()));
+                new Room(initWire);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+     public Lobby () throws IOException {
         server = new ServerSocket(Meta.port);
         nitroServer = new ServerSocket(Meta.port+1);
         String msg = "Kasper:> Current memory usage of all stored data: ";
         System.out.println("Kasper:> Now ready to accept connections in port: " + Meta.port + ".");
         System.out.println("Kasper:> Device host: " + InetAddress.getLocalHost().getHostAddress());
+    }
+
+    public Lobby (ServerSocket socket, ServerSocket nitro) throws IOException {
+        this.server = socket;
+        this.nitroServer = nitro;
     }
 }

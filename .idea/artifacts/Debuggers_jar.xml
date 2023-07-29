@@ -1,0 +1,29 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Debuggers:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Debuggers_jar</output-path>
+    <root id="archive" name="Debuggers.jar">
+      <element id="module-output" name="Debuggers" />
+      <element id="module-output" name="KasperCommons" />
+      <element id="module-output" name="Drivers" />
+      <element id="module-output" name="Kasper" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/LocalDependencies/protobuf-java-3.23.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/ben-manes/caffeine/caffeine/3.1.6/caffeine-3.1.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/protocol-buffers/4.1.0/protocol-buffers-4.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/protocol-buffers-encodings/1.1.0/protocol-buffers-encodings-1.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/generate-function/2.3.1/generate-function-2.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/is-property/1.0.2/is-property-1.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/protocol-buffers-schema/3.6.0/protocol-buffers-schema-3.6.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/signed-varint/2.0.1/signed-varint-2.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/generate-object-property/1.2.0/generate-object-property-1.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/webjars/npm/varint/5.0.2/varint-5.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/netty/netty-all/4.0.56.Final/netty-all-4.0.56.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjdk/jol/jol-core/0.9/jol-core-0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjdk/jol/jol-core/0.17/jol-core-0.17.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
