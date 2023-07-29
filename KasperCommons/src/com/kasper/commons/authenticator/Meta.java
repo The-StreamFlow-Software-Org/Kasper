@@ -1,9 +1,24 @@
 package com.kasper.commons.authenticator;
 
+import com.kasper.commons.exceptions.KasperException;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Meta {
+
+    // auth
+    private static String defaultUser = "root";
+    private static String defaultPassword = "streamflow";
+
+    public static void assertDefault (String user, String password) {
+        if (user == null || password == null) throw new KasperException("Invalid credentials for KasperEngine.");
+        if (!user.equals(defaultUser) || !password.equals(defaultPassword)) throw new KasperException("Invalid credentials for KasperEngine.");
+    }
+
+
+
 
     public static boolean serverMode = false;
 

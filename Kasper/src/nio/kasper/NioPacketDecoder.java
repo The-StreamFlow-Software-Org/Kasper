@@ -15,11 +15,15 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         W.rite("Attempting decode.");
-        // Check if there are at least 4 bytes available for the length header
-        if (byteBuf.readableBytes() < 4) {
+
+
+        // Check if there are at least 5 bytes available for the length header
+        if (byteBuf.readableBytes() < 5) {
             W.rite("Cannot write decode because there is not enough readable bytes.");
             return;
         }
+
+        byte method = byteBuf.readByte();
 
         byteBuf.markReaderIndex();
         int length = 0;
@@ -55,6 +59,6 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
         byteBuf.readBytes(data);
 
         // Create a new NioPacket with the data and add it to the list
-        list.add(new NioPacket(data));
+        list.add(new NioPacket(method, data));
     }
 }

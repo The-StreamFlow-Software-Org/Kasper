@@ -1,5 +1,6 @@
 package nio.kasper;
 
+import com.kasper.commons.aliases.Method;
 import com.kasper.commons.debug.W;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
@@ -28,6 +29,7 @@ public class NitroChannel implements ChannelInboundHandler {
     @Override
     public void channelRead(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
         if (o instanceof NioPacket packet) {
+            if (packet.assertAuth()) return;
             packet.executeQuery();
         } else {
             W.rite("Unknown error when reading packet.");
@@ -36,7 +38,7 @@ public class NitroChannel implements ChannelInboundHandler {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext channelHandlerContext) throws Exception {
-        System.out.println("Done reading.");
+
     }
 
     @Override

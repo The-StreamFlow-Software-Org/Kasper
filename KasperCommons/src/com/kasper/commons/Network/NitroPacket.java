@@ -19,6 +19,10 @@ public class NitroPacket implements AutoCloseable {
     private BufferedOutputStream outputStream;
     private Socket socket;
 
+    public Socket socket() {
+        return socket;
+    }
+
     private static long defaultTimeout = 5000;
 
     public NitroPacket(Socket socket) throws IOException {

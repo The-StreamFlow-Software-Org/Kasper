@@ -5,13 +5,16 @@
 
 import com.kasper.beans.datastructures.CollectionReference;
 import com.kasper.beans.datastructures.KasperBean;
+import com.kasper.beans.nio.streamflow.Connection;
 import com.kasper.commons.Parser.ByteUtils;
+import com.kasper.commons.aliases.Method;
 import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.LockedLL;
 import network.Pool;
 import nio.kasper.NioPacketEncoder;
 import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import trynetwork.SocketEventLoop;
 
 import java.io.IOException;
@@ -33,14 +36,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        Socket socket= new Socket("localhost", Meta.port);
-        var bytes = "Hello World!";
-        System.out.println("Writeable bytes: " + bytes.getBytes(StandardCharsets.UTF_16).length);
-        var writeable = ByteUtils.intToBytes(bytes.length());
-        System.out.println("ArrayBytes: " + Arrays.toString(writeable));
-        socket.getOutputStream().write(writeable);
-        socket.getOutputStream().write(bytes.getBytes(StandardCharsets.UTF_16));
-        socket.close();
+        Connection connection = new Connection("localhost", "root", "streamflow");
 
     }
 
