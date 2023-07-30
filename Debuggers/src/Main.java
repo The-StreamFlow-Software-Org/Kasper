@@ -36,13 +36,13 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        Connection connection = new Connection("localhost", "root", "streamflow");
+        Connection connection = new Connection("localhost", "root", "");
 
     }
 
     public static void simpleThreadTest(){
         KasperBean bean = new KasperBean("", "", "");
-        for (int i=0; i<1000; i++){
+        for (int i=0; i<1000; i++) {
             bean.useNode("me");
         }
         System.out.println("DONE!");

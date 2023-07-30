@@ -19,7 +19,7 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
 
     public KasperMap() {
         super("map");
-        data = new HashMap<String, KasperObject>();
+        data = new HashMap<String, KasperObject>(5);
     }
 
     protected KasperMap(String type) {

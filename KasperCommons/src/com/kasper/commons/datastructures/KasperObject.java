@@ -11,7 +11,7 @@ import java.util.*;
  * complex KasperObject data structures, using polymorphic
  * design structures.
  */
-public class KasperObject implements Serializable {
+public class KasperObject implements Serializable, KasperEntity {
 
     // for disabling and enabling EXPERIMENTAL_MODE
     protected static boolean EXPERIMENTAL_MODE = false;
@@ -84,6 +84,22 @@ public class KasperObject implements Serializable {
     an List<KasperObject>, or a simple String.
      */
     protected Object data;
+
+    /**
+     * @return the internal data structure.
+     */
+    @Override
+    public KasperObject getObject() {
+        return this;
+    }
+
+    /**
+     * @return staged perfectly for result-set analysis.
+     */
+    @Override
+    public int getIntType() {
+        return KasperEntity.TYPE_OBJECT;
+    }
 
     /**
      *

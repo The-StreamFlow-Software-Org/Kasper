@@ -14,7 +14,6 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        W.rite("Attempting decode.");
 
 
         // Check if there are at least 5 bytes available for the length header
@@ -39,12 +38,10 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
         for (int i=0; i<4; i++) {
             intPad[i] = byteBuf.readByte();
         }
-        System.out.println("Int padding: " + Arrays.toString(intPad));
         length = ByteUtils.bytesToInt(intPad);
 
 
 
-        System.out.println("Readable bytes: " + length);
 
         // Check if the full message is available
         if (byteBuf.readableBytes() < length) {

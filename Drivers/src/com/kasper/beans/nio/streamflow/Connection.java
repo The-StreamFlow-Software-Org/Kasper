@@ -2,15 +2,13 @@ package com.kasper.beans.nio.streamflow;
 
 import com.kasper.beans.nio.protocol.Wire;
 import com.kasper.commons.Network.NitroPacket;
-import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.debug.W;
 import com.kasper.commons.exceptions.KasperException;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public class Connection {
+public class Connection implements AutoCloseable {
     public NitroPacket packet;
     private static long threadID = Thread.currentThread().getId();
     private Wire wire;
@@ -40,5 +38,10 @@ public class Connection {
 
     public Statement prepareStatement(String statement){
         return new Statement(this, statement);
+    }
+
+    @Override
+    public void close() throws Exception {
+        packet.close();
     }
 }
