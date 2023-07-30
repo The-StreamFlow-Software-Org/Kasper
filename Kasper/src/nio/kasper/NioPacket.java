@@ -59,6 +59,6 @@ public class NioPacket {
 
     public void executeQuery (StagedResultSet resultSet) {
         ParseProcessor processor = new ParseProcessor();
-        processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_16));
+        processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_16), resultSet);
     }
 }

@@ -3,6 +3,7 @@ package com.kasper.beans.nio.streamflow;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.datastructures.LocalPathCrawler;
 import com.kasper.commons.exceptions.StreamFlowException;
 
 import java.util.LinkedList;
@@ -31,9 +32,16 @@ public class ResultSet {
 
     public KasperObject getNext () throws StreamFlowException {
         try {
-            var stagedObject = set.poll().castToMap();
-            assertException(stagedObject);
-            return stagedObject.get("result");
+            var preStage = set.poll();
+            if (preStage instanceof KasperMap stagedObject) {
+                assertException(stagedObject);
+                var result = stagedObject.get("result");
+                LocalPathCrawler.finalPathSetter(result, stagedObject.get("path").toStr());
+                LocalPathCrawler.crawlPaths(result);
+                return result;
+            } else {
+                return null;
+            }
         } catch (StreamFlowException x) {
             throw x;
         }  catch (Exception e) {

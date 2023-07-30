@@ -5,7 +5,7 @@ Result sets are in the following format:
 
     [
     { "exception" : "QueryError104: exception message here" },
-    { "result" : {} }
+    { "result" : {} , "path" : ""}
     ]
 
 It is formatted as a list of maps, with the maps containing either "Exception"

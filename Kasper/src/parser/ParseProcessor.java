@@ -5,6 +5,7 @@ import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.debug.Debug;
 import com.kasper.commons.exceptions.SyntaxError;
+import nio.kasper.StagedResultSet;
 import parser.exceptions.Throw;
 import parser.tokens.*;
 
@@ -14,15 +15,16 @@ import java.util.Stack;
 
 public class ParseProcessor {
 
-    public void executeQuery(String str) {
-        // TODO: implement this
-        System.out.println("Execute query: " + str);
+    public void executeQuery(String str, StagedResultSet resultSet) {
+
     }
 
     public void consumeString(String string) {
         try {
             var tokens = tokenize(string);
-            parseSyntax(tokens); // verifies the correctness of the syntax
+            for (var tokenCursors : tokens) {
+                parseSyntax(tokenCursors);
+            } // verifies the correctness of the syntax
             if (Debug.TRUE) System.out.println("Syntax verified: " + string);
         } catch (SyntaxError error) {
             if (Debug.TRUE)error.printStackTrace();
@@ -75,8 +77,9 @@ public class ParseProcessor {
         }
     }
 
-    public TokenCursor tokenize (String longString) {
+    public ArrayList<TokenCursor> tokenize (String longString) {
         tokens = new ArrayList<>();
+        var tokenCursors = new ArrayList<TokenCursor>();
         statement = new StringBuilder();
         for (int i = 0; i<longString.length(); i++){
             char current = longString.charAt(i);
@@ -155,6 +158,8 @@ public class ParseProcessor {
                 case ';': {
                     statementPusher();
                     tokens.add(OneOf.newDelimiter());
+                    tokenCursors.add(new TokenCursor(tokens));
+                    tokens = new ArrayList<>();
                     break;
                 }
                 case '=':  {
@@ -183,7 +188,7 @@ public class ParseProcessor {
 
 
         }
-        return new TokenCursor(tokens);
+        return tokenCursors;
     }
 
     public static Pair<String, String> parseParentheses(String str) {

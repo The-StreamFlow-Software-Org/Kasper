@@ -35,7 +35,7 @@ public class KasperObject implements Serializable, KasperEntity {
         referencedBy.put(parent, as);
     }
 
-    private String getPath() {
+    public String getPath() {
         if (finalPath.equals("")) {
             if (inquirers == null) inquirers = new LinkedList<>();
             if (id.equals("")) {

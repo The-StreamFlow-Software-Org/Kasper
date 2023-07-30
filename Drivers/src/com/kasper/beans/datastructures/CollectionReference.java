@@ -84,7 +84,7 @@ public class CollectionReference extends AbstractReference{
             PreparedPacket packet =  new PreparedPacket();
             packet.setHeader(CommandAlias.GET);
             packet.addArg("path", path.toStr());
-            kasperNitroWire.put(packet.build().toByteArray());
+        //    kasperNitroWire.put(packet.build().toByteArray());
             var resultant = PacketOuterClass.Packet.parseFrom(kasperNitroWire.get());
             TokenSender.resolveExceptions(resultant);
             var data = JSONUtils.parseJson(resultant.getData());
@@ -116,7 +116,7 @@ public class CollectionReference extends AbstractReference{
             packet.setData(value);
             packet.addArg("path", path.toStr());
             packet.addArg("key", key);
-            kasperNitroWire.put(packet.build().toByteArray());
+           // kasperNitroWire.put(packet.build().toByteArray());
             TokenSender.resolveExceptions(
                     PacketOuterClass.Packet
                             .parseFrom(kasperNitroWire.get()));
@@ -297,7 +297,7 @@ public class CollectionReference extends AbstractReference{
     public void clear () {
         verifyConcurrency();
         try {
-            kasperNitroWire.put(TokenSender.clear().toByteArray());
+           // kasperNitroWire.put(TokenSender.clear().toByteArray());
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
         }  catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
@@ -318,7 +318,7 @@ public class CollectionReference extends AbstractReference{
             packet.setHeader(CommandAlias.UPDATE);
             packet.setData(object);
             packet.addArg("path", path.toStr());
-            kasperNitroWire.put(packet.build().toByteArray());
+        //    kasperNitroWire.put(packet.build().toByteArray());
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
         } catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
@@ -369,7 +369,7 @@ public class CollectionReference extends AbstractReference{
             path.addPath(parent.name);
             path.addPathConventionally(name);
             packet.addArg("path", path.parsePath());
-            kasperNitroWire.put(packet.build().toByteArray());
+       //     kasperNitroWire.put(packet.build().toByteArray());
             TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
         } catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
@@ -386,7 +386,7 @@ public class CollectionReference extends AbstractReference{
         PreparedPacket packet = new PreparedPacket();
         packet.setHeader(CommandAlias.DELETE);
         packet.addArg("path", path.toStr());
-        kasperNitroWire.put(packet.build().toByteArray());
+      //  kasperNitroWire.put(packet.build().toByteArray());
         TokenSender.resolveExceptions(PacketOuterClass.Packet.parseFrom(kasperNitroWire.get()));
         } catch (Exception e){
             if (e instanceof KasperException) throw (KasperException)e;
