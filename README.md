@@ -18,8 +18,7 @@
 ****************************Update Roadmap****************************
 
 <aside>
-💡 Kasper has moved to phase two of the alpha release. From Kasper Alfalfa (0.0.1 - 0.4.9) version to Kasper Basalt (0.5.0 - 0.9.9).
-
+💡 Kasper has moved to phase two of the alpha release. From Kasper Alfalfa (0.0.1 - 0.4.9) version to Kasper Basalt (0.5.0 - 07.1).
 </aside>
 
 **************************************The Kasper Pre-Release Roadmap:**************************************
