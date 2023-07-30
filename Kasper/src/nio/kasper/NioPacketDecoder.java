@@ -1,13 +1,10 @@
 package nio.kasper;
 
 import com.kasper.commons.Parser.ByteUtils;
-import com.kasper.commons.debug.W;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.List;
 
 public class NioPacketDecoder extends ByteToMessageDecoder {
@@ -18,7 +15,7 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
 
         // Check if there are at least 5 bytes available for the length header
         if (byteBuf.readableBytes() < 5) {
-            W.rite("Cannot write decode because there is not enough readable bytes.");
+           //  W.rite("Cannot write decode because there is not enough readable bytes.");
             return;
         }
 
@@ -30,7 +27,7 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
         if (byteBuf.readableBytes() < 4) {
             // Not enough data available, reset the reader index and return
             byteBuf.resetReaderIndex();
-            W.rite("Cannot write decode because not enough int padding available.");
+            // W.rite("Cannot write decode because not enough int padding available.");
             return;
         }
 
@@ -47,7 +44,7 @@ public class NioPacketDecoder extends ByteToMessageDecoder {
         if (byteBuf.readableBytes() < length) {
             // Not enough data available, reset the reader index and return
             byteBuf.resetReaderIndex();
-            W.rite("Cannot write decode because not enough message available.");
+            // W.rite("Cannot write decode because not enough message available.");
             return;
         }
 

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -135,10 +136,10 @@ public class LockedLL<T> implements Iterable<T> {
         }
     }
 
-    public ArrayList<T> getInternalArray () {
+    public LinkedList<T> getInternalArray () {
         lock.readLock().lock();
         try {
-            return new ArrayList<>(internalArray);
+            return new LinkedList<>(internalArray);
         } finally {
             lock.readLock().unlock();
         }

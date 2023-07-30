@@ -1,26 +1,21 @@
 package nio.kasper;
 
-import com.google.gson.JsonParseException;
 import com.kasper.commons.Parser.ByteUtils;
 import com.kasper.commons.aliases.Method;
 import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.datastructures.JSONUtils;
-import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.datastructures.KasperObject;
-import com.kasper.commons.debug.W;
-import io.netty.channel.ChannelHandlerContext;
 import parser.ParseProcessor;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 public class NioPacket {
     private byte[] packetBytes;
     private final int method;
 
     // Stages a parse exception
+    @Deprecated
     public byte[] raiseException (Exception e) {
         KasperMap map = new KasperMap();
         map.put("exception", e.getMessage());
@@ -34,10 +29,8 @@ public class NioPacket {
         return result;
     }
 
-    // Stages the valid result set into
-    public static byte[] stageData (KasperList list) throws Exception {
-        var set = JSONUtils.objectToJsonStream(list);
-        var bytes = set.getBytes(StandardCharsets.UTF_16);
+    // Stages the valid result set into bytes
+    public static byte[] stageData (byte[] bytes) throws Exception {
         var lengthBytes = ByteUtils.intToBytes(bytes.length);
         byte method = (byte)Method.RESPONSE_QUERY;
         byte[] result = new byte[bytes.length + 5];
@@ -64,7 +57,7 @@ public class NioPacket {
         this.packetBytes = packetBytes;
     }
 
-    public void executeQuery () {
+    public void executeQuery (StagedResultSet resultSet) {
         ParseProcessor processor = new ParseProcessor();
         processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_16));
     }

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -65,7 +66,7 @@ public class KasperList extends KasperObject implements Iterable{
      *
      * @return an ArrayList containing all the data in the list.
      */
-    public ArrayList<KasperObject> toArray (){
+    public LinkedList<KasperObject> toArray (){
         var x = toList();
         return x.getInternalArray();
     }

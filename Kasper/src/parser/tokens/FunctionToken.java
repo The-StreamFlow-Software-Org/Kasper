@@ -4,15 +4,16 @@ import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class FunctionToken extends Token{
-    private ArrayList<KasperObject> arguments;
+    private LinkedList<KasperObject> arguments;
     private KasperFunction functionTask;
 
     private FunctionToken (String name) {
         this.tokenType = TokenType.FUNCTION;
         this.name = name;
-        arguments = new ArrayList<>();
+        arguments = new LinkedList<>();
     }
 
     public static FunctionToken newFunction (String name) {

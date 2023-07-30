@@ -22,7 +22,6 @@ public class StagedResultSet {
     KasperList resultSet = new KasperList();
 
 
-
     public StagedResultSet (ArrayList<KasperEntity> result) {
         result.stream().forEach(x ->  {
             if(x.getIntType() == KasperEntity.TYPE_OBJECT) resultSet.addToList(new KasperMap().put("result", x.getObject()));
@@ -37,6 +36,10 @@ public class StagedResultSet {
         if(x.getIntType() == KasperEntity.TYPE_OBJECT) resultSet.addToList(new KasperMap().put("result", x.getObject()));
         else if (x.getIntType() == KasperEntity.TYPE_QUERY_OK) resultSet.addToList(x.getObject());
         else if (x.getIntType() == KasperEntity.TYPE_EXCEPTION) resultSet.addToList(new KasperMap().put("exception", x.getObject()));
+    }
+
+    public void addQueryOk() {
+        resultSet.addToList(KasperEntity.QueryOk.storedInstance());
     }
 
 

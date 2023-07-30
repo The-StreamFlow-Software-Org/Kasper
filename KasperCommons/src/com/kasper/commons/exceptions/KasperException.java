@@ -12,7 +12,7 @@ public class KasperException extends RuntimeException implements KasperEntity {
     }
 
     public KasperException (Exception e) {
-        this(e.toString());
+        setStackTrace(e.getStackTrace());
     }
     public KasperException(){
 

@@ -70,6 +70,7 @@ public class Orchestrator {
         }
         platform.shutdownGracefully();
         rooms.shutdownGracefully();
+        System.out.println("-----------------------------------");
         W.rite("[nitro-nio] orchestration service stopped.");
     }
 }

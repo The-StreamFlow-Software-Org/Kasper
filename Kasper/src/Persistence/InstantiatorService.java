@@ -88,9 +88,9 @@ public class InstantiatorService {
             e.printStackTrace();
         }
         System.gc();
-        if (GlobalHolders.args.length > 0) {
+        if (GlobalHolders.argv.length > 0) {
             // CHECK FOR REPL
-            if (GlobalHolders.args[0].equals("-repl")) {
+            if (GlobalHolders.argv[0].equals("-repl")) {
                 System.out.println("Instantiating Kasper REPL");
                 REPL();
             }

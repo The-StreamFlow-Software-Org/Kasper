@@ -1,15 +1,10 @@
 import com.kasper.commons.Handlers.LogWriter;
 import com.kasper.commons.authenticator.KasperAccessAuthenticator;
 import com.kasper.commons.authenticator.Meta;
-import com.kasper.commons.datastructures.KasperList;
-import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.Network.Timer;
-import network.Lobby;
 import Persistence.InstantiatorService;
 import nio.kasper.Orchestrator;
 import server.SuperClass.GlobalHolders;
-import server.SuperClass.KasperGlobalMap;
 
 import java.util.Scanner;
 
@@ -18,9 +13,8 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         try {
-            GlobalHolders.args = args;
+            GlobalHolders.argv = args;
             GlobalHolders.argc = args.length;
-            new KasperAccessAuthenticator("kasper.util.key");
             init(args);
         } catch (Exception e) {
             if (InstantiatorService.lockedByThis) InstantiatorService.unlockThisServer();
@@ -53,7 +47,7 @@ public class Main {
                 "        .:::::  .:::::::..              \n" +
                 "        .:::::.:::::::.      ...        \n" +
                 "        .:::::::::::.    ..:::::.         Kasper DB \n" +
-                "        .:::::::::.  ..:::::::::.         version  " + Meta.version + "\n" +
+                "        .:::::::::.  ..:::::::::.         version " + Meta.version + "\n" +
                 "        .:::::::.  .::::::::::::.         (c) ruff.io, 2023\n" +
                 "        .::::::::. .::::::::::::.         Rufelle Emmanuel Pactol\n" +
                 "        .::::::::::. ..:::::::::.         kasperdocs.netlify.app\n" +

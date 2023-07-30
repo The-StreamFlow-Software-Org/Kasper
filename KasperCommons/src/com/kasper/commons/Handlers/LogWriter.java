@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.SocketException;
 
 public class LogWriter {
     public static void writeLog(Exception log) {

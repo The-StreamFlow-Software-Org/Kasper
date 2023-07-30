@@ -4,30 +4,29 @@ import com.kasper.beans.nio.protocol.Wire;
 import com.kasper.commons.Network.NitroPacket;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.exceptions.KasperException;
+import com.kasper.commons.exceptions.StreamFlowException;
 
 import java.io.IOException;
 import java.net.Socket;
 
 public class Connection implements AutoCloseable {
-    public NitroPacket packet;
-    private static long threadID = Thread.currentThread().getId();
+    private long threadID = Thread.currentThread().getId();
     private Wire wire;
-    public Connection (String host, String username, String password, int port) {
+    public Connection (String host, String username, String password, int port) throws StreamFlowException {
         int retries = 0;
         boolean failed = true;
         while (failed && retries < 5) {
             try {
-                packet = new NitroPacket(new Socket(host, port));
-                this.wire = new Wire(packet.socket(), threadID);
+                this.wire = new Wire(new Socket(host, port), threadID);
                 failed = false;
             } catch (IOException e) {
                 retries++;
             }
-        } if (retries >=5) throw new KasperException("Cannot connect to Kasper Engine. Please check your connectivity.");
+        } if (retries >=5) throw new StreamFlowException("Cannot connect to Kasper Engine. Please check your connectivity.");
         wire.authorization(username, password);
     }
 
-    public Connection (String host, String username, String password) {
+    public Connection (String host, String username, String password) throws StreamFlowException {
         this(host, username, password, 53182);
     }
     private synchronized void authenticate () {
@@ -41,7 +40,7 @@ public class Connection implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-        packet.close();
+    public void close() throws StreamFlowException {
+        wire.close();
     }
 }

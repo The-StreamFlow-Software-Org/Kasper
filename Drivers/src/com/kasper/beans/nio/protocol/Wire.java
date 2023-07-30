@@ -1,17 +1,22 @@
 package com.kasper.beans.nio.protocol;
 
+import com.kasper.beans.nio.streamflow.ResultSet;
 import com.kasper.commons.Handlers.CountdownTimer;
 import com.kasper.commons.Parser.ByteUtils;
 import com.kasper.commons.aliases.Method;
 import com.kasper.commons.datastructures.JSONUtils;
+import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.exceptions.BeanConcurrencyException;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.KasperTimeoutException;
+import com.kasper.commons.exceptions.StreamFlowException;
 import io.netty.util.CharsetUtil;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class Wire {
     private Socket socket;
@@ -22,6 +27,7 @@ public class Wire {
     public Wire (Socket socket, long threadID) {
         this.threadID = threadID;
         try {
+            this.socket = socket;
             writer = new BufferedOutputStream(socket.getOutputStream());
             reader = new BufferedInputStream(socket.getInputStream());
         } catch (Exception e) {
@@ -44,18 +50,24 @@ public class Wire {
             writer.write(byteStream);
             writer.flush();
 
+
+
             // Now get the result set
-            int methodResult = reader.read();
+            int methodResult = nextByte();
             byte[] length = new byte[4];
+
 
             // assert that length == 4
             CountdownTimer timer = new CountdownTimer(15000, ()->{
                 throw new KasperTimeoutException();
             });
+
+
             timer.start();
-            while (socket.getInputStream().available() < 4) {}
+            for (int i=0; i<4; i++){
+                length[i] = nextByte();
+            }
             timer.stop();
-            length = reader.readNBytes(4);
             int primitiveLength = ByteUtils.bytesToInt(length);
             byte[] result = new byte[primitiveLength];
             for (int i=0; i<primitiveLength; i++) {
@@ -73,22 +85,22 @@ public class Wire {
             throw new KasperTimeoutException();
         });
         timer.start();
-        while (socket.getInputStream().available() < 1) {}
+        while (reader.available() < 1) {}
         timer.stop();
         return (byte) reader.read();
     }
 
-    public synchronized void close () {
+    public synchronized void close () throws StreamFlowException {
         try {
+            socket.close();
             writer.close();
             reader.close();
-            socket.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new StreamFlowException(e);
         }
     }
 
-    public synchronized void authorization (String username, String password) {
+    public synchronized void authorization (String username, String password) throws StreamFlowException {
         ensureSynchronized();
         try {
             writer.write(Method.AUTH);
@@ -97,14 +109,19 @@ public class Wire {
             map.put("password", password);
             var objStr = JSONUtils.objectToJsonStream(map);
             var result = write(Method.AUTH, objStr);
-            var resultMap = JSONUtils.parseJson(result).toMap();
-            if (resultMap.get("exception")==null) return;
-            throw new KasperException(resultMap.get("exception").toString());
-        } catch (Exception e) {
+            ResultSet set = new ResultSet(result);
+            set.getNext();
+        } catch (StreamFlowException x) {
+            throw x;
+        }  catch (Exception e) {
             throw new KasperException(e);
         }
 
     }
+
+
+
+
 
 
 

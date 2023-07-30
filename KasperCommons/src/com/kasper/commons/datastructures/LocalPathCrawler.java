@@ -16,9 +16,13 @@ public class LocalPathCrawler {
     }
 
 
-
-
-
+    // This method crawls all the present
+    // objects asynchronously. All threads invoking
+    // the getPath() method will be waiting for
+    // interruption until that specific path
+    // has been resolved by the crawling thread.
+    // This method is convoluted. Planned for support
+    // removal, especially with non-Java drivers.
     protected static void asyncCrawl(KasperObject o) {
         Deque<KasperObject> stack = new ArrayDeque<>(); // Stack to hold objects to process
         stack.push(o);

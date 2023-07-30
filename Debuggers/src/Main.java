@@ -6,24 +6,13 @@
 import com.kasper.beans.datastructures.CollectionReference;
 import com.kasper.beans.datastructures.KasperBean;
 import com.kasper.beans.nio.streamflow.Connection;
-import com.kasper.commons.Parser.ByteUtils;
-import com.kasper.commons.aliases.Method;
-import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.LockedLL;
+import com.kasper.commons.exceptions.StreamFlowException;
 import network.Pool;
-import nio.kasper.NioPacketEncoder;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
-import trynetwork.SocketEventLoop;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -32,12 +21,37 @@ import java.util.LinkedList;
  */
 public class Main {
 
+    private static int totalErrors = 0;
+
+    public synchronized static void incrementErrors() {
+        totalErrors++;
+    }
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
-        Connection connection = new Connection("localhost", "root", "");
-
+    public static void main(String[] args) throws StreamFlowException {
+        ArrayList<Thread> t = new ArrayList<>();
+        for (int i=0; i<1000; i++) {
+            t.add(new Thread(()->{
+                try {
+                    Connection connection = new Connection("localhost", "root", "streamflow");
+                    connection.close();
+                } catch (StreamFlowException e) {
+                    System.out.println("Caught an error.");
+                    incrementErrors();
+                }
+            }));
+        }
+        t.stream().forEach((x)->x.start());
+        t.stream().forEach((x)-> {
+            try {
+                x.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        System.out.println("Num errors: " + totalErrors);
     }
 
     public static void simpleThreadTest(){
