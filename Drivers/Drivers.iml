@@ -10,8 +10,7 @@
     <orderEntry type="module" module-name="KasperCommons" exported="" />
     <orderEntry type="library" exported="" name="openjdk.jol.core" level="project" />
     <orderEntry type="library" exported="" name="lz4.java" level="project" />
-    <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
     <orderEntry type="library" name="io.netty.all" level="project" />
-    <orderEntry type="library" name="protobuf-java-3.23.3" level="project" />
+    <orderEntry type="library" name="protobuf-java-4.0.0-rc-2" level="project" />
   </component>
 </module>

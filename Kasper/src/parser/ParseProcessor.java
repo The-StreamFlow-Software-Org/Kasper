@@ -7,6 +7,7 @@ import com.kasper.commons.debug.Debug;
 import com.kasper.commons.exceptions.SyntaxError;
 import nio.kasper.StagedResultSet;
 import parser.exceptions.Throw;
+import parser.executor.ExecutionQueue;
 import parser.tokens.*;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.Stack;
 public class ParseProcessor {
 
     public void executeQuery(String str, StagedResultSet resultSet) {
-
+        consumeString(str);
     }
 
     public void consumeString(String string) {
@@ -32,7 +33,7 @@ public class ParseProcessor {
         }
     }
 
-    public void parseSyntax (TokenCursor tokens) {
+    public ExecutionQueue parseSyntax (TokenCursor tokens) {
         TaskParser processor = new TaskParser();
         Boolean mustFinish = false; // the query must end, unless a delimiter was given.
         Boolean begin = true; // this is a new query. Is false upon token read. Turned true with delimiters.
@@ -48,24 +49,23 @@ public class ParseProcessor {
                 Throw.syntaxAssert(tokens.getString(), TokenType.STATEMENT, tokens.peekBehind());
                 begin = false;
             }
-            if (mustFinish) {
-                if (type.equals(TokenType.DELIMITER)) {
-                    mustFinish = false;
-                }
-                else throw Throw.raw("Unknown start of query / symbol: '" + current.getName()  + "'.");
-            }
             if (current instanceof FunctionToken) {
                 // do something here
             }
-            else
-            switch (current.toStatement().type) {
-                case CREATE -> mustFinish = processor.create(tokens);
-                case INSERT -> mustFinish = processor.insert(tokens);
-                case GET -> mustFinish = processor.get(tokens);
-                case DELETE -> mustFinish = processor.delete(tokens);
-                default -> throw Throw.raw("Unknown start of query / symbol: '" + current.getName()  + "'.");
+            else {
+                if (!(current instanceof Statement)) {
+                    throw Throw.raw("Unknown start of query / symbol: '" + current.getName() + "'.");
+                }
+                switch (current.toStatement().type) {
+                    case CREATE -> mustFinish = processor.create(tokens);
+                    case INSERT -> mustFinish = processor.insert(tokens);
+                    case GET -> mustFinish = processor.get(tokens);
+                    case DELETE -> mustFinish = processor.delete(tokens);
+                    default -> throw Throw.raw("Unknown start of query / symbol: '" + current.getName() + "'.");
+                }
             }
         }
+        return processor.getExecutionQueue();
     }
 
     StringBuilder statement;
@@ -83,9 +83,6 @@ public class ParseProcessor {
         statement = new StringBuilder();
         for (int i = 0; i<longString.length(); i++){
             char current = longString.charAt(i);
-
-            // String literal handler
-            // NOTE: String literals also include () as literals, but they are tokenized as Objects.
             switch (current) {
                 case '\'':
                 case '"':
@@ -158,8 +155,8 @@ public class ParseProcessor {
                 case ';': {
                     statementPusher();
                     tokens.add(OneOf.newDelimiter());
-                    tokenCursors.add(new TokenCursor(tokens));
-                    tokens = new ArrayList<>();
+                    tokenCursors.add(new TokenCursor(new ArrayList<>(tokens)));
+                    tokens.clear();
                     break;
                 }
                 case '=':  {
@@ -182,11 +179,16 @@ public class ParseProcessor {
                 default: {
                     statement.append(current);
                 }
-
             }
+        }
 
+        if (statement.length() > 0) {
+            statementPusher();
+        }
 
-
+        // Handle the last statement (if it doesn't end with a ';')
+        if (tokens.size() > 0) {
+            tokenCursors.add(new TokenCursor(tokens));
         }
         return tokenCursors;
     }

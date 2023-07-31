@@ -1,9 +1,10 @@
 package nio.kasper;
 
+import com.kasper.commons.Network.Timer;
 import com.kasper.commons.datastructures.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+
 
 /*
     This class appropriately divides the result of a result set
@@ -22,15 +23,9 @@ public class StagedResultSet {
     KasperList resultSet = new KasperList();
 
 
-    public StagedResultSet (ArrayList<KasperEntity> result) {
-        result.stream().forEach(x ->  {
-            if(x.getIntType() == KasperEntity.TYPE_OBJECT) resultSet.addToList(new KasperMap().put("result", x.getObject()));
-            else if (x.getIntType() == KasperEntity.TYPE_QUERY_OK) resultSet.addToList(x.getObject());
-            else if (x.getIntType() == KasperEntity.TYPE_EXCEPTION) resultSet.addToList(new KasperMap().put("exception", x.getObject()));
-        });
+    Timer timer = new Timer();
+    public StagedResultSet () {
     }
-
-    public StagedResultSet () {}
 
     public void addResult (KasperEntity x) {
         if(x.getIntType() == KasperEntity.TYPE_OBJECT) resultSet.addToList(new KasperMap().put("result", x.getObject()).put("path", x.getObject().getPath()));

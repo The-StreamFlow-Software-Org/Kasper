@@ -1,7 +1,5 @@
 package network;
 
-import com.kasper.commons.Network.KasperNitroWire;
-import com.kasper.commons.Network.NetworkPackageRunnable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,8 +8,8 @@ import java.util.concurrent.*;
 
 public class Pool {
     ThreadPoolExecutor executorService;
-    private static int minThreads = 5;
-    private static int maxThreads = 1000000;
+    private static int minThreads = 20;
+    private static int maxThreads = 120;
     private static int keepAliveSeconds = 60;
     private BlockingQueue<Runnable> tickets;
     private Pool () {
@@ -23,9 +21,9 @@ public class Pool {
         @Override
         public Thread newThread(Runnable runnable) {
             try {
-                var thisRunnable = (NetworkPackageRunnable) runnable;
+                var thisRunnable = runnable;
                 Thread thread = new Thread(runnable);
-                thread.setUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(thisRunnable.net));
+               // thread.setUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(thisRunnable));
                 return thread;
             } catch (ClassCastException e) {
                 return new Thread(runnable);
@@ -33,20 +31,7 @@ public class Pool {
         }
     }
 
-    class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-        KasperNitroWire network;
-        public CustomUncaughtExceptionHandler (KasperNitroWire net){
-            this.network = net;
-        }
-        @Override
-        public void uncaughtException(Thread thread, Throwable throwable) {
-            try {
-                network.put(("Thrown by KasperEngine: Reason:> An internal exception occurred in the KasperEngine. Please contact your vendor for fixes.\nReason:> " + throwable.getMessage() + "".getBytes(StandardCharsets.UTF_8)).getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+
 
 
     private static Pool instance = null;
@@ -56,9 +41,7 @@ public class Pool {
         return instance;
     }
 
-    public static void newThread (NetworkPackageRunnable run) {
-        getInstance().executorService.execute(run);
-    }
+
 
     public static void newThread (Runnable run) {
         getInstance().executorService.execute(run);

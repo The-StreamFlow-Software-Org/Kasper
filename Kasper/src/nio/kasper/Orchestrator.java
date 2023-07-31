@@ -3,6 +3,7 @@ package nio.kasper;
 import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.debug.W;
 import com.kasper.commons.exceptions.KasperException;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import server.Handler.AsyncServerTasks;
 import io.netty.bootstrap.ServerBootstrap;
@@ -30,12 +31,11 @@ public class Orchestrator {
     private ServerBootstrap bootstrap;
     private Channel channel;
 
-
     public Orchestrator () {
         W.rite("Starting [nitro-nio] orchestration service.");
         bootstrap = new ServerBootstrap();
-        platform = new NioEventLoopGroup();
-        rooms = new NioEventLoopGroup();
+        platform = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
+        rooms = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
     }
 
     public void start () {
@@ -52,8 +52,9 @@ public class Orchestrator {
                                     new NioPacketDecoder(),
                                     new NitroChannel());
                         }
-                    }).option(ChannelOption.SO_BACKLOG, 128)
+                    }).option(ChannelOption.SO_BACKLOG, 10000)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                     .channel(NioServerSocketChannel.class);
             channel = bootstrap.bind().sync().channel();
             AsyncServerTasks.exitHandler(this);

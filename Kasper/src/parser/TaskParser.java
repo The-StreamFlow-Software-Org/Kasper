@@ -8,7 +8,11 @@ import parser.tokens.Token;
 import parser.tokens.TokenType;
 
 public class TaskParser {
-    ExecutionQueue processes;
+    private ExecutionQueue processes;
+
+    public ExecutionQueue getExecutionQueue() {
+        return processes;
+    }
 
 
     public TaskParser () {

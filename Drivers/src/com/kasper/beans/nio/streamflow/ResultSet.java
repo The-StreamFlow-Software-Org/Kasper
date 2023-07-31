@@ -40,7 +40,7 @@ public class ResultSet {
                 LocalPathCrawler.crawlPaths(result);
                 return result;
             } else {
-                return null;
+                return preStage;
             }
         } catch (StreamFlowException x) {
             throw x;

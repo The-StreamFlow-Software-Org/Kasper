@@ -13,7 +13,6 @@ import com.kasper.commons.exceptions.KasperException;
 import datastructures.KasperNode;
 import network.Lobby;
 import network.Pool;
-import network.Room;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -128,11 +127,8 @@ public class InstantiatorService {
     // moreover, it forces the server to stop accepting connections.
     public static void  close() throws Exception {
         Lobby.ending = true; // stops asking for new connections
-        Room.requestClose(); // signals for all the processes to gracefully close
-        Room.ending = true; // stops asking for new requests
         unlockThisServer(); // unlocks the IO mutex
         System.out.println("Kasper:> Termination request received. Now gracefully shutting down all connections, threads, and processes.");
-        Room.latch.await();
         Pool.shutdown();
         System.out.println("Kasper:> All processes have gracefully shut down.");
         System.out.println("Kasper:> Now saving data snapshots.");

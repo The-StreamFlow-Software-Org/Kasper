@@ -32,15 +32,16 @@ public class JSONUtils {
     private static void writeJson(Object obj, JsonWriter jsonWriter) throws Exception {
         if (obj instanceof KasperMap map) {
             writeMap(map.toMap(), jsonWriter);
-        } else if (obj instanceof KasperPrimitive str) {
+        } else if (obj instanceof KasperString str) {
             jsonWriter.value(str.toStr());
         } else if (obj instanceof KasperList list) {
             writeArray(list.toList(), jsonWriter);
-        } else if (obj instanceof KasperPathReference ref) {
-            jsonWriter.beginObject();
-            jsonWriter.name("$reference");
-            jsonWriter.value(ref.data.toString());
-            jsonWriter.endObject();
+        } else if (obj instanceof KasperInteger i32) {
+            jsonWriter.value((Integer)i32.data);
+        } else if (obj instanceof KasperDecimal decimal) {
+            jsonWriter.value((Double)decimal.data);
+        } else {
+            throw new IllegalArgumentException("Unsupported object type: " + obj.getClass());
         }
     }
 

@@ -1,5 +1,5 @@
 package com.kasper.beans.datastructures;
-
+/*
 import com.kasper.commons.exceptions.BeanConcurrencyException;
 import com.kasper.commons.Network.KasperNitroWire;
 
@@ -37,3 +37,6 @@ public abstract class AbstractReference {
 
 
 }
+
+
+ */

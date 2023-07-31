@@ -18,9 +18,8 @@
     </orderEntry>
     <orderEntry type="library" name="lz4.java" level="project" />
     <orderEntry type="library" name="github.ben.manes.caffeine" level="project" />
-    <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
     <orderEntry type="library" name="io.netty.all" level="project" />
     <orderEntry type="library" name="google.code.gson" level="project" />
-    <orderEntry type="library" name="protobuf-java-3.23.3" level="project" />
+    <orderEntry type="library" name="protobuf-java-4.0.0-rc-2" level="project" />
   </component>
 </module>

@@ -1,13 +1,10 @@
 package server.Handler;
-
+/*
 import computations.DeleteResolver;
 import datastructures.KasperCollection;
 import datastructures.KasperNode;
 import datastructures.KasperServerAbstracts;
-import com.kasper.commons.aliases.CommandAlias;
 import com.kasper.commons.authenticator.KasperAccessAuthenticator;
-import com.kasper.commons.authenticator.KasperCommons.Authenticator.PacketOuterClass;
-import com.kasper.commons.authenticator.KasperCommons.Authenticator.PreparedPacket;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
@@ -16,10 +13,8 @@ import com.kasper.commons.exceptions.InvalidUpdateQuery;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.KasperObjectAlreadyExists;
 import com.kasper.commons.exceptions.NoSuchKasperObject;
-import com.kasper.commons.Network.KasperNitroWire;
 import com.kasper.commons.Parser.KasperWriter;
 import com.kasper.commons.Parser.PathParser;
-import com.kasper.commons.Parser.TokenSender;
 import Persistence.Cache;
 import server.SuperClass.KasperGlobalMap;
 import org.w3c.dom.Document;
@@ -227,3 +222,6 @@ public class RequestHandler {
     }
 
 }
+
+
+ */

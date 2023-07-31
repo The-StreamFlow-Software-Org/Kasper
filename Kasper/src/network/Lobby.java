@@ -1,7 +1,6 @@
 package network;
 
 import com.kasper.commons.authenticator.Meta;
-import com.kasper.commons.Network.KasperNitroWire;
 import com.kasper.commons.Network.Timer;
 import Persistence.InstantiatorService;
 import sun.misc.Signal;
@@ -92,10 +91,7 @@ public class Lobby {
 
     public void enqueueClients()  {
         try {
-            while (true) {
-                var initWire = (new KasperNitroWire(server.accept()));
-                new Room(initWire);
-            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

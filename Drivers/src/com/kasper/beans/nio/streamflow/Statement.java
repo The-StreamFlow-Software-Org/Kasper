@@ -1,8 +1,10 @@
 package com.kasper.beans.nio.streamflow;
 
+import com.kasper.commons.aliases.Method;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.exceptions.PreparedQueryException;
+import com.kasper.commons.exceptions.StreamFlowException;
 
 import java.util.ArrayList;
 
@@ -11,6 +13,7 @@ public class Statement {
     private ArrayList<String> brokenQuery;
     private int index = 0;
     private ArrayList<String> parameters;
+    private ArrayList<Boolean> alreadySet;
     private String queryString;
 
 
@@ -19,6 +22,7 @@ public class Statement {
         this.connection = implementingConnection;
         this.brokenQuery = new ArrayList<>();
         this.parameters = new ArrayList<>();
+        this.alreadySet = new ArrayList<>();
         processQuery(query);
     }
 
@@ -28,12 +32,13 @@ public class Statement {
             if (query.charAt(i) == '?') {
                 index++;
                 parameters.add("?");
+                alreadySet.add(false);
                 brokenQuery.add(queryBuilder.toString());
                 queryBuilder.setLength(0);
             } else {
                 queryBuilder.append(query.charAt(i));
             }
-        }
+        } if (!queryBuilder.isEmpty())brokenQuery.add(queryBuilder.toString());
     }
 
     public Statement setString (int index, String str) {
@@ -50,24 +55,32 @@ public class Statement {
         }
         builder.append('"');
         parameters.set(index-1, builder.toString());
+        alreadySet.set(index-1, true);
         return this;
     }
 
     public Statement setObject (int index, KasperObject obj) {
         Check.indexValidity(this.index, index);
-        parameters.set(index-1, JSONUtils.objectToJsonStream(obj));
+        StringBuilder builder = new StringBuilder();
+        builder.append('(');
+        builder.append(JSONUtils.objectToJsonStream(obj));
+        builder.append(')');
+        parameters.set(index-1, builder.toString());
+        alreadySet.set(index-1, true);
         return this;
     }
 
     public Statement setInt (int index, int num) {
         Check.indexValidity(this.index, index);
         parameters.set(index-1, String.valueOf(num));
+        alreadySet.set(index-1, true);
         return this;
     }
 
     public Statement setDouble (int index, double num) {
         Check.indexValidity(this.index, index);
         parameters.set(index-1, String.valueOf(num));
+        alreadySet.set(index-1, true);
         return this;
     }
 
@@ -87,11 +100,16 @@ public class Statement {
             bigPath.append(smallPath).append('.');
         }
         bigPath.deleteCharAt(bigPath.length()-1);
+        alreadySet.set(index-1, true);
         return setString(index, bigPath.toString());
     }
 
     private void buildQuery(){
         try {
+            if (index == 0) {
+                queryString = brokenQuery.get(0);
+                return;
+            }
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < index; i++) {
                 builder.append(brokenQuery.get(i));
@@ -101,10 +119,19 @@ public class Statement {
         } catch (IndexOutOfBoundsException e) {
             throw new PreparedQueryException("Not all parameters are set");
         }
+        alreadySet.stream().forEach(x->{
+            if (!x) throw new PreparedQueryException("Not all parameters are set.");
+        });
     }
 
-    public String peekQuery () {
+    protected String peekQuery () {
         buildQuery();
         return queryString;
+    }
+
+    public synchronized ResultSet executeQuery() throws StreamFlowException {
+        buildQuery();
+        var result = connection.wire.write(Method.QUERY, queryString);
+        return new ResultSet(result);
     }
 }

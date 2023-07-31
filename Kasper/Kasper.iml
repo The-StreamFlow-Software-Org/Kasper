@@ -11,9 +11,7 @@
     <orderEntry type="library" exported="" name="openjdk.jol.core" level="project" />
     <orderEntry type="library" exported="" name="github.ben.manes.caffeine" level="project" />
     <orderEntry type="library" name="google.code.gson" level="project" />
-    <orderEntry type="library" name="webjars.npm.protocol.buffers" level="project" />
     <orderEntry type="library" name="io.netty.all" level="project" />
-    <orderEntry type="library" name="protobuf-java-3.23.3" level="project" />
     <orderEntry type="library" name="openjdk.jol.core1" level="project" />
   </component>
 </module>
