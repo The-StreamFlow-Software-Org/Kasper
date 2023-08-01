@@ -40,6 +40,6 @@ public class StagedResultSet {
 
     public byte[] getBytes () {
         String data = JSONUtils.objectToJsonStream(resultSet);
-        return data.getBytes(StandardCharsets.UTF_16);
+        return data.getBytes(StandardCharsets.UTF_8);
     }
 }

@@ -85,7 +85,7 @@ public class TokenCursor {
                 toString.append(": ").append(x);
             }
             toString.append('\n');
-        }
+        } toString.append("End of toString");
         return toString.toString();
     }
 

@@ -33,6 +33,7 @@ public class ResultSet {
     public KasperObject getNext () throws StreamFlowException {
         try {
             var preStage = set.poll();
+            if (preStage == null) throw new StreamFlowException("No more elements in the result set.");
             if (preStage instanceof KasperMap stagedObject) {
                 assertException(stagedObject);
                 var result = stagedObject.get("result");

@@ -1,32 +1,36 @@
 package com.kasper.beans.nio.protocol;
 
 import com.kasper.beans.nio.streamflow.ResultSet;
+import com.kasper.commons.Handlers.CountdownTimer;
 import com.kasper.commons.Parser.ByteUtils;
 import com.kasper.commons.aliases.Method;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.exceptions.BeanConcurrencyException;
 import com.kasper.commons.exceptions.KasperException;
+import com.kasper.commons.exceptions.KasperTimeoutException;
 import com.kasper.commons.exceptions.StreamFlowException;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class Wire {
+    private long packetTimeout = 10000;
     private SocketChannel socketChannel;
     private ByteBuffer byteBuffer;
     private long threadID;
 
-    public Wire (InetSocketAddress socketAddress, long threadID) {
+    public Wire (InetSocketAddress socketAddress, long threadID) throws StreamFlowException {
         this.threadID = threadID;
         this.byteBuffer = ByteBuffer.allocate(1024); // can be adjusted based on your need
         try {
             this.socketChannel = SocketChannel.open(socketAddress);
             this.socketChannel.configureBlocking(false);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new StreamFlowException(e);
         }
     }
 
@@ -34,14 +38,23 @@ public class Wire {
         if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
     }
 
-    public String write (int method, String query) {
+    public synchronized String write (int method, String query) throws StreamFlowException {
         assert (method < 100) : "Invalid method. Please with check your driver provider.";
         ensureSynchronized();
         try {
-            var byteStream = query.getBytes(StandardCharsets.UTF_16);
-            byteBuffer.clear();
+            var byteStream = query.getBytes(StandardCharsets.UTF_8);
+
+            // Check if byteStream length is too large
+            if(byteStream.length > Integer.MAX_VALUE) {
+                throw new IllegalArgumentException("Data packet is too large to send");
+            }
+            this.byteBuffer = ByteBuffer.allocate(5 + byteStream.length);
             byteBuffer.put((byte) method);
-            byteBuffer.putInt(byteStream.length);
+
+            byte[] byteStreamLengthBytes = ByteUtils.intToBytes(byteStream.length);
+            for (byte b : byteStreamLengthBytes) {
+                byteBuffer.put(b);
+            }
             byteBuffer.put(byteStream);
             byteBuffer.flip();
 
@@ -62,7 +75,6 @@ public class Wire {
             int length = ByteUtils.bytesToInt(lengthBytes);
             byte[] result = new byte[length];
 
-            // Start staging bytes in batches of four
             int byteBatch = 4;
             int batches = length / byteBatch;
             int remainder = length % byteBatch;
@@ -85,9 +97,9 @@ public class Wire {
                 byteBuffer.get(result, batches*byteBatch, remainder);
             }
 
-            return new String(result, StandardCharsets.UTF_16);
+            return new String(result, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new StreamFlowException(e);
         }
     }
 

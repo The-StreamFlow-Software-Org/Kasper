@@ -45,4 +45,8 @@ public class Throw {
     public static SyntaxError invalidStatement (String initial, StatementType type) {
         return new SyntaxError("Cannot parse statement '" + type + "' after initial statement '" + initial + "'.");
     }
+
+    public static void notDelimited() {
+        throw new SyntaxError("The query had excess tokens. Must be delimited with a semicolon ';' if a query must finish.");
+    }
 }

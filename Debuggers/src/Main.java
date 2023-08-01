@@ -5,9 +5,11 @@
 
 
 import com.kasper.beans.nio.streamflow.Connection;
+import com.kasper.beans.nio.streamflow.Statement;
 import com.kasper.commons.Network.Timer;
 import com.kasper.commons.datastructures.LockedLL;
 import com.kasper.commons.exceptions.StreamFlowException;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -28,15 +30,28 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws StreamFlowException {
+        try (Connection connection = new Connection("localhost", "root", "streamflow")) {
+           // Statement s = connection.prepareStatement("create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';create node 'dasokpasodksaopdksaopkdopaskdpsaokdpsoakdspaodksopakdposakdposakdpsoakdopsakdpsoakdposakdopsakdopsakdposakopdksaopdksaopkdopsakdopsakdpsoakdopsakdp pasokdpoaskdpasokdopaskdpoaskpd';");
+            Statement s = connection.prepareStatement("create node 'x'; create node 'y' create node 'z'");
+            Timer.getTimer().start();
+            for (int i=0; i<10000; i++) {
+               s.executeQuery();
+            }
+            System.out.println(Timer.getTimer().stop());
+            System.exit(0);
+        }
+
+
+
         Connection connection  = new  Connection("localhost", "root", "streamflow");
         var prepared = connection.prepareStatement("create node ?;");
         prepared.setString(1, "dbOne");
         Timer.getTimer().start();
-        for (int i=0; i<10000; i++) {
-            prepared.executeQuery().getNext();
+        for (int i=0; i<1; i++) {
+            var resultSet = prepared.executeQuery();
+            System.out.println(resultSet);
         }
         System.out.println("Finished in " + Timer.getTimer().stop());
-        stressTest();
     }
 
 
@@ -88,7 +103,6 @@ public class Main {
                 } catch (StreamFlowException e) {
                     System.out.println("Caught an error.");
                     incrementErrors();
-                    Timer time = new Timer();
                     incrementFinished();
                 }
             }));

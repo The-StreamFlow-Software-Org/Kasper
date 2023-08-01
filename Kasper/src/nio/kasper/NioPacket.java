@@ -20,7 +20,7 @@ public class NioPacket {
         KasperMap map = new KasperMap();
         map.put("exception", e.getMessage());
         String jsonMap = JSONUtils.objectToJsonStream(map);
-        byte[] bytes = jsonMap.getBytes(StandardCharsets.UTF_16);
+        byte[] bytes = jsonMap.getBytes(StandardCharsets.UTF_8);
         var x = ByteUtils.intToBytes(bytes.length);
         byte[] result = new byte[bytes.length + 5];
         result[0] = (byte)Method.RESPONSE_QUERY;
@@ -43,7 +43,7 @@ public class NioPacket {
 
     public boolean assertAuth() throws IOException {
         if (method != Method.AUTH) return false;
-        KasperMap map = JSONUtils.parseJson(new String(packetBytes, StandardCharsets.UTF_16)).castToMap();
+        KasperMap map = JSONUtils.parseJson(new String(packetBytes, StandardCharsets.UTF_8)).castToMap();
         Meta.assertDefault(map.get("username").toStr(), map.get("password").toStr());
         return true;
     }
@@ -59,6 +59,6 @@ public class NioPacket {
 
     public void executeQuery (StagedResultSet resultSet) {
         ParseProcessor processor = new ParseProcessor();
-        processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_16), resultSet);
+        processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_8), resultSet);
     }
 }

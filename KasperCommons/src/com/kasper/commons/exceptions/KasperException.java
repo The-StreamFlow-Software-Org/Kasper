@@ -8,7 +8,7 @@ import com.kasper.commons.datastructures.KasperString;
 public class KasperException extends RuntimeException implements KasperEntity {
 
     public KasperException(String message) {
-        super("Kasper Exception:> "+ message);
+        super(message);
     }
 
     public KasperException (Exception e) {

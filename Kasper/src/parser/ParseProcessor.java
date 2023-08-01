@@ -40,6 +40,9 @@ public class ParseProcessor {
         while (tokens.hasNext()) {
             var current = tokens.nextToken();
             var type = current.tokenType;
+            if (mustFinish) {
+                Throw.notDelimited();
+            }
             if (current.tokenType.equals(TokenType.DELIMITER)) {
                 begin = true;
                 mustFinish = false;
@@ -52,6 +55,7 @@ public class ParseProcessor {
             if (current instanceof FunctionToken) {
                 // do something here
             }
+
             else {
                 if (!(current instanceof Statement)) {
                     throw Throw.raw("Unknown start of query / symbol: '" + current.getName() + "'.");
@@ -93,6 +97,7 @@ public class ParseProcessor {
                     i = 0;
                     longString = pair.first();
                     tokens.add(StringLiteral.newLiteral(pair.second()));
+                    --i;
                     break;
                 }
                 case '(': {
@@ -154,9 +159,11 @@ public class ParseProcessor {
 
                 case ';': {
                     statementPusher();
-                    tokens.add(OneOf.newDelimiter());
-                    tokenCursors.add(new TokenCursor(new ArrayList<>(tokens)));
-                    tokens.clear();
+                    // Add the current statement to tokenCursors
+                    if (tokens.size() > 0) {
+                        tokenCursors.add(new TokenCursor(new ArrayList<>(tokens)));
+                        tokens = new ArrayList<>();
+                    }
                     break;
                 }
                 case '=':  {
