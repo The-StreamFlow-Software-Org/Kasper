@@ -2,6 +2,7 @@ package com.kasper.commons.datastructures;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.kasper.Boost.JSONCache;
 import com.kasper.commons.Network.Timer;
 
 import java.io.IOException;
@@ -13,13 +14,19 @@ public class JSONUtils {
 
     public static String objectToJsonStream(Object obj) {
         try {
+            var returnVal = JSONCache.get(obj);
+            if (returnVal != null)  {
+                return returnVal;
+            }
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
 
             writeJson(obj, jsonWriter);
 
             jsonWriter.close();
-            return stringWriter.toString();
+            var str = stringWriter.toString();;
+            JSONCache.set(obj, str);
+            return str;
         } catch (Exception e) {
             // Handle the exception appropriately
             e.printStackTrace();

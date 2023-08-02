@@ -32,23 +32,29 @@ public class NitroChannel implements ChannelInboundHandler {
     @Override
     public void channelRead(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
         if (o instanceof NioPacket packet) {
-            StagedResultSet resultSet = new StagedResultSet();
+            StagedResultSet resultSet = null;
             try {
                 if (packet.assertAuth()) {
+                    resultSet = new StagedResultSet();
                     // handle the authentication here
                     // currently, the authentication process
                     // is insecure. We may need to change
                     // it in the future.
                     resultSet.addQueryOk();
                 }
-                else packet.executeQuery(resultSet);
+                else resultSet = packet.executeQuery();
             } catch (KasperException e) {
+                if (resultSet == null) {
+                    resultSet = new StagedResultSet();
+                }
                 resultSet.addResult(e);
             } catch (Exception e) {
+                if (resultSet == null) {
+                    resultSet = new StagedResultSet();
+                }
                 resultSet.addResult(new KasperException(e));
             }
-            channelHandlerContext.writeAndFlush(
-                    NioPacket.stageData(resultSet.getBytes()));
+            channelHandlerContext.writeAndFlush(resultSet.getBytes());
         } else {
             W.rite("Unknown error when reading packet.");
         }

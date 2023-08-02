@@ -7,34 +7,38 @@ import com.kasper.commons.debug.Debug;
 import com.kasper.commons.exceptions.SyntaxError;
 import nio.kasper.StagedResultSet;
 import parser.exceptions.Throw;
-import parser.executor.ExecutionQueue;
 import parser.tokens.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
 public class ParseProcessor {
+    TaskParser processor = new TaskParser();
 
-    public void executeQuery(String str, StagedResultSet resultSet) {
-        consumeString(str);
+    public StagedResultSet executeQuery(String str) {
+        return consumeString(str);
     }
 
-    public void consumeString(String string) {
+    public StagedResultSet consumeString(String string) {
         try {
             var tokens = tokenize(string);
             for (var tokenCursors : tokens) {
                 parseSyntax(tokenCursors);
-            } // verifies the correctness of the syntax
-            if (Debug.TRUE) System.out.println("Syntax verified: " + string);
+            }
+            // verifies the correctness of the syntax and fills
+            // the execution queue with the tasks.
+            processor.getExecutionQueue().executeAndDispose();
+            return processor.getExecutionQueue().resultSet();
         } catch (SyntaxError error) {
-            if (Debug.TRUE)error.printStackTrace();
-            throw new SyntaxError(true, error.getMessage() + "\n\tFound in query: '" + string + "'.");
+            var set = new StagedResultSet();
+            set.addResult(new SyntaxError(true, error.getMessage() + "\n\tFound in query: '" + string + "'."));
+            return set;
         }
     }
 
-    public ExecutionQueue parseSyntax (TokenCursor tokens) {
-        TaskParser processor = new TaskParser();
+
+    public void parseSyntax (TokenCursor tokens) {
+
         Boolean mustFinish = false; // the query must end, unless a delimiter was given.
         Boolean begin = true; // this is a new query. Is false upon token read. Turned true with delimiters.
         while (tokens.hasNext()) {
@@ -69,7 +73,6 @@ public class ParseProcessor {
                 }
             }
         }
-        return processor.getExecutionQueue();
     }
 
     StringBuilder statement;

@@ -9,6 +9,7 @@ import parser.ParseProcessor;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
 
 public class NioPacket {
     private byte[] packetBytes;
@@ -57,8 +58,8 @@ public class NioPacket {
         this.packetBytes = packetBytes;
     }
 
-    public void executeQuery (StagedResultSet resultSet) {
+    public StagedResultSet executeQuery () {
         ParseProcessor processor = new ParseProcessor();
-        processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_8), resultSet);
+        return processor.executeQuery(new String(packetBytes, StandardCharsets.UTF_8));
     }
 }

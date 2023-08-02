@@ -1,10 +1,16 @@
 package server.Handler;
 
+import Persistence.InstantiatorService;
+import Persistence.Serialize;
 import com.kasper.commons.Network.Timer;
+import com.kasper.commons.Parser.ByteCompression;
 import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.debug.W;
 import network.Pool;
 import nio.kasper.Orchestrator;
+import server.Parser.AESUtils;
+import server.Parser.DiskIO;
+import server.SuperClass.KasperGlobalMap;
 import sun.misc.Signal;
 
 public class AsyncServerTasks {
@@ -38,6 +44,7 @@ public class AsyncServerTasks {
                     System.exit(0);
                 } doubleSIGINT[0] = true;
                 ending = true;
+                DiskIO.writeDocument(AESUtils.encrypt(ByteCompression.compress(Serialize.writeToBytes(KasperGlobalMap.globalmap))));
                 System.out.println("Kasper:> Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
                 orchestrator.stop();
                 System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");

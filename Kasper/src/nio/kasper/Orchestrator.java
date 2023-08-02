@@ -1,5 +1,7 @@
 package nio.kasper;
 
+import Persistence.InstantiatorService;
+import com.kasper.Boost.JSONCache;
 import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.debug.W;
 import com.kasper.commons.exceptions.KasperException;
@@ -33,6 +35,7 @@ public class Orchestrator {
 
     public Orchestrator () {
         W.rite("Starting [nitro-nio] orchestration service.");
+        JSONCache.init();
         bootstrap = new ServerBootstrap();
         platform = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
         rooms = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());

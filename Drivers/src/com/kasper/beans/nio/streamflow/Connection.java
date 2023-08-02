@@ -1,5 +1,6 @@
 package com.kasper.beans.nio.streamflow;
 
+import com.kasper.Boost.JSONCache;
 import com.kasper.beans.nio.protocol.Wire;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.exceptions.StreamFlowException;
@@ -12,6 +13,7 @@ public class Connection implements AutoCloseable {
     private long threadID = Thread.currentThread().getId();
     protected Wire wire;
     public Connection (String host, String username, String password, int port) throws StreamFlowException {
+        JSONCache.init();
         int retries = 0;
         boolean failed = true;
         while (failed && retries < 1) {

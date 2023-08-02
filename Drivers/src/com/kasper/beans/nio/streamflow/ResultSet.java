@@ -16,7 +16,7 @@ public class ResultSet {
         try {
             set = JSONUtils.parseJson(setString).castToList().toArray();
         } catch (Exception e) {
-            throw new StreamFlowException(e);
+            throw new StreamFlowException(e + "\n\tError at: " + setString);
         }
     }
 

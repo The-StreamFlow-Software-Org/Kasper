@@ -20,6 +20,7 @@ public class KasperException extends RuntimeException implements KasperEntity {
 
     @Override
     public KasperObject getObject() {
+        if (getMessage() == null) return new KasperString("No valid error message available.");
         return new KasperString(getMessage());
     }
 

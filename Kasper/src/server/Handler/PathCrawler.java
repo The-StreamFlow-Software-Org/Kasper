@@ -48,7 +48,7 @@ public class PathCrawler {
             var list = currObject.toList();
             if (hasInstance.equals("head")) return list.getFirst();
             if (hasInstance.equals("tail")) return list.getLast();
-            else throw new KasperException("Invalid position specified. Only 'head' and 'tail' access is allowed.");
+            else throw new IndexNotViableException(currObject.getPath(), hasInstance);
         }
     }
 }

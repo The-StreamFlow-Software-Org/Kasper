@@ -6,6 +6,9 @@ import parser.tokens.PathToken;
 import parser.tokens.StatementType;
 import parser.tokens.Token;
 import parser.tokens.TokenType;
+import stateholder.functions.StoredProcedures;
+
+import java.util.HashMap;
 
 public class TaskParser {
     private ExecutionQueue processes;
@@ -27,9 +30,10 @@ public class TaskParser {
             case RELATIONSHIP:
             case COLLECTION: {
                 StringBuilder parsedSoFar = new StringBuilder();
-                String collectionName = null;
-                PathToken path = null;
+                String entityName;
+                String parentName;
                 entity = tokens.nextToken();
+                entityName = entity.getName();
                 // verify if the entity name exists
                 parsedSoFar.append("CREATE ").append(initialEntity.getName()).append(" ").append(entity.getName()).append(" ");
                 Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
@@ -38,9 +42,19 @@ public class TaskParser {
                 parsedSoFar.append(entity.getName()).append(" ");
                 Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, entity);
                 entity = tokens.nextToken();
+                parentName = entity.getName();
                 // get the path name here
                 parsedSoFar.append(entity.getName());
                 Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
+                HashMap<String, Object> args = new HashMap<>();
+                if (initialType == StatementType.RELATIONSHIP) {
+                    args.put("type", StoredProcedures.RELATIONSHIP);
+                } else {
+                    args.put("type", StoredProcedures.COLLECTION);
+                }
+                args.put("parent", parentName);
+                args.put("name", entityName);
+                processes.addProcess("create", args);
                 return true;
             }
             case NODE: {
@@ -49,6 +63,10 @@ public class TaskParser {
                 // verify that collection name exists
                 Throw.syntaxAssert("CREATE NODE " + entity.name, TokenType.STRING, entity.tokenType);
                 nodeName = entity.name;
+                HashMap<String, Object> args = new HashMap<>();
+                args.put("type", StoredProcedures.NODE);
+                args.put("name", nodeName);
+                processes.addProcess("create", args);
                 return true;
             }
             default: {
@@ -82,6 +100,9 @@ public class TaskParser {
     public Boolean get (TokenCursor tokens) {
         var pathToken = tokens.nextToken();
         Throw.syntaxAssert("GET " + pathToken.getName(), TokenType.STRING, pathToken.tokenType);
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("path", pathToken.getName());
+        processes.addProcess("get", args);
         return true;
     }
 

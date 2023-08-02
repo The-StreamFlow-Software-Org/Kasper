@@ -8,6 +8,6 @@ public class NioPacketEncoder extends MessageToByteEncoder<byte[]> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, byte[] set, ByteBuf byteBuf) throws Exception {
-        byteBuf.writeBytes(set);
+        byteBuf.writeBytes(NioPacket.stageData(set));
     }
 }

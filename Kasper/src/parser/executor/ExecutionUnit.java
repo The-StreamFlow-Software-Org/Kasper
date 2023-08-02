@@ -1,7 +1,10 @@
 package parser.executor;
 
+import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.exceptions.KasperException;
+
 import java.util.HashMap;
 
 public interface ExecutionUnit {
-    void databaseTask(HashMap<String, Object> arguments);
+    KasperObject databaseTask(HashMap<String, Object> arguments) throws KasperException;
 }

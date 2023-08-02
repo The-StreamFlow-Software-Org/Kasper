@@ -20,14 +20,18 @@ import java.nio.charset.StandardCharsets;
 
 
 public class StagedResultSet {
-    KasperList resultSet = new KasperList();
+    KasperList resultSet = null;
 
 
     Timer timer = new Timer();
     public StagedResultSet () {
+        resultSet = new KasperList();
     }
 
     public void addResult (KasperEntity x) {
+        if (x == null) {
+            resultSet.addToList(KasperEntity.QueryOk.storedInstance());
+        }
         if(x.getIntType() == KasperEntity.TYPE_OBJECT) resultSet.addToList(new KasperMap().put("result", x.getObject()).put("path", x.getObject().getPath()));
         else if (x.getIntType() == KasperEntity.TYPE_QUERY_OK) resultSet.addToList(x.getObject());
         else if (x.getIntType() == KasperEntity.TYPE_EXCEPTION) resultSet.addToList(new KasperMap().put("exception", x.getObject()));
