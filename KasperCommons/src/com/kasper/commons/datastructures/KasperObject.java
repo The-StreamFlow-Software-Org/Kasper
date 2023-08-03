@@ -54,7 +54,9 @@ public class KasperObject implements Serializable, KasperEntity {
     protected void resolvePath(KasperObject current) {
         if (!current.finalPath.equals("")) return;
         if (!current.parent.finalPath.equals("")) {
-            current.finalPath = current.parent.finalPath + "." + id;
+            StringBuilder builder = new StringBuilder();
+            builder.append(current.parent.finalPath).append('.').append(id);
+            current.finalPath = builder.toString();
             return;
         }
         resolvePath(current.parent);
@@ -62,7 +64,7 @@ public class KasperObject implements Serializable, KasperEntity {
 
     private static final long serialVersionUID = -7689140920033408553L;
 
-    /*
+    /**
     Contains the path of the topmost object in the hierarchy. Returns NULL
      */
     protected String id = "";
@@ -81,7 +83,7 @@ public class KasperObject implements Serializable, KasperEntity {
 
     /**
     Holds the internal data structure. Can be a Map<KasperString, KasperObject>,
-    an List<KasperObject>, or a simple String.
+    an List<KasperObject>, or a primitive [double/int/string].
      */
     protected Object data;
 

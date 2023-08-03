@@ -124,7 +124,7 @@ public class DiskIO {
 
     public static byte[] getSerialized () throws IOException {
         File file = new File(Meta.getPath());
-        System.out.println("Kasper:> The persistent data is: " + (file.length() / 1000000.00) + " megabytes.");
+        System.out.println("Kasper:> [Persistence] The persistent data is: " + (file.length() / 1000000.00) + " megabytes.");
         try (var reader = new BufferedInputStream(new DataInputStream(new FileInputStream(Meta.getPath())))){
             return reader.readAllBytes();
         }

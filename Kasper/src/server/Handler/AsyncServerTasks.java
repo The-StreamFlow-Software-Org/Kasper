@@ -1,16 +1,10 @@
 package server.Handler;
 
-import Persistence.InstantiatorService;
-import Persistence.Serialize;
-import com.kasper.commons.Network.Timer;
-import com.kasper.commons.Parser.ByteCompression;
 import com.kasper.commons.authenticator.Meta;
 import com.kasper.commons.debug.W;
 import network.Pool;
+import nio.kasper.NitroChannel;
 import nio.kasper.Orchestrator;
-import server.Parser.AESUtils;
-import server.Parser.DiskIO;
-import server.SuperClass.KasperGlobalMap;
 import sun.misc.Signal;
 
 public class AsyncServerTasks {
@@ -23,7 +17,7 @@ public class AsyncServerTasks {
                 try {
                     Thread.sleep(Meta.snapshotTimeout);
                     System.gc();
-                    W.rite("Persistence snapshots are being written to disk.");
+                    W.rite("[Persistence Asynchronous Service] Persistence snapshots are being written to disk.");
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -43,15 +37,9 @@ public class AsyncServerTasks {
                 if (doubleSIGINT[0]) {
                     System.exit(0);
                 } doubleSIGINT[0] = true;
-                ending = true;
-                DiskIO.writeDocument(AESUtils.encrypt(ByteCompression.compress(Serialize.writeToBytes(KasperGlobalMap.globalmap))));
-                System.out.println("Kasper:> Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
-                orchestrator.stop();
-                System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
-                System.out.println("Kasper says bye! :)");
-                System.exit(0);
+                NitroChannel.requestStop(orchestrator);
             } catch (Exception e) {
-                System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
+                System.out.println("Kasper:> [Persistence] An exception occurred when saving the data snapshots. Please check the backups.");
                 System.exit(0);
             }
             System.exit(0);

@@ -94,6 +94,16 @@ public class TaskParser {
         var keyToken = tokens.nextToken();
         parsedSoFar.append(keyToken.getName());
         Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, keyToken.tokenType);
+
+        // Passing to the 'Insert' stored procedure.
+        var newObject = objectToken.toObject().getInternalObject();
+        var path = pathToken.toPath().getName();
+        var key = keyToken.getName();
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("object", newObject);
+        args.put("path", path);
+        args.put("key", key);
+        processes.addProcess("insert", args);
         return true;
     }
 

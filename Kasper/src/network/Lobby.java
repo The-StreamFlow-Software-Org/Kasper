@@ -58,13 +58,13 @@ public class Lobby {
                         System.exit(0);
                     } doubleSIGINT[0] = true;
                     ending = true;
-                    System.out.println("Kasper:> Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
+                    System.out.println("Kasper:> [SIGINT Event Handler] Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
                     InstantiatorService.close();
-                    System.out.println("Kasper:> Data snapshots saved after " + Timer.getTimer().stop() + "s.");
-                    System.out.println("Kasper says bye! :)");
+                    System.out.println("Kasper:> [Persistence] Data snapshots saved after " + Timer.getTimer().stop() + "s.");
+                    System.out.println("[StreamFlow Staff Messaging] Kasper says bye! :)");
                     System.exit(0);
                 } catch (Exception e) {
-                    System.out.println("Kasper:> An exception occurred when saving the data snapshots. Please check the backups.");
+                    System.out.println("Kasper:> [Persistence] An exception occurred when saving the data snapshots. Please check the backups.");
                     System.exit(0);
                 }
                 System.exit(0);

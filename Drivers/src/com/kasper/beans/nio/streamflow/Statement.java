@@ -114,7 +114,7 @@ public class Statement {
             for (int i = 0; i < index; i++) {
                 builder.append(brokenQuery.get(i));
                 builder.append(parameters.get(i));
-            }
+            } if (brokenQuery.size() > index) builder.append(brokenQuery.get(index));
             queryString = builder.toString();
         } catch (IndexOutOfBoundsException e) {
             throw new PreparedQueryException("Not all parameters are set");
@@ -122,6 +122,7 @@ public class Statement {
         alreadySet.stream().forEach(x->{
             if (!x) throw new PreparedQueryException("Not all parameters are set.");
         });
+
     }
 
     protected String peekQuery () {

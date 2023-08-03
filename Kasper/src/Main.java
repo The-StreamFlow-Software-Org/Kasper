@@ -27,11 +27,11 @@ public class Main {
     public static void init(String[] args) throws Exception {
         favicon();
         Timer.getTimer().start();
-        System.out.println("Kasper:> Loading Meta Variables. Change the Meta variables in kasper/data/kasper.init");
-        System.out.println("Kasper:> Staring instantiator service. Loading snapshots to memory.");
+        System.out.println("Kasper:> [Server Context] Loading Meta Variables. Change the Meta variables in kasper/data/kasper.init");
+        System.out.println("Kasper:> [Persistence] Staring instantiator service. Loading snapshots to memory.");
         InstantiatorService.start();
-        System.out.println("Kasper:> Load from disk successful after " + Timer.getTimer().stop() + "s.");
-        System.out.println("Kasper:> All objects loaded. All nodes are now ready for querying.");
+        System.out.println("Kasper:> [Persistence] Load from disk successful after " + Timer.getTimer().stop() + "s.");
+        System.out.println("Kasper:> [General Message] All objects loaded. All nodes are now ready for querying.");
         Timer.getTimer().reset();
         Orchestrator orchestrator = new Orchestrator();
         orchestrator.start();
@@ -46,12 +46,12 @@ public class Main {
                 "        .:::::    ..::::::.             \n" +
                 "        .:::::  .:::::::..              \n" +
                 "        .:::::.:::::::.      ...        \n" +
-                "        .:::::::::::.    ..:::::.         Kasper DB \n" +
-                "        .:::::::::.  ..:::::::::.         version " + Meta.version + "\n" +
-                "        .:::::::.  .::::::::::::.         (c) ruff.io, 2023\n" +
-                "        .::::::::. .::::::::::::.         Rufelle Emmanuel Pactol\n" +
-                "        .::::::::::. ..:::::::::.         kasperdocs.netlify.app\n" +
-                "        .::::::::::::.   ..:::::.       \n" +
+                "        .:::::::::::.    ..:::::.         Kasper DB [Community Edition]\n" +
+                "        .:::::::::.  ..:::::::::.         Version [" + Meta.version + "]\n" +
+                "        .:::::::.  .::::::::::::.         (c) The StreamFlow Software Organization, 2023\n" +
+                "        .::::::::. .::::::::::::.         (c) Rufelle Emmanuel Pactol\n" +
+                "        .::::::::::. ..:::::::::.         rufelle.com\n" +
+                "        .::::::::::::.   ..:::::.         rufelleemmanuel.pactol@cit.edu\n" +
                 "        .:::::.::::::::.    ....        \n" +
                 "        .:::::   .:::::::.              \n" +
                 "        .:::::     .:::::::.            \n" +

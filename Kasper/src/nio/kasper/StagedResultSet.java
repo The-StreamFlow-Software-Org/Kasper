@@ -31,8 +31,12 @@ public class StagedResultSet {
     public void addResult (KasperEntity x) {
         if (x == null) {
             resultSet.addToList(KasperEntity.QueryOk.storedInstance());
+            return;
         }
-        if(x.getIntType() == KasperEntity.TYPE_OBJECT) resultSet.addToList(new KasperMap().put("result", x.getObject()).put("path", x.getObject().getPath()));
+        if(x.getIntType() == KasperEntity.TYPE_OBJECT){
+            var map = new KasperMap().put("result", x.getObject());
+            resultSet.addToList(map);
+        }
         else if (x.getIntType() == KasperEntity.TYPE_QUERY_OK) resultSet.addToList(x.getObject());
         else if (x.getIntType() == KasperEntity.TYPE_EXCEPTION) resultSet.addToList(new KasperMap().put("exception", x.getObject()));
     }

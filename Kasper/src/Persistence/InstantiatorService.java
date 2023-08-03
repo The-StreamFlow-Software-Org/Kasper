@@ -34,21 +34,21 @@ public class InstantiatorService {
     public static String mutexLocation = System.getProperty("user.home")+ "/kasper.mutex";
 
     public static void lockThisServer() {
-        System.out.println("Kasper:> Checking IO mutex lock.");
+        System.out.println("Kasper:> [IO Mutex] Checking IO mutex lock.");
         try {
             channel = new RandomAccessFile(mutexLocation, "rw").getChannel();
             lock = channel.tryLock();
             if (lock == null) {
-                System.err.println("Kasper:> IO Mutex lock failed. Cannot run double instances of the Kasper Engine. Please terminate the other instance first.");
+                System.err.println("Kasper:> [IO Mutex] IO Mutex lock failed. Cannot run double instances of the Kasper Engine. Please terminate the other instance first.");
                 System.exit(0);
             }
         } catch (IOException e) {
             System.out.println(mutexLocation);
             e.printStackTrace();
-            throw new KasperException("Kasper:> Cannot use the mutex lock to lock this Kasper Engine instance.");
+            throw new KasperException("Kasper:> [IO Mutex] Cannot use the mutex lock to lock this Kasper Engine instance.");
         }
         lockedByThis = true;
-        System.out.println("Kasper:> Successfully locked this instance. Mutexes instantiated.");
+        System.out.println("Kasper:> [IO Mutex] Successfully locked this instance. Mutexes instantiated.");
     }
 
     public static void unlockThisServer() {
@@ -62,9 +62,9 @@ public class InstantiatorService {
                 channel = null;
             }
         } catch (IOException e) {
-            throw new KasperException("Cannot use the mutex lock to unlock this Kasper Engine instance.");
+            throw new KasperException(" [IO Mutex] Cannot use the mutex lock to unlock this Kasper Engine instance.");
         }
-        System.out.println("Kasper:> Successfully unlocked this instance. Mutexes destroyed.");
+        System.out.println("Kasper:> [IO Mutex] Successfully unlocked this instance. Mutexes destroyed.");
     }
 
 

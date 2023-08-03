@@ -29,17 +29,12 @@ public class KasperList extends KasperObject implements Iterable{
      * @param object pushes this KasperObject to the list.
      */
     public KasperList addToList(KasperObject object) {
+        object.parent = this;
         toList().add(object);
         return this;
     }
 
-    /**
-     * Sets the internal data structure to be thread safe.
-     */
-    public KasperList setConcurrent(){
-        data = new ConcurrentLinkedDeque<>();
-        return this;
-    }
+
 
     /**
      *
@@ -47,7 +42,7 @@ public class KasperList extends KasperObject implements Iterable{
      */
     public KasperList addToList (KasperObject ... args) {
         for (var x : args) {
-            toList().add(x);
+            addToList(x);
         } return this;
     }
 
@@ -58,7 +53,7 @@ public class KasperList extends KasperObject implements Iterable{
      */
     public KasperList addToList (String ... args) {
         for (var x : args) {
-            toList().add(new KasperString(x));
+            addToList(new KasperString(x));
         } return this;
     }
 
@@ -69,6 +64,18 @@ public class KasperList extends KasperObject implements Iterable{
     public LinkedList<KasperObject> toArray (){
         var x = toList();
         return x.getInternalArray();
+    }
+
+    public KasperList addFirst(KasperObject object){
+        toList().addFirst(object);
+        object.parent = this;
+        return this;
+    }
+
+    public KasperList addLast (KasperObject object){
+        toList().addLast(object);
+        object.parent = this;
+        return this;
     }
 
 

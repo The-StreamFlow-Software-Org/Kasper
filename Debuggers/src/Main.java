@@ -7,12 +7,16 @@
 import com.kasper.beans.nio.streamflow.Connection;
 import com.kasper.beans.nio.streamflow.Statement;
 import com.kasper.commons.Network.Timer;
+import com.kasper.commons.datastructures.KasperMap;
+import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.datastructures.LockedLL;
 import com.kasper.commons.exceptions.StreamFlowException;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -29,67 +33,55 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws StreamFlowException {
+    public static void main(String[] args) throws StreamFlowException, InterruptedException {
+
+
         try (Connection connection = new Connection("localhost", "root", "streamflow")) {
-            System.out.println(connection.prepareStatement("get 'db'").executeQuery().getNext());
+            connection.prepareStatement("create node 'x'; create collection 'y' in 'x';").executeQuery();
+            var  statement = connection.prepareStatement("insert ? in 'x.y' as 'mitosis';");
+            statement.setObject(1, new KasperMap().put("a", "b"));
+            System.out.println(statement.executeQuery().getNext());
+            System.out.println(connection.prepareStatement("get 'x.y.mitosis'").executeQuery().getNext());
         }
+
+
     }
 
 
-    public static void threadTest(){
-        LockedLL<Integer> list = new LockedLL<>();
-        LinkedList<Thread> threadList = new LinkedList<>();
-        for (int i=0; i<10; i++) {
-            final int index = i;
-            threadList.add(new Thread(
-                    ()->{
-                     //   System.out.println("Thread execute..." + index);
-                        list.add(index);
-                        list.add(index);
-                        list.remove(0);
-                        System.out.println(list);
-                       // System.out.println("Thead finish..."  +index);
-                    }
-            ));
 
+
+
+
+
+    public static void multiThreadedTest() throws InterruptedException {
+        Timer.getTimer().start();
+        AtomicLong totalTime = new AtomicLong();
+        ArrayList<Thread> t = new ArrayList<>();
+        for (int i=0; i<30; i++) {
+            t.add(new Thread(()->{
+                try (Connection connection = new Connection("172.18.180.86", "root", "streamflow")) {
+                    KasperObject x = null;
+                    Timer timer = new Timer();
+                    connection.prepareStatement("create node 'x'").executeQuery().getNext();
+                    for (int j = 0; j < 1000; j++) {
+                        x = connection.prepareStatement("create collection 'c' in 'x';").executeQuery().getNext();
+                    }
+                    System.out.println("Returned: " + x);
+                    totalTime.addAndGet((long) timer.stop());
+                } catch (StreamFlowException e) {}
+            }));
         }
 
-        for (var x:threadList) {
+        for (var x : t) {
             x.start();
         }
 
-    }
-
-    public static int totalRequests = 10000;
-    public static double time =0;
-    private static int finished = 0;
-    private synchronized static void incrementTime (double time) {
-        time += time;
-    }
-    public static void incrementFinished() {
-        finished++;
-        if (finished >= totalRequests - 5) {
-            System.out.println("Finished in " + Timer.getTimer().stop());
-            System.out.println("Num errors: " + totalErrors);
+        for (var x : t) {
+            x.join();
         }
-    }
 
-    public static void stressTest() {
-        ArrayList<Thread> t = new ArrayList<>();
-        for (int i=0; i<totalRequests; i++) {
-            t.add(new Thread(()->{
-                try {
-                    Connection connection = new Connection("localhost", "root", "streamflow");
-                    incrementFinished();
-                } catch (StreamFlowException e) {
-                    System.out.println("Caught an error.");
-                    incrementErrors();
-                    incrementFinished();
-                }
-            }));
-        }
-        Timer.getTimer().start();
-        t.stream().forEach((x)->x.start());
+        System.out.println("Finished queries in: " + totalTime.get());
+
 
     }
 }

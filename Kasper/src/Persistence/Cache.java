@@ -28,6 +28,7 @@ public class Cache {
     }
 
     public static void set (String path, KasperObject value) {
+        if (true) return;
         cache.put(path, value);
         var list = objectSet.getIfPresent(value);
         if (list!=null) list.add(path);

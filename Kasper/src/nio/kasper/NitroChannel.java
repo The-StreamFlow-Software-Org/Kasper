@@ -1,14 +1,52 @@
 package nio.kasper;
 
+import Persistence.Serialize;
+import com.kasper.commons.Network.Timer;
+import com.kasper.commons.Parser.ByteCompression;
 import com.kasper.commons.debug.W;
 import com.kasper.commons.exceptions.KasperException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
+import server.Parser.AESUtils;
+import server.Parser.DiskIO;
+import server.SuperClass.KasperGlobalMap;
 
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 
 public class NitroChannel implements ChannelInboundHandler {
+
+    private static int process_counter = 0;
+    private synchronized static void increment() {
+        process_counter++;
+    }
+
+    private synchronized static void decrement () {
+        process_counter--;
+        if (process_counter <= 0 && stopping) {
+            try {
+                DiskIO.writeDocument(AESUtils.encrypt(ByteCompression.compress(Serialize.writeToBytes(KasperGlobalMap.globalmap))));
+                System.out.println("Kasper:> [SIGINT Event Handler] Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
+                orchestrator.stop();
+                System.out.println("Kasper:> [Persistence] Data snapshots saved after " + Timer.getTimer().stop() + "s.");
+                System.out.println("Kasper:> [StreamFlow Staff Messaging] Kasper says bye! :)");
+                System.exit(0);
+            } catch (Exception e) {
+                System.out.println("Kasper:> [Persistence] An exception occurred when saving the data snapshots. Please check the backups.");
+                System.exit(0);
+            }
+        }
+    }
+
+    private static Orchestrator orchestrator = null;
+
+    private static boolean stopping = false;
+
+    public static synchronized void requestStop (Orchestrator orchestrator) {
+        NitroChannel.orchestrator = orchestrator;
+        stopping = true;
+        decrement();
+    }
     @Override
     public void channelRegistered(ChannelHandlerContext channelHandlerContext) throws Exception {
 
@@ -31,6 +69,7 @@ public class NitroChannel implements ChannelInboundHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
+        increment();
         if (o instanceof NioPacket packet) {
             StagedResultSet resultSet = null;
             try {
@@ -58,6 +97,7 @@ public class NitroChannel implements ChannelInboundHandler {
         } else {
             W.rite("Unknown error when reading packet.");
         }
+        decrement();
     }
 
     @Override

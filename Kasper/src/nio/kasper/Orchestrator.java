@@ -34,7 +34,7 @@ public class Orchestrator {
     private Channel channel;
 
     public Orchestrator () {
-        W.rite("Starting [nitro-nio] orchestration service.");
+        W.rite("[Nitro StreamFlow IO] Starting orchestration service.");
         JSONCache.init();
         bootstrap = new ServerBootstrap();
         platform = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
@@ -61,10 +61,10 @@ public class Orchestrator {
                     .channel(NioServerSocketChannel.class);
             channel = bootstrap.bind().sync().channel();
             AsyncServerTasks.exitHandler(this);
-            W.rite("Orchestration service success.");
-            W.rite("Server address identified. [" + InetAddress.getLocalHost().getHostAddress() + "]");
+            W.rite("[Nitro StreamFlow IO] Orchestration service success.");
+            W.rite("[Nitro StreamFlow IO] Server address identified. [" + InetAddress.getLocalHost().getHostAddress() + "]");
         } catch (Exception e) {
-            W.error(e, "There was an error during the orchestration service.");
+            W.error(e, "[Nitro StreamFlow IO] There was an error during the orchestration service.");
         }
     }
 
@@ -75,6 +75,6 @@ public class Orchestrator {
         platform.shutdownGracefully();
         rooms.shutdownGracefully();
         System.out.println("-----------------------------------");
-        W.rite("[nitro-nio] orchestration service stopped.");
+        W.rite("[Nitro StreamFlow IO] orchestration service stopped.");
     }
 }

@@ -55,7 +55,7 @@ public class Serialize {
     }
 
     public static <Typename> Typename constructFromBlob (byte[] blob) throws IOException, ClassNotFoundException {
-        System.out.println("Kasper:> Reconstructing persistence data. Actual uncompressed data size is " + (blob.length / 1000000.00) + " megabytes.");
+        System.out.println("Kasper:> [Persistence] Reconstructing persistence data. Actual uncompressed data size is " + (blob.length / 1000000.00) + " megabytes.");
         try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(blob))){
             return (Typename) input.readObject();
         }

@@ -37,8 +37,6 @@ public class ResultSet {
             if (preStage instanceof KasperMap stagedObject) {
                 assertException(stagedObject);
                 var result = stagedObject.get("result");
-                LocalPathCrawler.finalPathSetter(result, stagedObject.get("path").toStr());
-                LocalPathCrawler.crawlPaths(result);
                 return result;
             } else {
                 return preStage;
@@ -53,7 +51,7 @@ public class ResultSet {
 
     public void assertException (KasperMap map) throws StreamFlowException {
         var inside = map.get("exception");
-        if ( inside == null) return;
+        if (inside == null) return;
         throw new StreamFlowException(inside.toStr());
     }
 }

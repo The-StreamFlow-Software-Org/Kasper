@@ -76,7 +76,7 @@ public class TokenCursor {
             if (x.tokenType==TokenType.STATEMENT) {
                 toString.append(": ").append(x.toStatement().name);
             } else if (x.tokenType==TokenType.PATH) {
-                toString.append(": ").append(x.toPath().path);
+                toString.append(": ").append(x.toPath().getName());
             } else if (x.tokenType==TokenType.STRING) {
                 toString.append(": ").append(x.toStringLiteral().name);
             } else if (x.tokenType==TokenType.OBJECT){
