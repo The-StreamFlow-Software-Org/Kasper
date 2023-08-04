@@ -1,5 +1,6 @@
 package com.kasper.commons.Handlers;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -8,9 +9,11 @@ public class CountdownTimer {
     private Timer timer;
     private long millisecondsRemaining;
     private TimerCallback callback;
+    private final long initialWait;
 
     public CountdownTimer(long milliseconds, TimerCallback callback) {
         this.millisecondsRemaining = milliseconds;
+        this.initialWait = milliseconds;
         this.callback = callback;
     }
 
@@ -36,7 +39,11 @@ public class CountdownTimer {
         }
     }
 
+    public void reset () {
+        millisecondsRemaining = initialWait;
+    }
+
     public interface TimerCallback {
-        void onTimerFinished();
+        void onTimerFinished() ;
     }
 }

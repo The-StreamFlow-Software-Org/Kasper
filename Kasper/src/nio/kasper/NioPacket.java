@@ -15,6 +15,8 @@ public class NioPacket {
     private byte[] packetBytes;
     private final int method;
 
+    public int getMethod () {return method;}
+
     // Stages a parse exception
     @Deprecated
     public byte[] raiseException (Exception e) {

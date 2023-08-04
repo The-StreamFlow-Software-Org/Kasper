@@ -3,6 +3,7 @@ package nio.kasper;
 import Persistence.Serialize;
 import com.kasper.commons.Network.Timer;
 import com.kasper.commons.Parser.ByteCompression;
+import com.kasper.commons.aliases.Method;
 import com.kasper.commons.debug.W;
 import com.kasper.commons.exceptions.KasperException;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,9 +13,10 @@ import server.Parser.DiskIO;
 import server.SuperClass.KasperGlobalMap;
 
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
 
 public class NitroChannel implements ChannelInboundHandler {
+
+    private static boolean authenticated = false;
 
     private static int process_counter = 0;
     private synchronized static void increment() {
@@ -54,6 +56,8 @@ public class NitroChannel implements ChannelInboundHandler {
 
     @Override
     public void channelUnregistered(ChannelHandlerContext channelHandlerContext) throws Exception {
+        StagedResultSet set = new StagedResultSet();
+
 
     }
 
@@ -73,15 +77,32 @@ public class NitroChannel implements ChannelInboundHandler {
         if (o instanceof NioPacket packet) {
             StagedResultSet resultSet = null;
             try {
-                if (packet.assertAuth()) {
+                if (packet.getMethod() == Method.AUTH) {
+                    try {
+                        packet.assertAuth();
+                    } catch (KasperException e) {
+                        resultSet = new StagedResultSet();
+                        resultSet.addResult(e);
+                        channelHandlerContext.writeAndFlush(resultSet.getBytes());
+                        channelHandlerContext.close();
+                        return;
+                    }
                     resultSet = new StagedResultSet();
                     // handle the authentication here
                     // currently, the authentication process
                     // is insecure. We may need to change
                     // it in the future.
                     resultSet.addQueryOk();
+                    authenticated = true;
                 }
-                else resultSet = packet.executeQuery();
+                else {
+                    if (authenticated)
+                    resultSet = packet.executeQuery();
+                    else {
+                        channelHandlerContext.close();
+                        return;
+                    }
+                }
             } catch (KasperException e) {
                 if (resultSet == null) {
                     resultSet = new StagedResultSet();

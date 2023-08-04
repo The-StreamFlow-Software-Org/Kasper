@@ -1,6 +1,7 @@
 package com.kasper.beans.nio.protocol;
 
 import com.kasper.beans.nio.streamflow.ResultSet;
+import com.kasper.commons.Handlers.CountdownTimer;
 import com.kasper.commons.Parser.ByteUtils;
 import com.kasper.commons.aliases.Method;
 import com.kasper.commons.datastructures.JSONUtils;
@@ -9,6 +10,7 @@ import com.kasper.commons.exceptions.BeanConcurrencyException;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.StreamFlowException;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -32,13 +34,19 @@ public class Wire {
     }
 
     private void ensureSynchronized () {
-        if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
+       //  if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
     }
 
     public synchronized String write (int method, String query) throws StreamFlowException {
         assert (method < 100) : "Invalid method. Please with check your driver provider.";
         ensureSynchronized();
         try {
+            CountdownTimer timer = new CountdownTimer(15000, ()->{
+                try {
+                    socketChannel.close();
+                } catch (IOException ignored) {}
+               throw new KasperException("The server timed out. Check your connection status or your authentication credentials.");
+            }); timer.start();
             var byteStream = query.getBytes(StandardCharsets.UTF_8);
 
             // Check if byteStream length is too large
@@ -76,6 +84,7 @@ public class Wire {
             int batches = length / byteBatch;
             int remainder = length % byteBatch;
             for (int i = 0; i < batches; i++) {
+                timer.reset();
                 while (byteBuffer.remaining() < byteBatch) {
                     byteBuffer.compact();
                     socketChannel.read(byteBuffer);
@@ -93,6 +102,8 @@ public class Wire {
                 }
                 byteBuffer.get(result, batches*byteBatch, remainder);
             }
+            timer.stop();
+
 
             return new String(result, StandardCharsets.UTF_8);
         } catch (Exception e) {

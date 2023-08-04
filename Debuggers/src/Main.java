@@ -36,7 +36,7 @@ public class Main {
     public static void main(String[] args) throws StreamFlowException, InterruptedException {
 
 
-        try (Connection connection = new Connection("localhost", "root", "streamflow")) {
+        try (Connection connection = new Connection("localhost", "roots", "streamflow")) {
             connection.prepareStatement("create node 'x'; create collection 'y' in 'x';").executeQuery();
             var  statement = connection.prepareStatement("insert ? in 'x.y' as 'mitosis';");
             statement.setObject(1, new KasperMap().put("a", "b"));

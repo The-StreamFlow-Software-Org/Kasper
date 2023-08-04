@@ -21,6 +21,7 @@ public class JSONUtils {
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
 
+
             writeJson(obj, jsonWriter);
 
             jsonWriter.close();

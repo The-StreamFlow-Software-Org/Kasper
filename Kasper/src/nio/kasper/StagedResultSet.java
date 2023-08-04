@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 
 public class StagedResultSet {
+
     KasperList resultSet = null;
 
 
