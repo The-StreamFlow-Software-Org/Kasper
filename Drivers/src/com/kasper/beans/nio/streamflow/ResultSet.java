@@ -54,12 +54,12 @@ public class ResultSet {
         throw new StreamFlowException(inside.toStr());
     }
 
-    public void checkQueryExceptions() throws StreamFlowException{
-        if (set == null) return;
+    public ResultSet checkQueryExceptions() throws StreamFlowException{
+        if (set == null) return this;
         for (var obj : set) {
             if (obj instanceof KasperMap map) {
                 assertException(map);
             }
-        }
+        } return this;
     }
 }

@@ -9,7 +9,7 @@ import com.kasper.commons.exceptions.StreamFlowException;
 import java.util.ArrayList;
 
 public class Statement {
-    private Connection connection;
+    private KasperStandardDriver kasperStandardDriver;
     private ArrayList<String> brokenQuery;
     private int index = 0;
     private ArrayList<String> parameters;
@@ -17,9 +17,9 @@ public class Statement {
     private String queryString;
 
 
-    protected Statement (Connection implementingConnection, String query) {
+    protected Statement (KasperStandardDriver implementingKasperStandardDriver, String query) {
         Check.notNull(query, "string");
-        this.connection = implementingConnection;
+        this.kasperStandardDriver = implementingKasperStandardDriver;
         this.brokenQuery = new ArrayList<>();
         this.parameters = new ArrayList<>();
         this.alreadySet = new ArrayList<>();
@@ -132,7 +132,7 @@ public class Statement {
 
     public synchronized ResultSet executeQuery() throws StreamFlowException {
         buildQuery();
-        var result = connection.wire.write(Method.QUERY, queryString);
+        var result = kasperStandardDriver.wire.write(Method.QUERY, queryString);
         return new ResultSet(result);
     }
 
