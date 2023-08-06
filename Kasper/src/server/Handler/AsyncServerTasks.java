@@ -34,12 +34,9 @@ public class AsyncServerTasks {
 
         Signal.handle(new Signal("INT"), (Signal sig)-> {
             try {
-                if (doubleSIGINT[0]) {
-                    System.exit(0);
-                } doubleSIGINT[0] = true;
                 NitroChannel.requestStop(orchestrator);
             } catch (Exception e) {
-                System.out.println("Kasper:> [Persistence] An exception occurred when saving the data snapshots. Please check the backups.");
+             //   System.out.println("Kasper:> [Persistence] An exception occurred when saving the data snapshots. Please check the backups.");
                 System.exit(0);
             }
             System.exit(0);

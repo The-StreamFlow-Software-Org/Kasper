@@ -1,6 +1,7 @@
 package com.kasper.commons.datastructures;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class LocalPathCrawler {
 

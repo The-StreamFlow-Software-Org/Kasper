@@ -7,6 +7,7 @@
 import com.kasper.beans.nio.streamflow.Connection;
 import com.kasper.beans.nio.streamflow.Statement;
 import com.kasper.commons.Network.Timer;
+import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.datastructures.LockedLL;
@@ -33,17 +34,24 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws StreamFlowException, InterruptedException {
-
-
-        try (Connection connection = new Connection("localhost", "roots", "streamflow")) {
-            connection.prepareStatement("create node 'x'; create collection 'y' in 'x';").executeQuery();
-            var  statement = connection.prepareStatement("insert ? in 'x.y' as 'mitosis';");
-            statement.setObject(1, new KasperMap().put("a", "b"));
-            System.out.println(statement.executeQuery().getNext());
-            System.out.println(connection.prepareStatement("get 'x.y.mitosis'").executeQuery().getNext());
+    public static void main(String[] args) throws StreamFlowException {
+        try (Connection connection = new Connection("localhost", "root", "streamflow")) {
+            connection.prepareStatement("create node 'db'; create collection 'users' in 'db'").executeQuery().getNext();
+            connection.prepareStatement("insert ([]) in 'db.users' as 'list';").executeQuery().getNext();
+            Statement prepared = connection.prepareStatement("insert ? in ? as ?;");
+            prepared.setObject(1, new KasperMap().put("This is a", "map"));
+            prepared.setPath(2, "db", "users", "list");
+            prepared.setString(3, "tail");
+            for (int i=0; i<10; i++){
+                prepared.executeQuery();
+            }
+            prepared = connection.prepareStatement("get 'db.users.list';");
+            var result = prepared.executeQuery().getNext();
+            result.toMap();
+            System.out.println(result + " got with length " + result.toList().size());
+        } catch (StreamFlowException e) {
+            e.printStackTrace();
         }
-
 
     }
 

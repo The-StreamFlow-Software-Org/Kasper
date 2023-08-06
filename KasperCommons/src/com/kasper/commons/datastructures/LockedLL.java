@@ -2,14 +2,16 @@ package com.kasper.commons.datastructures;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class LockedLL<T> implements Iterable<T> {
+public class LockedLL<T> implements Iterable<T>, Serializable {
+    @Serial
+    private static final long serialVersionUID = -2871706662377582203L;
     LinkedList<T> internalArray;
     ReadWriteLock lock;
 

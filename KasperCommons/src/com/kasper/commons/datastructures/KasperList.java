@@ -3,10 +3,8 @@ package com.kasper.commons.datastructures;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * This KasperList class is a data class that

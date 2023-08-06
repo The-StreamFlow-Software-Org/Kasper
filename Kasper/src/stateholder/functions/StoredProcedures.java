@@ -5,14 +5,12 @@ import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.datastructures.LocalPathCrawler;
 import com.kasper.commons.exceptions.KasperException;
+import com.kasper.commons.exceptions.KasperObjectAlreadyExists;
 import com.kasper.commons.exceptions.NonCollectionTypeException;
-import com.kasper.commons.exceptions.NotIterableException;
 import datastructures.KasperCollection;
 import datastructures.KasperNode;
-import datastructures.KasperRelationship;
-import parser.executor.ExecutionQueue;
+import com.kasper.commons.datastructures.KasperRelationship;
 import parser.executor.ExecutionUnit;
-import parser.tokens.FunctionToken;
 import server.Handler.IndexNotViableException;
 import server.SuperClass.KasperGlobalMap;
 
@@ -82,13 +80,16 @@ public class StoredProcedures {
                 if (type==COLLECTION) {
                     String parent = (String) args.get("parent");
                     var parentNode = KasperGlobalMap.findWithPath(parent);
+                    if (parentNode.toMap().get(name) != null) throw new KasperObjectAlreadyExists("collection", name, parent);
                     parentNode.castToMap().put(name, new KasperCollection((KasperNode) parentNode, name));
                 } else if (type==NODE) {
+                    if (KasperGlobalMap.globalmap.get(name) != null) throw new KasperObjectAlreadyExists("node", name, "the global map");
                     var node = KasperGlobalMap.newNode(name);
                     LocalPathCrawler.finalPathSetter(node, name);
                 } else if (type==RELATIONSHIP) {
                     String path = (String) args.get("parent");
                     KasperObject obj = KasperGlobalMap.findWithPath(path);
+                    if (obj.toMap().get(name) != null) throw new KasperObjectAlreadyExists("relationship", name, path);
                     if (((!(obj instanceof KasperMap)) || obj instanceof KasperNode || obj instanceof KasperCollection)) throw new KasperException("Cannot create relationship in non-map object");
                     ((KasperMap) obj).put(name, new KasperRelationship());
                 } return null;

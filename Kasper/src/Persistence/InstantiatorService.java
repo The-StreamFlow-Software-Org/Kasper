@@ -123,7 +123,8 @@ public class InstantiatorService {
         }
     }
 
-    // closes this instance, including saving the most recent snapshots.
+    // closes this instance, including sa
+    // ving the most recent snapshots.
     // moreover, it forces the server to stop accepting connections.
     public static void  close() throws Exception {
         Lobby.ending = true; // stops asking for new connections

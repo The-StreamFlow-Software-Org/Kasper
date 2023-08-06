@@ -5,7 +5,7 @@ public class KasperObjectAlreadyExists extends KasperException{
         super(message);
     }
 
-    public KasperObjectAlreadyExists() {
-        super();
+    public KasperObjectAlreadyExists(String type, String name, String parent) {
+        super("The " + type + " '" + name + "' already exists in '" + parent + "'.");
     }
 }

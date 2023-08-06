@@ -1,10 +1,15 @@
 package com.kasper.commons.datastructures;
 
 
+import com.kasper.commons.annotations.Dangerous;
 import com.kasper.commons.exceptions.NotIterableException;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The KasperObject class is a general class used to hold
@@ -16,6 +21,17 @@ public class KasperObject implements Serializable, KasperEntity {
     // for disabling and enabling EXPERIMENTAL_MODE
     protected static boolean EXPERIMENTAL_MODE = false;
     protected KasperObject parent;
+
+    protected ConcurrentHashMap<String, KasperRelationship> relationships = null;
+
+    // by making sure that relationships are null
+    // we make it so that memory is conserved
+    // initially. This is because most objects
+    // will not have relationships.
+    protected ConcurrentHashMap getRelationships() {
+        if (relationships == null) relationships = new ConcurrentHashMap<>(1);
+        return relationships;
+    }
 
     // listening threads asking for path
     protected List<Thread> inquirers;
@@ -126,6 +142,7 @@ public class KasperObject implements Serializable, KasperEntity {
      * @return the data of this object as a list.
      * @throws ClassCastException if the original type of this object is not a list.
      */
+    @Dangerous
     public LockedLL<KasperObject> toList (){
         return (LockedLL<KasperObject>) data;
     }
@@ -135,8 +152,29 @@ public class KasperObject implements Serializable, KasperEntity {
      * @return the data of this object as a string.
      * @throws ClassCastException if the original type of this object is not a string.
      */
+    @Dangerous
     public String toStr (){
         return (String)data;
+    }
+
+    /**
+     *
+     * @return the data of this object as an int.
+     * @throws ClassCastException if the original type of this object is not a string.
+     */
+    @Dangerous
+    public Integer toInt() {
+        return (Integer) data;
+    }
+
+    /**
+     *
+     * @return the data of this object as a string.
+     * @throws ClassCastException if the original type of this object is not a string.
+     */
+    @Dangerous
+    public Double toDecimal (){
+        return (Double)data;
     }
 
     @SuppressWarnings("unchecked")
@@ -145,6 +183,7 @@ public class KasperObject implements Serializable, KasperEntity {
      * @return the data of this object as a map.
      * @throws ClassCastException if the original type of this object is not a map.
      */
+    @Dangerous
     public Map<String, KasperObject> toMap (){
         return (Map) data;
     }

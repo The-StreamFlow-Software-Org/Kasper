@@ -35,10 +35,8 @@ public class DiskIO {
         if (file.exists()) {
             try (var reader = new BufferedReader(new FileReader("data/kasper.init"))){
                 var str = reader.readLine();
-                if (str.equals("server_mode=true")) {
-                    Meta.serverMode = true;
-                    str = reader.readLine();
-                } else str = reader.readLine();
+                Meta.serverMode = true;
+                str = reader.readLine();
                 var timeout = str.split("=");
                 Meta.snapshotTimeout = Integer.parseInt(timeout[1]);
                 var port = reader.readLine().split("=");

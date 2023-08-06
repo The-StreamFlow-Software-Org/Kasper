@@ -1,5 +1,6 @@
 package nio.kasper;
 
+import Persistence.InstantiatorService;
 import Persistence.Serialize;
 import com.kasper.commons.Network.Timer;
 import com.kasper.commons.Parser.ByteCompression;
@@ -27,11 +28,16 @@ public class NitroChannel implements ChannelInboundHandler {
         process_counter--;
         if (process_counter <= 0 && stopping) {
             try {
+                Timer.getTimer().start();
+                W.rite("[Persistence] The server is shutting down. Saving data snapshots.");
                 DiskIO.writeDocument(AESUtils.encrypt(ByteCompression.compress(Serialize.writeToBytes(KasperGlobalMap.globalmap))));
                 System.out.println("Kasper:> [SIGINT Event Handler] Instantiating the closing service. To force close the server, use 'ctrl + c' again. Warning: This may cause data loss.");
                 orchestrator.stop();
                 System.out.println("Kasper:> [Persistence] Data snapshots saved after " + Timer.getTimer().stop() + "s.");
                 System.out.println("Kasper:> [StreamFlow Staff Messaging] Kasper says bye! :)");
+                W.rite("[IO Mutex] Destroying the IO Mutex.");
+                InstantiatorService.unlockThisServer();
+                W.rite("[IO Mutex] IO Mutex destroyed.");
                 System.exit(0);
             } catch (Exception e) {
                 System.out.println("Kasper:> [Persistence] An exception occurred when saving the data snapshots. Please check the backups.");
