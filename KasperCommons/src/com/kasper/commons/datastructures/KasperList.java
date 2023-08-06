@@ -3,6 +3,7 @@ package com.kasper.commons.datastructures;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -28,7 +29,7 @@ public class KasperList extends KasperObject implements Iterable{
      */
     public KasperList addToList(KasperObject object) {
         object.parent = this;
-        toList().add(object);
+        addLast(object);
         return this;
     }
 
@@ -65,13 +66,16 @@ public class KasperList extends KasperObject implements Iterable{
     }
 
     public KasperList addFirst(KasperObject object){
-        toList().addFirst(object);
+        data().addFirst(object);
         object.parent = this;
         return this;
     }
 
+    protected LinkedList<KasperObject> data() {
+        return ((LockedLL) this.data).internalArray;
+    }
     public KasperList addLast (KasperObject object){
-        toList().addLast(object);
+        data().addLast(object);
         object.parent = this;
         return this;
     }

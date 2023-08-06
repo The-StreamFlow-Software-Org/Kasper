@@ -5,6 +5,8 @@ import com.kasper.commons.datastructures.KasperEntity;
 import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.datastructures.KasperString;
 
+import java.util.Arrays;
+
 public class KasperException extends RuntimeException implements KasperEntity {
 
     public KasperException(String message) {
@@ -20,7 +22,7 @@ public class KasperException extends RuntimeException implements KasperEntity {
 
     @Override
     public KasperObject getObject() {
-        if (getMessage() == null) return new KasperString("No valid error message available.");
+        if (getMessage() == null) return new KasperString("Error not expected: " + getClass().getName() + " threw this, with super message: " + super.getMessage());
         return new KasperString(getMessage());
     }
 

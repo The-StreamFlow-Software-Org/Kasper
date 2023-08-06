@@ -59,8 +59,9 @@ public class StoredProcedures {
                 if (!(node instanceof KasperMap || node instanceof KasperList)) {
                     throw new NonCollectionTypeException(path);
                 }
-                if (node instanceof KasperMap) {
-                    ((KasperMap) node).put(key, object);
+                if (node instanceof KasperMap map) {
+                    if (((KasperMap) node).get(key) != null) throw new KasperObjectAlreadyExists("object", key, path);
+                    map.put(key, object);
                 } else {
                     if (key.equals("head")) {
                         ((KasperList) node).addFirst(object);

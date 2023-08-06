@@ -6,7 +6,6 @@ import com.kasper.commons.Parser.ByteUtils;
 import com.kasper.commons.aliases.Method;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.exceptions.BeanConcurrencyException;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.StreamFlowException;
 

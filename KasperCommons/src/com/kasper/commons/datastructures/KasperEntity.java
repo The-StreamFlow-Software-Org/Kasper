@@ -11,7 +11,7 @@ public interface KasperEntity {
      class QueryOk implements KasperEntity {
 
          private static QueryOk singleton = null;
-         private KasperString ok = new KasperString("query ok!");
+         private KasperString ok = new KasperString("ok");
 
          @Override
          public KasperObject getObject() {

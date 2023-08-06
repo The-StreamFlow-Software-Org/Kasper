@@ -7,16 +7,11 @@
 import com.kasper.beans.nio.streamflow.Connection;
 import com.kasper.beans.nio.streamflow.Statement;
 import com.kasper.commons.Network.Timer;
-import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.KasperObject;
-import com.kasper.commons.datastructures.LockedLL;
 import com.kasper.commons.exceptions.StreamFlowException;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -30,25 +25,32 @@ public class Main {
     public synchronized static void incrementErrors() {
         totalErrors++;
     }
+    private static String linux = "172.18.180.86";
+    public static String host = "localhost";
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws StreamFlowException {
-        try (Connection connection = new Connection("localhost", "root", "streamflow")) {
-            connection.prepareStatement("create node 'db'; create collection 'users' in 'db'").executeQuery().getNext();
-            connection.prepareStatement("insert ([]) in 'db.users' as 'list';").executeQuery().getNext();
+        try (Connection connection = new Connection(linux, "root", "streamflow")) {
+           /* connection.prepareStatement("create node 'db3'; create collection 'users' in 'db3'").executeQuery().getNext();
+            System.out.println("RESULT:" + connection.prepareStatement("insert ([]) in 'db3.users' as 'list';").executeQuery().getNext());
             Statement prepared = connection.prepareStatement("insert ? in ? as ?;");
             prepared.setObject(1, new KasperMap().put("This is a", "map"));
-            prepared.setPath(2, "db", "users", "list");
+            prepared.setPath(2, "db3", "users", "list");
             prepared.setString(3, "tail");
-            for (int i=0; i<10; i++){
+            StringBuilder builder = new StringBuilder();
+            Timer.getTimer().start();
+            for (int i=0; i<100000; i++) {
                 prepared.executeQuery();
             }
-            prepared = connection.prepareStatement("get 'db.users.list';");
+            */
+            Timer.getTimer().start();
+            var prepared = connection.prepareStatement("get 'db3.users.list';");
             var result = prepared.executeQuery().getNext();
-            result.toMap();
-            System.out.println(result + " got with length " + result.toList().size());
+
+         //   result.toMap();
+            System.out.println("got with length " + result.toList().size() + " in " + Timer.getTimer().stop() + "s.");
         } catch (StreamFlowException e) {
             e.printStackTrace();
         }

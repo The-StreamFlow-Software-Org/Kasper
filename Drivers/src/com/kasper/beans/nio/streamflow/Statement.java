@@ -135,4 +135,9 @@ public class Statement {
         var result = connection.wire.write(Method.QUERY, queryString);
         return new ResultSet(result);
     }
+
+    public String introspectQuery() {
+        buildQuery();
+        return queryString;
+    }
 }

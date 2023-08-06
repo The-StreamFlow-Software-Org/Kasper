@@ -43,7 +43,7 @@ public class StagedResultSet {
     }
 
     public void addQueryOk() {
-        resultSet.addToList(KasperEntity.QueryOk.storedInstance());
+        resultSet.addLast(KasperEntity.QueryOk.storedInstance());
     }
 
 

@@ -29,7 +29,7 @@ public class Meta {
     public static String folder = "data/";
     public static String filename = "cluster.knf";
 
-    public static String version = "Copernicus 0.8.2 Alpha";
+    public static String version = "Copernicus 0.8.4 Alpha";
 
     public static BigInteger maxRecursionDepth = BigInteger.valueOf(100000);
 

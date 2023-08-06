@@ -35,9 +35,7 @@ public abstract class KasperServerAbstracts extends KasperMap {
 
     public KasperObject get (String key)  {
         var data = this.getData().get(key);
-        if (data == null) {
-            throw new NoSuchKasperObject("\nReason:> '" + key + "' does not exist in " + this.getType() + " '" + getName() + "'");
-        } return data;
+        return data;
     }
 
 
