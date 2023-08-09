@@ -14,7 +14,7 @@ public class KasperException extends RuntimeException implements KasperEntity {
     }
 
     public KasperException (Exception e) {
-        setStackTrace(e.getStackTrace());
+        super(e);
     }
     public KasperException(){
 

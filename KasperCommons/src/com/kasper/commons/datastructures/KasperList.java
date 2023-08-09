@@ -80,6 +80,14 @@ public class KasperList extends KasperObject implements Iterable{
         return this;
     }
 
+    public KasperObject popFirst() {
+        return data().pop();
+    }
+
+    public KasperObject popLast(){
+        return data().removeLast();
+    }
+
 
     @NotNull
     @Override

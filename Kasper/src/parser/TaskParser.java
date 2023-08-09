@@ -162,8 +162,11 @@ public class TaskParser {
                 entity = tokens.nextToken();
                 parsedSoFar.append(entity.getName());
                 Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
-                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
                 collectionName = entity.name;
+                HashMap<String, Object> args = new HashMap<>();
+                args.put("type", StoredProcedures.ENTITY);
+                args.put("path", collectionName);
+                StoredProcedures.execute("delete", args);
                 return true;
             }
             case NODE: {

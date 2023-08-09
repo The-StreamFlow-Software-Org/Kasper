@@ -8,8 +8,20 @@ import com.kasper.commons.exceptions.StreamFlowException;
 import java.net.InetSocketAddress;
 
 public class KasperStandardDriver implements AutoCloseable, DriverInstance {
+
+    /**
+     *
+     * @return the simple class name of the driver.
+     */
+    @Override
+    public String getDriverType() {
+        return "KasperStandardDriver";
+    }
+
     private long threadID = Thread.currentThread().getId();
     protected Wire wire;
+
+
     protected KasperStandardDriver(String host, String username, String password, int port) throws StreamFlowException {
         JSONCache.init();
         int retries = 0;
@@ -29,7 +41,11 @@ public class KasperStandardDriver implements AutoCloseable, DriverInstance {
     }
 
 
-
+    /**
+     *
+     * @param statement this is the prepared query string that is to be sent to the server.
+     * @return a Statement that holds the prepared query string.
+     */
     public Statement prepareStatement(String statement){
         return new Statement(this, statement);
     }

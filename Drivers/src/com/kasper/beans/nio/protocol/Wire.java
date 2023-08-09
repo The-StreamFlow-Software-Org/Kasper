@@ -1,11 +1,13 @@
 package com.kasper.beans.nio.protocol;
 
+import com.kasper.Boost.Pair;
 import com.kasper.beans.nio.streamflow.ResultSet;
 import com.kasper.commons.Handlers.CountdownTimer;
 import com.kasper.commons.Parser.ByteUtils;
 import com.kasper.commons.aliases.Method;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperMap;
+import com.kasper.commons.exceptions.BeanConcurrencyException;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.StreamFlowException;
 
@@ -28,15 +30,15 @@ public class Wire {
             this.socketChannel = SocketChannel.open(socketAddress);
             this.socketChannel.configureBlocking(false);
         } catch (Exception e) {
-            throw new StreamFlowException(e);
+            throw new StreamFlowException("Cannot connect to the KasperServer instance. Please check your connectivity.");
         }
     }
 
-    private void ensureSynchronized () {
-       //  if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
+    private void ensureSynchronized () throws BeanConcurrencyException {
+         if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
     }
 
-    public synchronized String write (int method, String query) throws StreamFlowException {
+    public synchronized Pair<Integer, String> writeAndGetBytes(int method, String query) throws StreamFlowException {
         assert (method < 100) : "Invalid method. Please with check your driver provider.";
         ensureSynchronized();
         try {
@@ -44,7 +46,7 @@ public class Wire {
                 try {
                     socketChannel.close();
                 } catch (IOException ignored) {}
-               throw new KasperException("The server timed out. Check your connection status or your authentication credentials.");
+                throw new KasperException("The server timed out. Check your connection status or your authentication credentials.");
             }); timer.start();
             var byteStream = query.getBytes(StandardCharsets.UTF_8);
 
@@ -104,10 +106,15 @@ public class Wire {
             timer.stop();
 
 
-            return new String(result, StandardCharsets.UTF_8);
+            return new Pair<Integer, String>(length, new String(result, StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new StreamFlowException(e);
         }
+
+    }
+
+    public synchronized String write (int method, String query) throws StreamFlowException {
+        return writeAndGetBytes(method, query).second();
     }
 
 
@@ -127,7 +134,7 @@ public class Wire {
             map.put("password", password);
             var objStr = JSONUtils.objectToJsonStream(map);
             var result = write(Method.AUTH, objStr);
-            ResultSet set = new ResultSet(result);
+            ResultSet set = new ResultSet(result, 0);
             set.getNext();
         } catch (StreamFlowException x) {
             throw x;

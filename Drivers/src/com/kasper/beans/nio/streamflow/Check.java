@@ -5,7 +5,7 @@ import com.kasper.commons.exceptions.PreparedQueryException;
 
 public class Check {
 
-    public static void indexValidity (int index, int passedIn) {
+    public static void indexValidity (int index, int passedIn) throws PreparedQueryException {
         if (index < passedIn) throw new PreparedQueryException("Index out of bounds, max index was " + index + " but passed in " + passedIn + ".");
     }
 

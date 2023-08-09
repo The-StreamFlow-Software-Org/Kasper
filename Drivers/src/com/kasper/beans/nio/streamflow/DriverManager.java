@@ -7,12 +7,18 @@ import java.util.regex.Pattern;
 
 public class DriverManager {
 
+    /**
+     * Allows the DriverManager to create a DriverInstance.
+     * @param connectionUrl contains the specifications of the driver. Follows the following format: [protocol://host:port/username/password]
+     * @return a Driver of the specified specification
+     * @throws StreamFlowException whenever an error is identified during the driver building stage.
+     */
     public static DriverInstance getConnection (String connectionUrl) throws StreamFlowException {
         TokenData tokens = extractTokens(connectionUrl);
         if (tokens.protocolName.equals("kasper")) {
             return new KasperStandardDriver(tokens.host, tokens.username, tokens.password, tokens.port);
         } else {
-            throw new StreamFlowException("The protocol name '" + tokens.protocolName + "' is not supported.");
+            throw new StreamFlowException("The protocol name '" + tokens.protocolName + "' is not supported. No suitable driver found.");
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * The KasperObject class is a general class used to hold
  * complex KasperObject data structures, using polymorphic
- * design structures.
+ * principles.
  */
 public class KasperObject implements Serializable, KasperEntity {
 
@@ -22,19 +22,11 @@ public class KasperObject implements Serializable, KasperEntity {
     protected static boolean EXPERIMENTAL_MODE = false;
     protected KasperObject parent;
 
-    protected ConcurrentHashMap<String, KasperRelationship> relationships = null;
-
-    // by making sure that relationships are null
-    // we make it so that memory is conserved
-    // initially. This is because most objects
-    // will not have relationships.
-    protected ConcurrentHashMap getRelationships() {
-        if (relationships == null) relationships = new ConcurrentHashMap<>(1);
-        return relationships;
-    }
+    // contains the path to the associated relationships
+    protected LinkedList<String> relationshipPaths = null;
 
     // listening threads asking for path
-    protected List<Thread> inquirers;
+    protected List<Thread> inquirers = null;
 
     protected void setParent (KasperObject parent) {
         this.parent = parent;
@@ -64,6 +56,7 @@ public class KasperObject implements Serializable, KasperEntity {
     }
 
     public KasperObject parent() {
+        if (parent == null) return null;
         return parent;
     }
 
@@ -196,8 +189,8 @@ public class KasperObject implements Serializable, KasperEntity {
         return (KasperList) this;
     }
 
-    public KasperPrimitive castToString(){
-        return (KasperPrimitive) this;
+    public KasperString castToString(){
+        return (KasperString) this;
     }
 
     public KasperMap castToMap(){

@@ -9,9 +9,14 @@ import java.util.LinkedList;
 
 public class ResultSet {
     public LinkedList<KasperObject> set;
+    private int byteSize = 0;
 
+    public int byteSize() {
+        return byteSize;
+    }
 
-    public ResultSet (String setString) throws StreamFlowException {
+    public ResultSet (String setString, int length) throws StreamFlowException {
+        byteSize = length;
         try {
             set = JSONUtils.parseJson(setString).castToList().toArray();
         } catch (Exception e) {
