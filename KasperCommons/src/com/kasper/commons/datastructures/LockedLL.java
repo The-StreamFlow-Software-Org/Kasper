@@ -112,7 +112,7 @@ public class LockedLL<T> implements Iterable<T>, Serializable {
     public void addLast (T object){
         lock.writeLock().lock();
         try {
-            internalArray.add(internalArray.size()-1, object);
+            internalArray.addLast(object);
         } finally {
             lock.writeLock().unlock();
         }
@@ -152,7 +152,7 @@ public class LockedLL<T> implements Iterable<T>, Serializable {
         try {
             return internalArray.getFirst();
         } finally {
-            lock.readLock().lock();
+            lock.readLock().unlock();
         }
     }
 
@@ -161,7 +161,7 @@ public class LockedLL<T> implements Iterable<T>, Serializable {
         try {
             return internalArray.getLast();
         } finally {
-            lock.writeLock().lock();
+            lock.writeLock().unlock();
         }
     }
 
@@ -184,21 +184,21 @@ public class LockedLL<T> implements Iterable<T>, Serializable {
         }
     }
 
-    public void removeFirst(){
+    public T removeFirst(){
         lock.writeLock().lock();
         try {
-            internalArray.removeFirst();
+            return internalArray.removeFirst();
         } finally {
-            lock.writeLock().lock();
+            lock.writeLock().unlock();
         }
     }
 
-    public void removeLast(){
+    public T removeLast(){
         lock.writeLock().lock();
         try{
-            internalArray.removeLast();
+            return internalArray.removeLast();
         } finally {
-            lock.writeLock().lock();
+            lock.writeLock().unlock();
         }
     }
 }

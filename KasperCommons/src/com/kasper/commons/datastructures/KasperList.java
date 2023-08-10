@@ -66,7 +66,7 @@ public class KasperList extends KasperObject implements Iterable{
     }
 
     public KasperList addFirst(KasperObject object){
-        data().addFirst(object);
+        getSafeData().addFirst(object);
         object.parent = this;
         return this;
     }
@@ -74,18 +74,23 @@ public class KasperList extends KasperObject implements Iterable{
     protected LinkedList<KasperObject> data() {
         return ((LockedLL) this.data).internalArray;
     }
+
     public KasperList addLast (KasperObject object){
-        data().addLast(object);
+        getSafeData().addLast(object);
         object.parent = this;
         return this;
     }
 
     public KasperObject popFirst() {
-        return data().pop();
+        return getSafeData().removeFirst();
     }
 
     public KasperObject popLast(){
-        return data().removeLast();
+        return getSafeData().removeLast();
+    }
+
+    protected LockedLL<KasperObject> getSafeData()  {
+        return (LockedLL<KasperObject>) data;
     }
 
 

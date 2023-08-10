@@ -24,4 +24,12 @@ public interface DriverInstance extends AutoCloseable {
      * @throws StreamFlowException
      */
     void close () throws StreamFlowException;
+
+    /**
+     * Sets the timeout for the driver instance. By default,
+     * most driver implementations have their timeout set to
+     * 30,000.
+     * @param timeout
+     */
+    void setTimeout (long timeout);
 }

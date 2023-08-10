@@ -54,4 +54,9 @@ public class KasperStandardDriver implements AutoCloseable, DriverInstance {
     public void close() throws StreamFlowException {
         wire.close();
     }
+
+    @Override
+    public void setTimeout(long timeout) {
+        wire.setPacketTimeout(timeout);
+    }
 }

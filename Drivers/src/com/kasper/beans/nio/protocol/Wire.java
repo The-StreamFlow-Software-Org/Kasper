@@ -18,7 +18,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 
 public class Wire {
-    private long packetTimeout = 10000;
+    private long packetTimeout = 30000;
     private SocketChannel socketChannel;
     private ByteBuffer byteBuffer;
     private long threadID;
@@ -42,7 +42,7 @@ public class Wire {
         assert (method < 100) : "Invalid method. Please with check your driver provider.";
         ensureSynchronized();
         try {
-            CountdownTimer timer = new CountdownTimer(15000, ()->{
+            CountdownTimer timer = new CountdownTimer(packetTimeout, ()->{
                 try {
                     socketChannel.close();
                 } catch (IOException ignored) {}
@@ -141,5 +141,9 @@ public class Wire {
         }  catch (Exception e) {
             throw new KasperException(e);
         }
+    }
+
+    public void setPacketTimeout (long packetTimeout) {
+        this.packetTimeout = packetTimeout;
     }
 }

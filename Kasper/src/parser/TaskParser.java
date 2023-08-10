@@ -166,7 +166,7 @@ public class TaskParser {
                 HashMap<String, Object> args = new HashMap<>();
                 args.put("type", StoredProcedures.ENTITY);
                 args.put("path", collectionName);
-                StoredProcedures.execute("delete", args);
+                processes.addProcess("delete", args);
                 return true;
             }
             case NODE: {

@@ -23,7 +23,9 @@ public class NioDeleteResolver {
                     list.popFirst();
                 } else if (lastPart.equals("tail")){
                     list.popLast();
-                } throw new KasperException("Invalid index provided, cannot resolve: " + lastPart);
+                } else {
+                    throw new KasperException("Invalid index provided, cannot resolve: '" + lastPart + "'");
+                }
             } else if (parent instanceof KasperMap) {
                 String lastPart = path.replaceAll("^.*\\.", "");
                 parent.toMap().remove(lastPart);

@@ -26,7 +26,7 @@ public class NitroChannel implements ChannelInboundHandler {
 
     private synchronized static void decrement () {
         process_counter--;
-        if (process_counter <= 0 && stopping) {
+        if (stopping) {
             try {
                 Timer.getTimer().start();
                 W.rite("[Persistence] The server is shutting down. Saving data snapshots.");
@@ -129,7 +129,6 @@ public class NitroChannel implements ChannelInboundHandler {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext channelHandlerContext) throws Exception {
-
     }
 
     @Override
@@ -145,6 +144,7 @@ public class NitroChannel implements ChannelInboundHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable throwable) {
         if (throwable instanceof SocketException) return;
+        throwable.printStackTrace();
         W.error(throwable, "Caught an exception in client. Check error logs for more information.");
     }
 
