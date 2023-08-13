@@ -62,6 +62,7 @@ public class Throw {
 
     public static void typeChecking (KasperObject object, Object other) {
         if (object.getClass().equals(other.getClass()));
+
         else throw new SyntaxError("Cannot compare a " + object.getClass().getSimpleName() + " object with a " + other.getClass().getSimpleName() + " object.");
     }
 }
