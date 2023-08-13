@@ -28,6 +28,10 @@ public class Token {
         return name;
     }
 
+    public Operator toOperator () {
+        return (Operator) this;
+    }
+
     public Object toFunction() {
         return (FunctionToken) this;
     }

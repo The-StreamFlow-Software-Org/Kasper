@@ -6,4 +6,10 @@ public class KasperString extends KasperPrimitive{
         this.data = data;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof KasperString stringInstance) {
+            return stringInstance.toStr().equals(data);
+        } else return data.equals(obj);
+    }
 }

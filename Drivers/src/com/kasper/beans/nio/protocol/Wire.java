@@ -35,7 +35,7 @@ public class Wire {
     }
 
     private void ensureSynchronized () throws BeanConcurrencyException {
-         if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
+        // if (Thread.currentThread().getId() != threadID) throw new BeanConcurrencyException();
     }
 
     public synchronized Pair<Integer, String> writeAndGetBytes(int method, String query) throws StreamFlowException {

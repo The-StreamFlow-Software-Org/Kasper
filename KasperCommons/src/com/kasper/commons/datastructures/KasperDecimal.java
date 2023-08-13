@@ -11,4 +11,11 @@ public class KasperDecimal extends KasperPrimitive{
     public String toString() {
         return data.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof KasperDecimal doubleInstance) {
+            return data.equals(doubleInstance.data);
+        } else return data.equals(obj);
+    }
 }

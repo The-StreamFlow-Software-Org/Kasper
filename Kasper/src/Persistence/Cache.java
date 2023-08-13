@@ -17,6 +17,7 @@ public class Cache {
     private static com.github.benmanes.caffeine.cache.Cache<KasperObject, ConcurrentLinkedDeque<String>> objectSet;
 
     public static void init () {
+        /*
         cache = Caffeine.newBuilder()
                 .expireAfterAccess(30, TimeUnit.SECONDS)
                 .maximumSize(100)
@@ -24,7 +25,7 @@ public class Cache {
         objectSet = Caffeine.newBuilder()
                 .expireAfterAccess(30, TimeUnit.SECONDS)
                 .maximumSize(100)
-                .build();
+                .build(); */
     }
 
     public static void set (String path, KasperObject value) {
@@ -72,6 +73,7 @@ public class Cache {
     }
 
     public static KasperObject get (String path) {
+        if (true) return null;
         return cache.getIfPresent(path);
     }
 

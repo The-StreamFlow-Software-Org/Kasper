@@ -69,6 +69,7 @@ public class ParseProcessor {
                     case INSERT -> mustFinish = processor.insert(tokens);
                     case GET -> mustFinish = processor.get(tokens);
                     case DELETE -> mustFinish = processor.delete(tokens);
+                    case ASSERT -> mustFinish = processor.assertFn(tokens);
                     default -> throw Throw.raw("Unknown start of query / symbol: '" + current.getName() + "'.");
                 }
             }
@@ -171,7 +172,18 @@ public class ParseProcessor {
                 }
                 case '=':  {
                     statementPusher();
-                    tokens.add(OneOf.newEqual());
+                    tokens.add(Operator.newOperator("="));
+                    break;
+                }
+
+                case '!': {
+                    char c = longString.charAt(++i);
+                    if (c == '=') {
+                        statementPusher();
+                        tokens.add(Operator.newOperator("!="));
+                    } else {
+                        throw Throw.raw("Unexpected character '" + c + "' after '!'.");
+                    }
                     break;
                 }
 

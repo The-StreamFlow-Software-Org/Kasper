@@ -9,7 +9,9 @@ import computations.NioDeleteResolver;
 import datastructures.KasperCollection;
 import datastructures.KasperNode;
 import datastructures.KasperRelationship;
+import parser.exceptions.Throw;
 import parser.executor.ExecutionUnit;
+import parser.tokens.Operator;
 import server.Handler.IndexNotViableException;
 import server.SuperClass.KasperGlobalMap;
 
@@ -47,6 +49,11 @@ public class StoredProcedures {
      *
      * - delete
      *     path
+     *
+     *  - assert
+     *    path: String
+     *    operator: OperatorToken
+     *    value: Object
      */
     private static void verifyInitialization() {
         if (functions == null) {
@@ -105,6 +112,11 @@ public class StoredProcedures {
 
             // GET IMPLEMENTATION
             functions.put("get", (args) -> {
+                if (args.get("alias") != null) {
+                    KasperMap map = new KasperMap();
+                    ProtectedUtils.setData(map, KasperGlobalMap.globalmap);
+                    return map;
+                }
                 String path = (String) args.get("path");
                return KasperGlobalMap.findWithPath(path);
                 // RESOLVE INCLUDE LATER
@@ -112,13 +124,37 @@ public class StoredProcedures {
 
             functions.put("delete", (args)-> {
                 String path = (String) args.get("path");
+                var assertion = KasperGlobalMap.findWithPath(path);
                 if (args.get("type").equals(ENTITY)) {
-                    var assertion = KasperGlobalMap.findWithPath(path);
                     if (assertion instanceof KasperCollection || assertion instanceof KasperNode) {
-                        throw new KasperException("Cannot delete collection or node using query command 'DELETE ENTITY', use respective 'DELETE NODE' or 'DELETE COLLECTION' instead.");
+                        throw new KasperException("Cannot delete collection-type or node-type structures using query command 'DELETE ENTITY', use respective 'DELETE NODE' or 'DELETE COLLECTION' instead.");
                     } else NioDeleteResolver.deleteObject(path);
+                } else if (args.get("type").equals(COLLECTION)) {
+                    if (!(assertion instanceof KasperCollection)) {
+                        throw new KasperException("Cannot delete non-collection structures using query command 'DELETE COLLECTION', use respective 'DELETE NODE' or 'DELETE ENTITY' instead.");
+                    } // implement here
                 }
                 return null;
+            });
+
+
+            functions.put("assert", (args)->{
+                String path = (String) args.get("path");
+                Operator operator = (Operator) args.get("operator");
+                Object value = args.get("value");
+                KasperObject internalComparator = KasperGlobalMap.findWithPath(path);
+                var assertion = KasperGlobalMap.findWithPath(path);
+                Throw.assertOperatorValidity(operator.getName(), internalComparator);
+                Throw.typeChecking(internalComparator, value);
+                if (operator.OperatorType == Operator.EQUAL) {
+                    if (internalComparator.equals(value)) return new KasperInteger(1);
+                    else return new KasperInteger(0);
+                } else if (operator.OperatorType == Operator.NOT_EQUAL) {
+                    if (internalComparator.equals(value)) return new KasperInteger(0);
+                    else return new KasperInteger(1);
+                } else {
+                    throw new KasperException("Operator " + operator.getName() + " is not supported in assert statement");
+                }
             });
         }
     }

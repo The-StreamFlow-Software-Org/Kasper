@@ -1,5 +1,9 @@
 package parser.exceptions;
 
+import com.kasper.commons.datastructures.KasperDecimal;
+import com.kasper.commons.datastructures.KasperInteger;
+import com.kasper.commons.datastructures.KasperObject;
+import com.kasper.commons.datastructures.ProtectedUtils;
 import com.kasper.commons.exceptions.SyntaxError;
 import parser.tokens.StatementType;
 import parser.tokens.Token;
@@ -48,5 +52,16 @@ public class Throw {
 
     public static void notDelimited() {
         throw new SyntaxError("The query had excess tokens. Must be delimited with a semicolon ';' if a query must finish.");
+    }
+
+    public static void assertOperatorValidity(String operator, KasperObject object) {
+        if (object instanceof KasperInteger || object instanceof KasperDecimal) return;
+        if (operator.equals("=") || operator.equals("!=")) return;
+        throw new SyntaxError("The operator '" + operator + "' is invalid when comparing a " + object.getType()+ " object.");
+    }
+
+    public static void typeChecking (KasperObject object, Object other) {
+        if (object.getClass().equals(other.getClass()));
+        else throw new SyntaxError("Cannot compare a " + object.getClass().getSimpleName() + " object with a " + other.getClass().getSimpleName() + " object.");
     }
 }

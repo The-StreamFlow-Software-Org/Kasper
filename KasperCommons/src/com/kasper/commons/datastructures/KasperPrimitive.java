@@ -19,4 +19,6 @@ public abstract class KasperPrimitive extends KasperObject{
     public String toString() {
         return toStr();
     }
+
+    public abstract boolean equals(Object obj);
 }

@@ -2,10 +2,7 @@ package parser;
 
 import parser.exceptions.Throw;
 import parser.executor.ExecutionQueue;
-import parser.tokens.PathToken;
-import parser.tokens.StatementType;
-import parser.tokens.Token;
-import parser.tokens.TokenType;
+import parser.tokens.*;
 import stateholder.functions.StoredProcedures;
 
 import java.util.HashMap;
@@ -20,6 +17,36 @@ public class TaskParser {
 
     public TaskParser () {
         processes = new ExecutionQueue();
+    }
+
+    // for assertion, we need to do the following:
+    // assert <path> <operator> <value>
+    // where <value> is an Object-type, so it must
+    // be enclosed in the parenthesis operator
+    // (value)
+    public Boolean assertFn (TokenCursor tokens) {
+        var initial = tokens.nextToken();
+        StringBuilder builder = new StringBuilder();
+        builder.append("ASSERT ").append(initial.getName()).append(" ");
+        // Asserting that PATH exists
+        Throw.syntaxAssert(builder.toString(), TokenType.STRING, initial.tokenType);
+        var path = initial.getName();
+        initial = tokens.nextToken();
+        builder.append(initial.getName()).append(" ");
+        /// Asserting that OPERATOR exists
+        Throw.syntaxAssert(builder.toString(), TokenType.OPERATOR, initial.tokenType);
+        var operator = initial.toOperator();
+        initial = tokens.nextToken();
+        builder.append(initial.getName()).append(" ");
+        // Asserting that VALUE exists
+        Throw.syntaxAssert(builder.toString(), TokenType.OBJECT, initial.tokenType);
+        var value = initial.toObject().getInternalObject();
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("path", path);
+        args.put("operator", operator);
+        args.put("value", value);
+        processes.addProcess("assert", args);
+        return null;
     }
 
     public Boolean create (TokenCursor tokens) {
@@ -109,6 +136,12 @@ public class TaskParser {
 
     public Boolean get (TokenCursor tokens) {
         var pathToken = tokens.nextToken();
+        if (pathToken.tokenType == TokenType.ALIAS){
+            HashMap<String, Object>  args = new HashMap<>();
+            args.put("alias", true);
+            processes.addProcess("get", args);
+            return true;
+        }
         Throw.syntaxAssert("GET " + pathToken.getName(), TokenType.STRING, pathToken.tokenType);
         HashMap<String, Object> args = new HashMap<>();
         args.put("path", pathToken.getName());

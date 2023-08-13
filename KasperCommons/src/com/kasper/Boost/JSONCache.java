@@ -12,17 +12,19 @@ public class JSONCache {
     }
 
     public static void init () {
-        cache = Caffeine.newBuilder()
+       /* cache = Caffeine.newBuilder()
                 .expireAfterAccess(10, TimeUnit.SECONDS)
                 .maximumSize(100)
-                .build();
+                .build(); */
     }
 
     public static void set (Object instance, String value) {
+        if (true) return;
         cache.put(instance, value);
     }
 
     public static String get (Object path) {
+        if (true) return null;
         return cache.getIfPresent(path);
     }
 
