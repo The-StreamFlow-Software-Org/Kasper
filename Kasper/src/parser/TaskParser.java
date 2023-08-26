@@ -163,26 +163,42 @@ public class TaskParser {
             case RELATIONSHIP: {
                 StringBuilder parsedSoFar = new StringBuilder();
                 String pathName = null;
-                // verify in keyword
+                String collectionName = null;
+
+                // Parse "DELETE COLLECTION" or "DELETE RELATIONSHIP"
+                parsedSoFar.append("DELETE ").append(initialEntity.getName()).append(" ");
+
+                // Parse the collection or relationship name
                 entity = tokens.nextToken();
-                parsedSoFar.append("DELETE ").append(initialEntity.getName()).append(" ").append(entity.getName()).append(" ");
+                parsedSoFar.append(entity.getName()).append(" ");
+                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
+                collectionName = entity.getName();
+
+                // Parse the "IN" keyword
+                entity = tokens.nextToken();
+                parsedSoFar.append(entity.getName()).append(" ");
                 Throw.statementAssert(parsedSoFar.toString(), StatementType.IN, entity);
-                // verify that collection name exists
+
+                // Parse the path
                 entity = tokens.nextToken();
                 parsedSoFar.append(entity.getName());
                 Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
-                pathName = entity.name;
-                //verify NAMED token
-                entity = tokens.nextToken();
-                parsedSoFar.append(" ").append(entity.getName());
-                Throw.statementAssert(parsedSoFar.toString(), StatementType.NAMED, entity);
-                // get relationship id
-                entity = tokens.nextToken();
-                parsedSoFar.append(" ").append(entity.getName());
-                Throw.syntaxAssert(parsedSoFar.toString(), TokenType.STRING, entity.tokenType);
-                Token relationshipName = entity;
+                pathName = entity.getName();
+
+                // Construct args for the delete process
+                HashMap<String, Object> args = new HashMap<>();
+                if (initialType == StatementType.RELATIONSHIP) {
+                    args.put("type", StoredProcedures.RELATIONSHIP);
+                } else {
+                    args.put("type", StoredProcedures.COLLECTION);
+                }
+                args.put("path", pathName);
+                args.put("name", collectionName);
+
+                processes.addProcess("delete", args);
                 return true;
             }
+
             case ENTITY: {
                 StringBuilder parsedSoFar = new StringBuilder();
                 String collectionName = null;
@@ -207,7 +223,11 @@ public class TaskParser {
                 entity = tokens.nextToken();
                 // verify that collection name exists
                 Throw.syntaxAssert("DELETE NODE " + entity.name, TokenType.STRING, entity.tokenType);
-                nodeName = entity.name;
+                nodeName = entity.getName();
+                HashMap<String, Object> args = new HashMap<>();
+                args.put("type", StoredProcedures.NODE);
+                args.put("path", nodeName);
+                processes.addProcess("delete", args);
                 return true;
             }
             default: {

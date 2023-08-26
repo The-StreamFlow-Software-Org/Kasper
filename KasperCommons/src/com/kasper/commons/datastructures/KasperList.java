@@ -89,6 +89,10 @@ public class KasperList extends KasperObject implements Iterable{
         return getSafeData().removeLast();
     }
 
+    public int size() {
+        return getSafeData().size();
+    }
+
     protected LockedLL<KasperObject> getSafeData()  {
         return (LockedLL<KasperObject>) data;
     }

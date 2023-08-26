@@ -1,9 +1,6 @@
 package parser.exceptions;
 
-import com.kasper.commons.datastructures.KasperDecimal;
-import com.kasper.commons.datastructures.KasperInteger;
-import com.kasper.commons.datastructures.KasperObject;
-import com.kasper.commons.datastructures.ProtectedUtils;
+import com.kasper.commons.datastructures.*;
 import com.kasper.commons.exceptions.SyntaxError;
 import parser.tokens.StatementType;
 import parser.tokens.Token;
@@ -55,6 +52,7 @@ public class Throw {
     }
 
     public static void assertOperatorValidity(String operator, KasperObject object) {
+        if (!(object instanceof KasperPrimitive)) throw new SyntaxError("Cannot compare non-primitive types. You supplied a " + object.getType() + " object.");
         if (object instanceof KasperInteger || object instanceof KasperDecimal) return;
         if (operator.equals("=") || operator.equals("!=")) return;
         throw new SyntaxError("The operator '" + operator + "' is invalid when comparing a " + object.getType()+ " object.");
@@ -62,7 +60,6 @@ public class Throw {
 
     public static void typeChecking (KasperObject object, Object other) {
         if (object.getClass().equals(other.getClass()));
-
         else throw new SyntaxError("Cannot compare a " + object.getClass().getSimpleName() + " object with a " + other.getClass().getSimpleName() + " object.");
     }
 }

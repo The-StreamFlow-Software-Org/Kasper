@@ -4,6 +4,7 @@ import com.kasper.beans.nio.streamflow.DriverInstance;
 import com.kasper.beans.nio.streamflow.DriverManager;
 import com.kasper.beans.nio.streamflow.KasperStandardDriver;
 import com.kasper.commons.datastructures.KasperInteger;
+import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.datastructures.KasperString;
 import com.kasper.commons.exceptions.StreamFlowException;
@@ -32,6 +33,15 @@ public class Main {
     public static void main(String[] args) throws StreamFlowException {
         KasperString string = new KasperString("Hello World");
         System.out.println(string.equals(new KasperString("Hello World")));
+        try (DriverInstance instance =
+                     DriverManager.getConnection("kasper://localhost:53182/root/streamflow")){
+           instance.prepareStatement("create node 'cit';" +
+                    "create collection 'users' in 'cit';" +
+                    "insert ? in 'cit.users' as 'hernah'")
+                    .setObject(1, new KasperString("Hernah")).executeQuery().getNext();
+            System.out.println(instance.prepareStatement("get 'cit.users.hernah'").executeQuery().getNext());
+        }
+
     }
 
 

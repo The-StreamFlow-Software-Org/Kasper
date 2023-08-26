@@ -1,5 +1,6 @@
 package stateholder.functions;
 
+import com.kasper.commons.Parser.PathParser;
 import com.kasper.commons.datastructures.*;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.KasperObjectAlreadyExists;
@@ -124,15 +125,42 @@ public class StoredProcedures {
 
             functions.put("delete", (args)-> {
                 String path = (String) args.get("path");
-                var assertion = KasperGlobalMap.findWithPath(path);
+                String name = (String) args.get("name");
+
                 if (args.get("type").equals(ENTITY)) {
+                    var assertion = KasperGlobalMap.findWithPath(path);
                     if (assertion instanceof KasperCollection || assertion instanceof KasperNode) {
                         throw new KasperException("Cannot delete collection-type or node-type structures using query command 'DELETE ENTITY', use respective 'DELETE NODE' or 'DELETE COLLECTION' instead.");
                     } else NioDeleteResolver.deleteObject(path);
                 } else if (args.get("type").equals(COLLECTION)) {
+                    PathParser parser = new PathParser();
+                    parser.addPath(name);
+                    String fullPath = path + "." + parser.parsePath();
+                    var assertion = KasperGlobalMap.findWithPath(fullPath);
+                    if (assertion == null) throw new KasperException("Cannot delete non-existent collection '" + name + "' in '" + path + "'.");
                     if (!(assertion instanceof KasperCollection)) {
-                        throw new KasperException("Cannot delete non-collection structures using query command 'DELETE COLLECTION', use respective 'DELETE NODE' or 'DELETE ENTITY' instead.");
-                    } // implement here
+                        throw new KasperException("Cannot delete non-collection structures found in '" + fullPath + "' using query command 'DELETE COLLECTION', use respective 'DELETE NODE' or 'DELETE ENTITY' instead.");
+                    } else {
+                        NioDeleteResolver.deleteObject(fullPath);
+                    }
+                } else if (args.get("type").equals(NODE)) {
+                    var assertion = KasperGlobalMap.findWithPath(path);
+                    if (!(assertion instanceof KasperNode)) {
+                        throw new KasperException("Cannot delete non-node structures using query command 'DELETE NODE', use respective 'DELETE COLLECTION' or 'DELETE ENTITY' instead.");
+                    } else NioDeleteResolver.deleteObject(path);
+                } else if (args.get("type").equals(RELATIONSHIP)) {
+                    PathParser parser = new PathParser();
+                    parser.addPath(name);
+                    String fullPath = path + "." + parser.parsePath();
+                    var assertion = KasperGlobalMap.findWithPath(fullPath);
+                    if (assertion == null) throw new KasperException("Cannot delete non-existent relationship '" + name + "' in '" + path + "'.");
+                    if (!(assertion instanceof KasperRelationship)) {
+                        throw new KasperException("Cannot delete non-relationship structures found in '" + fullPath + "' using query command 'DELETE RELATIONSHIP', use respective 'DELETE COLLECTION' or 'DELETE ENTITY' instead.");
+                    } else {
+                        NioDeleteResolver.deleteObject(fullPath);
+                    }
+                } else {
+                    throw new KasperException("Invalid entity-type for delete command");
                 }
                 return null;
             });
