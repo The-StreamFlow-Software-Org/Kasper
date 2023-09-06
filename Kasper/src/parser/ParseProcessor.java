@@ -3,11 +3,13 @@ package parser;
 import com.kasper.Boost.Pair;
 import com.kasper.commons.datastructures.JSONUtils;
 import com.kasper.commons.datastructures.KasperList;
+import com.kasper.commons.datastructures.KasperObject;
 import com.kasper.commons.debug.Debug;
 import com.kasper.commons.exceptions.SyntaxError;
 import nio.kasper.StagedResultSet;
 import parser.exceptions.Throw;
 import parser.tokens.*;
+import stateholder.functions.PreparedStatements;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -38,6 +40,7 @@ public class ParseProcessor {
 
 
     public void parseSyntax (TokenCursor tokens) {
+
 
         Boolean mustFinish = false; // the query must end, unless a delimiter was given.
         Boolean begin = true; // this is a new query. Is false upon token read. Turned true with delimiters.
@@ -70,6 +73,7 @@ public class ParseProcessor {
                     case GET -> mustFinish = processor.get(tokens);
                     case DELETE -> mustFinish = processor.delete(tokens);
                     case ASSERT -> mustFinish = processor.assertFn(tokens);
+                    case MATCH -> mustFinish = processor.match(tokens);
                     default -> throw Throw.raw("Unknown start of query / symbol: '" + current.getName() + "'.");
                 }
             }
@@ -80,7 +84,11 @@ public class ParseProcessor {
     ArrayList<Token> tokens;
     public void statementPusher() {
         if (!statement.isEmpty()) {
-            tokens.add(Statement.consumeStatement(statement.toString()));
+            try {
+                tokens.add(Statement.consumeStatement(statement.toString()));
+            } catch (SyntaxError e) {
+                tokens.add(Operator.newOperator(statement.toString()));
+            }
             statement.setLength(0);
         }
     }

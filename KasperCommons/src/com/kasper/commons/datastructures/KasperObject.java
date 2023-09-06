@@ -214,4 +214,5 @@ public class KasperObject implements Serializable, KasperEntity {
         if (this instanceof KasperMap map) return map.toMap().entrySet();
         throw new NotIterableException(id);
     }
+
 }

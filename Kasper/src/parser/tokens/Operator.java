@@ -14,6 +14,7 @@ public class Operator extends Token{
     public static final int GREATER_THAN_EQUAL = 4;
     public static final int LESS_THAN_EQUAL = 5;
     public static final int NOT_EQUAL = 6;
+    public static final int LIKE = 7;
 
 
     private static void initOperators () {
@@ -24,14 +25,16 @@ public class Operator extends Token{
         operatorMap.put(">=", 4);
         operatorMap.put("<=", 5);
         operatorMap.put("!=", 6);
+        operatorMap.put("LIKE", 7);
     }
     protected Operator (String type) {
+        type = type.toUpperCase();
         this.name = type;
         if (operatorMap == null)
             initOperators();
         Integer contains = operatorMap.get(type);
         if (contains == null) {
-            throw Throw.raw("Cannot find operator " + type + ". Please use a valid operator.");
+            throw Throw.raw("Cannot find token '" + type + "'. Please use a valid identifier.");
         } OperatorType = contains;
         this.tokenType = TokenType.OPERATOR;
 

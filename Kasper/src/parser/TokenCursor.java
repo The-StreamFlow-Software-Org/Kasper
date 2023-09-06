@@ -7,6 +7,7 @@ import parser.tokens.Token;
 import parser.tokens.TokenType;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TokenCursor {
     private ArrayList<Token> innerList;
@@ -97,5 +98,18 @@ public class TokenCursor {
             else
             build.append(x.name + " ");
         } return build.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TokenCursor that = (TokenCursor) o;
+        return innerList.equals(that.innerList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(innerList);
     }
 }

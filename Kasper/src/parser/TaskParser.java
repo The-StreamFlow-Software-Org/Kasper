@@ -1,10 +1,13 @@
 package parser;
 
+import com.kasper.commons.datastructures.KasperObject;
 import parser.exceptions.Throw;
 import parser.executor.ExecutionQueue;
 import parser.tokens.*;
+import stateholder.functions.PreparedStatements;
 import stateholder.functions.StoredProcedures;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskParser {
@@ -19,12 +22,22 @@ public class TaskParser {
         processes = new ExecutionQueue();
     }
 
+    public boolean checkCache(TokenCursor query){
+        // check for tokens
+        var cacheResult = PreparedStatements.executeCachedInstance(query);
+        if (cacheResult != Boolean.FALSE) {
+            processes.resultSet.addResult((KasperObject)cacheResult);
+            return true;
+        } return false;
+    }
+
     // for assertion, we need to do the following:
     // assert <path> <operator> <value>
     // where <value> is an Object-type, so it must
     // be enclosed in the parenthesis operator
     // (value)
     public Boolean assertFn (TokenCursor tokens) {
+        if (checkCache(tokens)) return true;
         var initial = tokens.nextToken();
         StringBuilder builder = new StringBuilder();
         builder.append("ASSERT ").append(initial.getName()).append(" ");
@@ -50,6 +63,7 @@ public class TaskParser {
     }
 
     public Boolean create (TokenCursor tokens) {
+        if (checkCache(tokens)) return true;
         var entity = tokens.nextToken();
         var initialEntity = entity;
         var initialType = entity.toStatement().type;
@@ -103,6 +117,7 @@ public class TaskParser {
     }
 
     public Boolean insert (TokenCursor tokens) {
+        if (checkCache(tokens)) return true;
         var objectToken = tokens.nextToken();
         StringBuilder parsedSoFar = new StringBuilder();
         parsedSoFar.append("INSERT ").append(objectToken.getName()).append(" ");
@@ -135,21 +150,13 @@ public class TaskParser {
     }
 
     public Boolean get (TokenCursor tokens) {
-        var pathToken = tokens.nextToken();
-        if (pathToken.tokenType == TokenType.ALIAS){
-            HashMap<String, Object>  args = new HashMap<>();
-            args.put("alias", true);
-            processes.addProcess("get", args);
-            return true;
-        }
-        Throw.syntaxAssert("GET " + pathToken.getName(), TokenType.STRING, pathToken.tokenType);
-        HashMap<String, Object> args = new HashMap<>();
-        args.put("path", pathToken.getName());
-        processes.addProcess("get", args);
+        if (checkCache(tokens)) return true;
+        processes.addProcess("get", parseGET(tokens));
         return true;
     }
 
     public Boolean delete (TokenCursor tokens){
+        if (checkCache(tokens)) return true;
         var entity = tokens.nextToken();
         var initialEntity = entity;
         StatementType initialType = null;
@@ -236,5 +243,81 @@ public class TaskParser {
         }
     }
 
+    /*
+    MATCH is special as it modifies the behavior of other clauses.
+    For example, MATCH GET will return the result of the GET statement
+    that matches the conditions by MATCH.
+
+    Syntax:
+    MATCH {CLAUSE} {CLAUSE ARGS} HAVING {PROPERTY} {OPERATOR} {VALUE}
+
+        ex:
+        for DELETION
+        MATCH DELETE ENTITY "users" HAVING "name" = "John"
+
+        for GET with REGEX
+        MATCH GET "users.students" HAVING "name" LIKE "John"
+
+
+     */
+
+    // ARGS FOR MATCH
+    // the args for the match-type
+    // the args in the nested operation
+    public boolean match (TokenCursor cursor) {
+        ArrayList<Token> tokens = new ArrayList<>();
+        while (true) {
+            var currToken = cursor.nextToken();
+            if (currToken instanceof Statement statement) {
+                if (statement.type.equals(StatementType.HAVING)) {
+                    break;
+                }
+            } tokens.add(currToken);
+        }
+        StringBuilder errormsg = new StringBuilder();
+        errormsg.append("MATCH ");
+        var subToken = new TokenCursor(tokens);
+        Token operationToken = subToken.nextToken();
+        Throw.syntaxAssert(errormsg.append(operationToken.getName()).toString(), TokenType.STATEMENT, operationToken.tokenType);
+        StatementType operationType = operationToken.toStatement().type;
+
+        // EXTRACT MATCH OPERATIONS
+        // MATCH <> HAVING "" LIKE ""
+
+        // assert the property token
+        var propertyToken = cursor.nextToken();
+        Throw.syntaxAssert(errormsg.append(propertyToken.getName()).toString(), TokenType.STRING, propertyToken.tokenType);
+        // assert the operator token
+        var operatorToken = cursor.nextToken();
+        Throw.syntaxAssert(errormsg.append(operatorToken.getName()).toString(), TokenType.OPERATOR, operatorToken.tokenType);
+        // assert the regexp token
+        var regexpToken = cursor.nextToken();
+
+        switch (operationType) {
+            case GET: {
+                // this is the GET OPERATION
+                var args = parseGET(subToken);
+                args.put("match-type", "GET");
+                args.put("having", propertyToken.getName());
+                args.put("operator", operatorToken.toOperator().OperatorType);
+                args.put("value", regexpToken.getName());
+                processes.addProcess("match", args);
+            }
+        }
+        return true;
+    }
+
+    private HashMap<String, Object> parseGET(TokenCursor subToken) {
+        var pathToken = subToken.nextToken();
+        if (pathToken.tokenType == TokenType.ALIAS){
+            HashMap<String, Object> args = new HashMap<>();
+            args.put("alias", true);
+            return args;
+        }
+        Throw.syntaxAssert("GET " + pathToken.getName(), TokenType.STRING, pathToken.tokenType);
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("path", pathToken.getName());
+        return args;
+    }
 
 }

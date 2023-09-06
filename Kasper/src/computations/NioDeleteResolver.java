@@ -1,11 +1,9 @@
 package computations;
 
-import com.kasper.commons.Parser.PathParser;
 import com.kasper.commons.datastructures.KasperList;
 import com.kasper.commons.datastructures.KasperMap;
 import com.kasper.commons.exceptions.KasperException;
 import com.kasper.commons.exceptions.NoSuchKasperObject;
-import datastructures.KasperCollection;
 import server.SuperClass.KasperGlobalMap;
 
 public class NioDeleteResolver {

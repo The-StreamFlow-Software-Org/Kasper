@@ -15,7 +15,7 @@ public class ExecutionQueue {
     // static execution Queue saved units
 
     protected Queue<Pair<String, HashMap<String, Object>>> processes;
-    protected StagedResultSet resultSet;
+    public StagedResultSet resultSet;
 
     public StagedResultSet resultSet() {
         return resultSet;

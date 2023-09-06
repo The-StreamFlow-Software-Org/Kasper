@@ -62,9 +62,7 @@ public class NitroChannel implements ChannelInboundHandler {
 
     @Override
     public void channelUnregistered(ChannelHandlerContext channelHandlerContext) throws Exception {
-        StagedResultSet set = new StagedResultSet();
-
-
+        channelHandlerContext.close();
     }
 
     @Override
@@ -143,6 +141,7 @@ public class NitroChannel implements ChannelInboundHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable throwable) {
+        System.gc();
         if (throwable instanceof SocketException) return;
         throwable.printStackTrace();
         W.error(throwable, "Caught an exception in client. Check error logs for more information.");

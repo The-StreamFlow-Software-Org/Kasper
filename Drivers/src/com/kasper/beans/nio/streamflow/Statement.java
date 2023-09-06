@@ -27,20 +27,38 @@ public class Statement {
         processQuery(query);
     }
 
-    protected void processQuery(String query){
+    protected void processQuery(String query) {
         StringBuilder queryBuilder = new StringBuilder();
-        for (int i=0; i<query.length(); i++) {
-            if (query.charAt(i) == '?') {
+        boolean inSingleQuote = false;
+        boolean inDoubleQuote = false;
+
+        for (int i = 0; i < query.length(); i++) {
+            char currentChar = query.charAt(i);
+
+            // Check if we're entering or exiting a string literal
+            if (currentChar == '\'' && !inDoubleQuote) {
+                inSingleQuote = !inSingleQuote;
+            } else if (currentChar == '"' && !inSingleQuote) {
+                inDoubleQuote = !inDoubleQuote;
+            }
+
+            // If we encounter a '?' and we're not inside a string literal, process it
+            if (currentChar == '?' && !inSingleQuote && !inDoubleQuote) {
                 index++;
                 parameters.add("?");
                 alreadySet.add(false);
                 brokenQuery.add(queryBuilder.toString());
                 queryBuilder.setLength(0);
             } else {
-                queryBuilder.append(query.charAt(i));
+                queryBuilder.append(currentChar);
             }
-        } if (!queryBuilder.isEmpty())brokenQuery.add(queryBuilder.toString());
+        }
+
+        if (!queryBuilder.isEmpty()) {
+            brokenQuery.add(queryBuilder.toString());
+        }
     }
+
 
 
     /**

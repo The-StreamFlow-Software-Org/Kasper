@@ -2,10 +2,7 @@ package stateholder.functions;
 
 import com.kasper.commons.Parser.PathParser;
 import com.kasper.commons.datastructures.*;
-import com.kasper.commons.exceptions.KasperException;
-import com.kasper.commons.exceptions.KasperObjectAlreadyExists;
-import com.kasper.commons.exceptions.NonCollectionTypeException;
-import com.kasper.commons.exceptions.NotIterableException;
+import com.kasper.commons.exceptions.*;
 import computations.NioDeleteResolver;
 import datastructures.KasperCollection;
 import datastructures.KasperNode;
@@ -16,7 +13,11 @@ import parser.tokens.Operator;
 import server.Handler.IndexNotViableException;
 import server.SuperClass.KasperGlobalMap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StoredProcedures {
 
@@ -26,6 +27,7 @@ public class StoredProcedures {
         verifyInitialization();
         return functions.get(functionName).databaseTask(args);
     }
+
 
     public static int NODE = 0;
     public static int COLLECTION = 1;
@@ -162,6 +164,7 @@ public class StoredProcedures {
                 } else {
                     throw new KasperException("Invalid entity-type for delete command");
                 }
+                System.gc();
                 return null;
             });
 
@@ -184,6 +187,68 @@ public class StoredProcedures {
                     throw new KasperException("Operator " + operator.getName() + " is not supported in assert statement");
                 }
             });
+
+            // MATCH IMPLEMENTATION
+
+            /*
+            MATCH ARGUMENTS:
+            match-type: GET, DELETE, ASSERT (STRING)
+            operator: operator-type (INT)
+            having: attributes (STRING)
+            value: value (STRING)
+             */
+            functions.put("match", (args)->{
+                String matchType = (String) args.get("match-type");
+                int operator = (int) args.get("operator");
+                String having = (String) args.get("having");
+                Object value = args.get("value");
+                var matches = getAllThatMatches((String)args.get("path"), having);
+                if (matchType.equals("GET")) {
+                    return getAllThatMatchOperator(getAllThatMatches((String)args.get("path"), having), having, operator, (String) value);
+                } else {
+                    throw new SyntaxError("Unsupported MATCH operation.");
+                }
+            });
+
         }
+    }
+
+    public static LinkedList<KasperMap> getAllThatMatches(String path, String having) {
+        var assertion = KasperGlobalMap.findWithPath((String) path);
+        if (assertion == null) throw new KasperException("Cannot find object '" + path + "'.");
+        if (assertion instanceof KasperPrimitive) {
+            throw new KasperException("Cannot use MATCH operation on primitive type (INTEGER/DECIMAL/STRING).");
+        }
+        LinkedList<KasperMap> matches = new LinkedList<>();
+        if (assertion instanceof KasperMap){
+            for (var entry : assertion.castToMap()) {
+                if (entry instanceof KasperMap entryMap) {
+                    if (entryMap.get((having)) != null) matches.push(entryMap);
+                }
+            }
+        } else {
+            for (var obj : assertion.toList()) {
+                if (obj instanceof KasperMap entryMap) {
+                    if (entryMap.get((having)) != null) matches.push(entryMap);
+                }
+            }
+        } return matches;
+    }
+
+    public static KasperList getAllThatMatchOperator (LinkedList<KasperMap> partial, String having, int operatorType, String argument) {
+        KasperList matches = new KasperList();
+        if (operatorType == Operator.LIKE) {
+            Pattern pattern =  Pattern.compile(argument);
+            for (var entry : partial) {
+                var result = entry.get(having);
+                if (result instanceof KasperString) {
+                    Matcher matcher = pattern.matcher(result.toStr());
+                    if (matcher.matches()) matches.addLast(entry);
+                } else throw new KasperException("Cannot use LIKE operator on non-string type.");
+            } return matches;
+        } else {
+            throw new KasperException("Unsupported operator type for MATCH.");
+        }
+
     }
 }
