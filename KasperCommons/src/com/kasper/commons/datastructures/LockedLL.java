@@ -1,6 +1,6 @@
 package com.kasper.commons.datastructures;
 
-import org.jetbrains.annotations.NotNull;
+
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -97,7 +97,7 @@ public class LockedLL<T> implements Iterable<T>, Serializable {
         }
     }
 
-    @NotNull
+
     @Override
     public Iterator<T> iterator() {
         lock.readLock().lock();

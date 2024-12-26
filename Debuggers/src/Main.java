@@ -1,17 +1,17 @@
 
 
-import com.kasper.beans.nio.streamflow.DriverInstance;
-import com.kasper.beans.nio.streamflow.DriverManager;
-import com.kasper.beans.nio.streamflow.KasperStandardDriver;
-import com.kasper.commons.datastructures.KasperInteger;
-import com.kasper.commons.datastructures.KasperList;
-import com.kasper.commons.datastructures.KasperMap;
-import com.kasper.commons.datastructures.KasperString;
+import com.kasper.beans.nio.streamflow.*;
+import com.kasper.commons.datastructures.*;
 import com.kasper.commons.exceptions.StreamFlowException;
+import datastructures.KasperCollection;
 import jdk.dynalink.linker.LinkerServices;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Random;
 import java.util.Scanner;
+
 
 /**
  *
@@ -24,30 +24,18 @@ public class Main {
     public synchronized static void incrementErrors() {
         totalErrors++;
     }
+
     private static String linux = "172.18.180.86";
     public static String host = "localhost";
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String[] args) throws StreamFlowException {
-        KasperString string = new KasperString("Hello World");
-        System.out.println(string.equals(new KasperString("Hello World")));
-        try (DriverInstance instance =
-                     DriverManager.getConnection("kasper://localhost:53182/root/streamflow")){
-           instance.prepareStatement("create node 'cit';" +
-                    "create collection 'users' in 'cit';" +
-                    "insert ? in 'cit.users' as 'hernah'")
-                    .setObject(1, new KasperString("Hernah")).executeQuery().getNext();
-            System.out.println(instance.prepareStatement("get 'cit.users.hernah'").executeQuery().getNext());
-        }
+       DriverInstance driver = DriverManager.getConnection("kasper://localhost:53182/root/streamflow");
+        driver.prepareStatement("delete node 'tasker'").executeQuery().getNext();
+
+       var obj = driver.prepareStatement("get *").executeQuery().getNext();
+       // driver.prepareStatement("delete *").executeQuery().getNext();
+        System.out.println(obj.toMap().keySet());
 
     }
-
-
-
-
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.kasper.beans.nio.streamflow;
 
+import com.kasper.commons.debug.W;
 import com.kasper.commons.exceptions.StreamFlowException;
 
 import java.util.regex.Matcher;
@@ -22,7 +23,7 @@ public class DriverManager {
         }
     }
 
-    public static TokenData extractTokens(String inputString) throws StreamFlowException {
+    protected static TokenData extractTokens(String inputString) throws StreamFlowException {
         String pattern = "^(\\w+):\\/\\/([^:]+):(\\d+)\\/([^/]+)/([^/]+)$";
         Pattern regex = Pattern.compile(pattern);
         Matcher matcher = regex.matcher(inputString);

@@ -51,9 +51,6 @@ public class Wire {
             var byteStream = query.getBytes(StandardCharsets.UTF_8);
 
             // Check if byteStream length is too large
-            if(byteStream.length > Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("Data packet is too large to send");
-            }
             this.byteBuffer = ByteBuffer.allocate(5 + byteStream.length);
             byteBuffer.put((byte) method);
 

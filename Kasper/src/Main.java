@@ -6,26 +6,35 @@ import Persistence.InstantiatorService;
 import nio.kasper.Orchestrator;
 import server.SuperClass.GlobalHolders;
 
+import java.io.Console;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
+    // private static final Scanner scanner = new Scanner(System.in);
+    // BEGIN FUNCTION
+
 
     public static void main(String[] args) throws Exception {
-        try {
-            GlobalHolders.argv = args;
-            GlobalHolders.argc = args.length;
-            init(args);
-        } catch (Exception e) {
-            if (InstantiatorService.lockedByThis) InstantiatorService.unlockThisServer();
-            System.out.println("CRITICAL ERROR:> Kasper Engine failed to continue serving. Please check the logs for more details.");
-            LogWriter.writeLog(e);
+       KasperRoutine.start(args);
+    }
+
+    public static class KasperRoutine {
+
+        public static void start(String[] args){
+            try {
+                GlobalHolders.argv = args;
+                GlobalHolders.argc = args.length;
+                init(args);
+            } catch (Exception e) {
+                if (InstantiatorService.lockedByThis) InstantiatorService.unlockThisServer();
+                System.out.println("CRITICAL ERROR:> Kasper Engine failed to continue serving. Please check the logs for more details.");
+                LogWriter.writeLog(e);
+            }
         }
     }
 
     // instantiates the KasperEngine with the appropriate global variables.
     public static void init(String[] args) throws Exception {
-        favicon();
         Timer.getTimer().start();
         System.out.println("Kasper:> [Server Context] Loading Meta Variables. Change the Meta variables in kasper/data/kasper.init");
         System.out.println("Kasper:> [Persistence] Staring instantiator service. Loading snapshots to memory.");
@@ -38,7 +47,7 @@ public class Main {
     }
 
 
-    public static void favicon(){
+    static {
         System.out.println("                                        \n" +
                 "                                        \n" +
                 "         .::..         ....             \n" +
@@ -60,4 +69,5 @@ public class Main {
                 "                                        \n" +
                 "                                        \n");
     }
+
 }

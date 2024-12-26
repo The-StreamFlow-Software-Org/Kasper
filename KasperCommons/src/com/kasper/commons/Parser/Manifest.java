@@ -1,7 +1,7 @@
 package com.kasper.commons.Parser;
 
 import com.kasper.commons.authenticator.KasperAccessAuthenticator;
-import org.jetbrains.annotations.Contract;
+
 
 import java.io.BufferedReader;
 
@@ -28,7 +28,6 @@ class Manifest {
         return serial;
     }
 
-    @Contract(pure = true)
     private static String extractArgs(String s){
         return s.split("=")[1];
     }

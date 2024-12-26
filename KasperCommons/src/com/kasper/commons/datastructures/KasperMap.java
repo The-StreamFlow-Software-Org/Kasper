@@ -1,6 +1,6 @@
 package com.kasper.commons.datastructures;
 
-import org.jetbrains.annotations.NotNull;
+
 
 import java.io.Serial;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class KasperMap extends KasperObject implements Iterable<KasperObject>{
 
 
 
-    @NotNull
+
     @Override
     public Iterator<KasperObject> iterator() {
         return toMap().values().iterator();

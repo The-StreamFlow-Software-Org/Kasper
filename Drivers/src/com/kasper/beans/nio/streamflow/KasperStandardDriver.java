@@ -26,10 +26,10 @@ public class KasperStandardDriver implements AutoCloseable, DriverInstance {
         JSONCache.init();
         int retries = 0;
         boolean failed = true;
-        while (failed && retries < 1) {
+        while (failed) {
             this.wire = new Wire(new InetSocketAddress(host, port), threadID);
             failed = false;
-        } if (retries >= 1) throw new StreamFlowException("Cannot connect to Kasper Engine. Please check your connectivity.");
+        }
         wire.authorization(username, password);
     }
 

@@ -4,6 +4,7 @@ package com.kasper.commons.datastructures;
 import com.kasper.commons.annotations.Dangerous;
 import com.kasper.commons.exceptions.NotIterableException;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -61,16 +62,15 @@ public class KasperObject implements Serializable, KasperEntity {
     }
 
     protected void resolvePath(KasperObject current) {
-        if (!current.finalPath.equals("")) return;
-        if (!current.parent.finalPath.equals("")) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(current.parent.finalPath).append('.').append(id);
-            current.finalPath = builder.toString();
+        if (!current.finalPath.isEmpty()) return;
+        if (!current.parent.finalPath.isEmpty()) {
+            current.finalPath = current.parent.finalPath + '.' + id;
             return;
         }
         resolvePath(current.parent);
     }
 
+    @Serial
     private static final long serialVersionUID = -7689140920033408553L;
 
     /**
@@ -88,7 +88,7 @@ public class KasperObject implements Serializable, KasperEntity {
      * of this data structure. This can be of type
      * 'string', 'list', or 'map'.
      */
-    private String type;
+    private final String type;
 
     /**
     Holds the internal data structure. Can be a Map<KasperString, KasperObject>,

@@ -1,0 +1,9 @@
+kasper_driver_instance=true
+snapshot_time_buffer_ms=24000
+connect_with_port=53182
+max_recursion_depth=100000
+concurrent_socket_1=53183
+concurrent_socket_2=53184
+concurrent_socket_3=53185
+concurrent_socket_4=53186
+concurrent_socket_5=53187

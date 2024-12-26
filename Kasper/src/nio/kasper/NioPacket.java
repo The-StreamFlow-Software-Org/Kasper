@@ -33,7 +33,7 @@ public class NioPacket {
     }
 
     // Stages the valid result set into bytes
-    public static byte[] stageData (byte[] bytes) throws Exception {
+    public static byte[] stageData (byte[] bytes) {
         var lengthBytes = ByteUtils.intToBytes(bytes.length);
         byte method = (byte)Method.RESPONSE_QUERY;
         byte[] result = new byte[bytes.length + 5];

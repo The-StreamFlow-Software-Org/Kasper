@@ -1,5 +1,5 @@
 kasper_driver_instance=true
-snapshot_time_buffer_ms=2400000
+snapshot_time_buffer_ms=50000
 connect_with_port=53182
 max_recursion_depth=100000
 concurrent_socket_1=53183

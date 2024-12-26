@@ -12,10 +12,9 @@ public class W {
     }
 
     public static void error (Exception e, Object o) {
-        System.out.print("Kasper:> ");
+        System.out.print("Kasper:> [Exception Escalator Service]");
         System.out.print(o);
-        System.out.print(" Check your error logs for more information.");
-        System.out.println();
+        System.out.println(" Check your error logs for more information.");
         LogWriter.writeLog(e);
     }
 

@@ -12,7 +12,8 @@ public class NioDeleteResolver {
         var object = KasperGlobalMap.findWithPath(path);
         if (object == null) throw new NoSuchKasperObject("entity", path);
         var parent = object.parent();
-        if (parent == null) {
+
+        if (parent == null || (!path.contains("."))) {
             KasperGlobalMap.globalmap.remove(path);
         } else {
             if (parent instanceof KasperList list) {

@@ -100,7 +100,7 @@ public class StoredProcedures {
                     if (parentNode.toMap().get(name) != null) throw new KasperObjectAlreadyExists("collection", name, parent);
                     parentNode.castToMap().put(name, new KasperCollection((KasperNode) parentNode, name));
                 } else if (type==NODE) {
-                    if (KasperGlobalMap.globalmap.get(name) != null) throw new KasperObjectAlreadyExists("node", name, "the global map");
+                    if (KasperGlobalMap.globalmap.get(name) != null) throw new KasperObjectAlreadyExists("node", name, "top-level context");
                     var node = KasperGlobalMap.newNode(name);
                     LocalPathCrawler.finalPathSetter(node, name);
                 } else if (type==RELATIONSHIP) {

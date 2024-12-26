@@ -61,7 +61,7 @@ public class Orchestrator {
             channel = bootstrap.bind().sync().channel();
             AsyncServerTasks.exitHandler(this);
             W.rite("[Nitro StreamFlow IO] Orchestration service success.");
-            W.rite("[Nitro StreamFlow IO] Server address identified. [" + InetAddress.getLocalHost().getHostAddress() + "]");
+            W.rite("[Nitro StreamFlow IO] Connection listening at port. [" + Meta.port + "]");
         } catch (Exception e) {
             W.error(e, "[Nitro StreamFlow IO] There was an error during the orchestration service.");
         }

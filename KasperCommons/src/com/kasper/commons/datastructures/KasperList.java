@@ -1,6 +1,6 @@
 package com.kasper.commons.datastructures;
 
-import org.jetbrains.annotations.NotNull;
+
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -98,7 +98,6 @@ public class KasperList extends KasperObject implements Iterable{
     }
 
 
-    @NotNull
     @Override
     public Iterator<KasperObject> iterator() {
         return toList().iterator();
