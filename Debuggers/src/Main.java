@@ -30,7 +30,7 @@ public class Main {
 
 
     public static void main(String[] args) throws StreamFlowException {
-       DriverInstance driver = DriverManager.getConnection("kasper://localhost:53182/root/streamflow");
+       DriverInstance driver = DriverManager.getConnection("kasper://monorail.proxy.rlwy.net:40147/root/streamflow");
         driver.prepareStatement("delete node 'tasker'").executeQuery().getNext();
 
        var obj = driver.prepareStatement("get *").executeQuery().getNext();
